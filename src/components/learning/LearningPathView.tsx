@@ -16,7 +16,10 @@ import './LearningPathView.css'
 export type LearningPathDay = Readonly<{
   id: number
   title: string
-  status: 'ready' | 'coming'
+  /** open: 학습 가능 · locked: 직전 Day 미완료로 잠금 · coming: 교재 미배포 */
+  status: 'open' | 'locked' | 'coming'
+  /** `locked`일 때 안내 문구용 직전 Day 번호 */
+  prerequisiteDayId?: number
 }>
 
 export type LearningPathVariant = 'conversation' | 'word'
@@ -58,7 +61,7 @@ export function LearningPathView({
     if (!sheetOpen) return
     prevActiveEl.current = document.activeElement
     const id = window.requestAnimationFrame(() => {
-      if (focusDay?.status === 'ready') {
+      if (focusDay?.status === 'open') {
         ctaRef.current?.focus({ preventScroll: true })
       } else {
         closeBtnRef.current?.focus({ preventScroll: true })
@@ -104,11 +107,11 @@ export function LearningPathView({
           <div className="learning-path__spine" aria-hidden />
           <ol className="learning-path__steps">
             {days.map((day, idx) => {
-              const locked = day.status === 'coming'
+              const nodeLockedVisually = day.status !== 'open'
               const doneFlag = completeDayIds?.has(day.id) === true
 
               const nodeCls = ['learning-path__node']
-              if (locked) nodeCls.push('learning-path__node--locked')
+              if (nodeLockedVisually) nodeCls.push('learning-path__node--locked')
               else nodeCls.push('learning-path__node--ready')
 
               return (
@@ -126,13 +129,19 @@ export function LearningPathView({
                       className={nodeCls.join(' ')}
                       aria-expanded={sheetOpen && focusDay?.id === day.id}
                       aria-controls={sheetTitleId}
-                      aria-label={`Day ${day.id} · ${day.title}${locked ? ' · 준비 중' : ''}`}
+                      aria-label={
+                        day.status === 'coming'
+                          ? `Day ${day.id} · ${day.title} · 준비 중`
+                        : day.status === 'locked'
+                          ? `Day ${day.id} · ${day.title} · 잠금`
+                          : `Day ${day.id} · ${day.title}`
+                      }
                       onClick={() => {
                         setFocusDay(day)
                       }}
                     >
                       <span className="learning-path__node-face" aria-hidden>
-                        {locked ? (
+                        {nodeLockedVisually ? (
                           <span className="learning-path__node-lock">⊘</span>
                         ) : (
                           <span className="learning-path__node-star">★</span>
@@ -141,9 +150,13 @@ export function LearningPathView({
                     </button>
                     <span className="learning-path__node-caption-wrap">
                       <span className="learning-path__node-caption">{day.title}</span>
-                      {locked ? (
+                      {day.status === 'coming' ? (
                         <span className="learning-path__status-pill learning-path__status-pill--locked">
                           준비 중
+                        </span>
+                      ) : day.status === 'locked' ? (
+                        <span className="learning-path__status-pill learning-path__status-pill--progress-lock">
+                          잠금
                         </span>
                       ) : doneFlag ? (
                         <span className="learning-path__status-pill learning-path__status-pill--done">
@@ -188,13 +201,20 @@ export function LearningPathView({
               {(() => {
                 const doneFlag = completeDayIds?.has(focusDay.id) === true
                 const status =
-                  focusDay.status === 'ready' ? '진행 가능' : '준비 중'
+                  focusDay.status === 'open' ? '진행 가능'
+                  : focusDay.status === 'locked' ? '잠금'
+                  : '준비 중'
                 const doneSuffix = doneFlag ? ' · 완료' : ''
                 return `Day ${focusDay.id} · ${status}${doneSuffix}`
               })()}
             </p>
+            {focusDay.status === 'locked' && focusDay.prerequisiteDayId !== undefined ?
+              <p className="learning-path-float__hint">
+                Day {focusDay.prerequisiteDayId}을(를) 먼저 완료하면 열립니다.
+              </p>
+            : null}
             <div className="learning-path-float__actions">
-              {focusDay.status === 'ready' ? (
+              {focusDay.status === 'open' ? (
                 <Link
                   ref={ctaRef}
                   className="ui-btn ui-btn--primary ui-btn--block learning-path-float__cta"
@@ -205,6 +225,10 @@ export function LearningPathView({
                 >
                   {completeDayIds?.has(focusDay.id) === true ? '복습하기' : '시작하기'}
                 </Link>
+              ) : focusDay.status === 'locked' ? (
+                <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
+                  순차 학습 후 이용할 수 있습니다
+                </button>
               ) : (
                 <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
                   준비 중입니다

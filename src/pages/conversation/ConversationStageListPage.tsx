@@ -10,7 +10,12 @@ import {
   type RemoteContentState,
 } from '../../api/contentApi'
 import { countCompletedConversationDaysForStage } from '../../utils/learnStats'
-import { isConversationDayCompletedPersisted, loadUserProgress } from '../../utils/storage'
+import { isSequentialDayUnlocked } from '../../utils/learningUnlock'
+import {
+  HADES_USER_PROGRESS_EVENT,
+  isConversationDayCompletedPersisted,
+  loadUserProgress,
+} from '../../utils/storage'
 import type { ConversationDay, ConversationStage } from '../../types/conversation'
 import './ConversationStageListPage.css'
 
@@ -27,9 +32,9 @@ function publicAssetUrl(pathFromSiteRoot: string): string {
 const FALLBACK_THUMB = '/content/conversations/assets/placeholder-day1-cutscene.svg'
 
 function DayEntryCard(
-  props: Readonly<{ day: ConversationDay; complete: boolean }>,
+  props: Readonly<{ day: ConversationDay; complete: boolean; locked: boolean }>,
 ) {
-  const { day, complete } = props
+  const { day, complete, locked } = props
   const thumbSrc = day.cutsceneImagePath?.trim()
     ? publicAssetUrl(day.cutsceneImagePath)
     : publicAssetUrl(FALLBACK_THUMB)
@@ -38,7 +43,7 @@ function DayEntryCard(
   return (
     <li>
       <article
-        className="ui-card ui-card--dashboard conv-stage-list__card"
+        className={`ui-card ui-card--dashboard conv-stage-list__card${locked ? ' conv-stage-list__card--locked' : ''}`}
         aria-labelledby={`conv-day-head-${day.dayId}`}
       >
         <div className="conv-stage-list__thumb-wrap">
@@ -58,6 +63,8 @@ function DayEntryCard(
                 <span className="conv-stage-list__done-pill" aria-label="학습 완료">
                   완료
                 </span>
+              ) : locked ? (
+                <span className="conv-stage-list__locked-pill">잠금</span>
               ) : (
                 <span className="conv-stage-list__ready-pill">진행 가능</span>
               )}
@@ -69,9 +76,15 @@ function DayEntryCard(
               <p className="conv-stage-list__card-desc">{day.descriptionKo}</p>
             ) : null}
           </div>
-          <Link className="ui-btn ui-btn--primary ui-btn--block" to={href}>
-            {complete ? '복습하기' : '시작하기'}
-          </Link>
+          {locked ? (
+            <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
+              앞 순서 Day를 완료하면 열립니다
+            </button>
+          ) : (
+            <Link className="ui-btn ui-btn--primary ui-btn--block" to={href}>
+              {complete ? '복습하기' : '시작하기'}
+            </Link>
+          )}
         </div>
       </article>
     </li>
@@ -97,8 +110,11 @@ export default function ConversationStageListPage() {
       if (document.visibilityState === 'visible') refreshPersisted()
     }
     document.addEventListener('visibilitychange', onVis)
+    const onProg = (): void => refreshPersisted()
+    window.addEventListener(HADES_USER_PROGRESS_EVENT, onProg)
     return () => {
       document.removeEventListener('visibilitychange', onVis)
+      window.removeEventListener(HADES_USER_PROGRESS_EVENT, onProg)
     }
   }, [refreshPersisted])
 
@@ -141,6 +157,13 @@ export default function ConversationStageListPage() {
     )
   } else {
     const days = [...state.data.days].sort((a, b) => a.dayId - b.dayId)
+    const sortedIds = days.map((d) => d.dayId)
+    const completedPersisted = new Set<number>()
+    for (const r of persistedProgress.completedConversationDays) {
+      if (r.stageId === MVP_CONV_STAGE_ID) {
+        completedPersisted.add(r.dayId)
+      }
+    }
     body =
       days.length === 0 ? (
         <p className="conv-stage-list__muted">표시할 Day가 없습니다.</p>
@@ -152,8 +175,13 @@ export default function ConversationStageListPage() {
               MVP_CONV_STAGE_ID,
               d.dayId,
             )
-            const complete = isDayComplete(d.dayId) || persistedDone
-            return <DayEntryCard key={d.dayId} day={d} complete={complete} />
+            const sessionDone = isDayComplete(d.dayId)
+            const complete = sessionDone || persistedDone
+            const seqOpen = isSequentialDayUnlocked(sortedIds, completedPersisted, d.dayId)
+            const locked = !complete && !seqOpen
+            return (
+              <DayEntryCard key={d.dayId} day={d} complete={complete} locked={locked} />
+            )
           })}
         </ul>
       )

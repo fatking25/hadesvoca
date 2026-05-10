@@ -1,0 +1,73 @@
+하데스 보카 — 단어 Stage 콘텐츠 JSON 명세 (public/content/words/stage-{n}.json)
+==================================================================================
+
+□ 역할
+  - 앱에 번들링·fetch되는 정적 교재 데이터이다.
+  - 사용자별 완료·북마크 상태는 저장하지 않는다(Status는 localStorage UserProgress 참조).
+
+
+□ 루트 (StageWordsFile)
+
+  필드명              | 타입   | 설명
+  -------------------|--------|--------------------------------------------------
+  schemaVersion      | string | 콘텐츠 버전 문자열 예: "1"
+  stageId            | number | 스테이지 번호 (UserProgress.completedWordDays.stageId와 매칭)
+  stageTitleKo       | string | 스테이지 제목(선택 속성 타입에는 optional)
+  stageDescriptionKo | string | 설명(선택)
+  days               | 배열   | Day 단위 학습 블록
+
+
+□ Day 블록 (StageWordsDaySection)
+
+  필드명         | 타입   | 설명
+  -------------|--------|--------------------------------------------------
+  dayId        | number | 일차 (completedWordRefs·savedWords의 dayId와 매칭)
+  titleKo      | string |
+  descriptionKo | string | 선택
+  words        | 배열   | 해당 Day의 단어 항목들
+
+
+□ 단어 항목 (WordContentEntry)
+
+  필드명           | 타입   | 설명
+  ----------------|--------|--------------------------------------------------
+  id              | string | lemmaId 역할로 UserProgress.savedWords.lemmaId에 저장될 수 있음
+  word            | string | 영단어 표기
+  meaning         | string | 뜻
+  exampleSentence | string |
+  exampleMeaning  | string |
+  explanation     | string |
+  questions       | 배열   | 퀴즈 문항(아래 참고)
+
+
+□ 문항 (WordContentQuestion 공통)
+  id, type, options[{id,text}], correctOptionId
+
+  type 값:
+  • word-to-meaning   — promptEn
+  • meaning-to-word    — promptKo
+  • fill-blank         — templateEn, blankSentence 선택
+
+
+□ 사용자 진행 참조 매핑 예
+  • completedWordDays: stageId + dayId 조합만 저장
+  • savedWords       : lemmaId ← words[].id, stageId, dayId(선택)
+
+
+□ 짧은 예시 구조
+
+{
+  "schemaVersion": "1",
+  "stageId": 1,
+  "stageTitleKo": "...",
+  "days": [{
+    "dayId": 1,
+    "titleKo": "...",
+    "words": [{
+      "id": "s1-d1-w01",
+      "word": "schedule",
+      "meaning": "...",
+      "questions": [{ "type": "word-to-meaning", "id": "...", "promptEn": "", "options": [], "correctOptionId": "" }]
+    }]
+  }]
+}

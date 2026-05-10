@@ -15,7 +15,9 @@ import type {
   ConversationQuiz,
   ConversationStage,
 } from '../../types/conversation'
+import { isSequentialDayUnlocked } from '../../utils/learningUnlock'
 import {
+  isConversationDayCompletedPersisted,
   loadUserProgress,
   persistRemoveSavedExpression,
   persistUpsertSavedExpression,
@@ -132,6 +134,27 @@ export default function ConversationDayDetailPage() {
     if (packState.status !== 'success' || dayIdNum === null) return null
     return packState.data.days.find((d) => d.dayId === dayIdNum) ?? null
   }, [packState, dayIdNum])
+
+  useEffect(() => {
+    if (packState.status !== 'success' || dayIdNum === null || day === null) return
+    const sortedIds = [...packState.data.days]
+      .map((d) => d.dayId)
+      .filter((id) => Number.isFinite(id))
+      .sort((a, b) => a - b)
+    const p = loadUserProgress()
+    const completed = new Set<number>()
+    for (const r of p.completedConversationDays) {
+      if (r.stageId === MVP_CONV_STAGE_ID) {
+        completed.add(r.dayId)
+      }
+    }
+    const alreadyDone = isConversationDayCompletedPersisted(p, MVP_CONV_STAGE_ID, dayIdNum)
+    const allowed =
+      alreadyDone || isSequentialDayUnlocked(sortedIds, completed, dayIdNum)
+    if (!allowed) {
+      navigate('/conversation', { replace: true })
+    }
+  }, [packState, dayIdNum, day, navigate])
 
   const nextDayForResult = useMemo((): number | null => {
     if (packState.status !== 'success' || day === null) return null

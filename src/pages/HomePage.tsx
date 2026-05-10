@@ -3,20 +3,10 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  computeStreakDaysMvp,
-  countCompletedConversationDaysForStage,
-  countCompletedWordDaysForStage,
-  getAnswerRateFromStoredProgress,
-  getCumulativeStudyCounts,
-  getRecentStudySummary,
-  getTodayStudySessionCount,
-} from '../utils/learnStats'
-import { loadUserProgress } from '../utils/storage'
+import { getTodayStudySessionCount } from '../utils/learnStats'
+import { deriveUserGradeLabel } from '../utils/userGrade'
+import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../utils/storage'
 import './HomePage.css'
-
-const MVP_WORD_STAGE_ID = 1
-const MVP_CONV_STAGE_ID = 1
 
 export default function HomePage() {
   const [reloadNonce, setReloadNonce] = useState(0)
@@ -35,46 +25,26 @@ export default function HomePage() {
       if (document.visibilityState === 'visible') refresh()
     }
     document.addEventListener('visibilitychange', onVis)
+    const onProg = (): void => refresh()
+    window.addEventListener(HADES_USER_PROGRESS_EVENT, onProg)
     return () => {
       document.removeEventListener('visibilitychange', onVis)
+      window.removeEventListener(HADES_USER_PROGRESS_EVENT, onProg)
     }
   }, [refresh])
 
-  const todayStudyCount = useMemo(
+  const streakDaysStored = useMemo(
+    () => Math.max(0, Math.floor(progress.streakDays)),
+    [progress],
+  )
+  const todaySessionCount = useMemo(
     () => getTodayStudySessionCount(progress),
     [progress],
   )
-  const cumulative = useMemo(() => getCumulativeStudyCounts(progress), [progress])
-  const answerMeta = useMemo(() => getAnswerRateFromStoredProgress(progress), [progress])
-  const recentSummary = useMemo(() => getRecentStudySummary(progress), [progress])
-  const streakMvp = useMemo(() => computeStreakDaysMvp(progress), [progress])
-
-  const wordDoneCount = useMemo(
-    () => countCompletedWordDaysForStage(progress, MVP_WORD_STAGE_ID),
-    [progress],
-  )
-  const convDoneCount = useMemo(
-    () => countCompletedConversationDaysForStage(progress, MVP_CONV_STAGE_ID),
-    [progress],
-  )
-
-  const answerRateLine =
-    answerMeta.rate === null
-      ? '정답률 · 기록 없음'
-      : `정답률 ${Math.round(answerMeta.rate * 100)}%`
-
-  const recentWordLine =
-    recentSummary.latestWordDay !== null
-      ? `최근 학습: 단어 Day ${recentSummary.latestWordDay.dayId}`
-      : null
-  const recentConvLine =
-    recentSummary.latestConversationDay !== null
-      ? `최근 학습: 회화 Day ${recentSummary.latestConversationDay.dayId}`
-      : null
-  const hasRecentStudyLines = recentWordLine !== null || recentConvLine !== null
-
-  const streakLine =
-    streakMvp >= 1 ? `연속 학습 ${streakMvp}일` : '오늘 첫 학습을 시작해보세요'
+  const dailyGoal = Math.max(1, Math.floor(progress.dailyWordGoal) || 1)
+  const rankLv = Math.max(1, Math.min(99, Math.floor(progress.rankTier)))
+  const userGrade = deriveUserGradeLabel(rankLv)
+  const totalMemo = Math.max(0, Math.floor(progress.totalMemorizedWords))
 
   const recent = progress.recentStudy
   const recentLine =
@@ -102,53 +72,50 @@ export default function HomePage() {
         <p className="home-dashboard-top__eyebrow">오늘의 학습 허브</p>
         <div className="home-dashboard-top__hero">
           <h1 className="home-dashboard-top__brand">하데스 보카</h1>
-          <p className="home-dashboard-top__welcome">환영합니다, 학습자님 · mock</p>
+          <p className="home-dashboard-top__welcome">
+            환영합니다,{' '}
+            {progress.nickname.trim() !== '' ? `${progress.nickname.trim()}님` : '학습자님'}
+          </p>
         </div>
         <p className="home-dashboard-top__tagline">
           하데스와 함께 오늘의 영어 미션을 완료하세요.
         </p>
       </header>
 
-      <section className="home-duo-banner" aria-label="오늘 학습 세션 placeholder">
+      <section className="home-duo-banner" aria-label="오늘 학습 세션 요약">
         <div className="home-duo-banner__viz" aria-hidden>
           <span className="home-duo-banner__mascot">◉</span>
           <span className="home-duo-banner__ring" />
         </div>
         <div className="home-duo-banner__body">
           <p className="home-duo-banner__eyebrow">오늘의 세션</p>
-          <p className="home-duo-banner__line">단어 Day + 회화 Day 각 1회 이상 추천 · mock 목표</p>
+          <ul
+            className="home-duo-banner__stats"
+            title="오늘 수치는 같은 날 완료한 학습 세션 수(dailyStudyCount)입니다."
+          >
+            <li className="home-duo-banner__stat">
+              <span className="home-duo-banner__stat-label">연속 학습</span>
+              <span className="home-duo-banner__stat-value">{streakDaysStored}일</span>
+            </li>
+            <li className="home-duo-banner__stat">
+              <span className="home-duo-banner__stat-label">오늘 단어</span>
+              <span className="home-duo-banner__stat-value">
+                {todaySessionCount}/{dailyGoal}
+              </span>
+            </li>
+            <li className="home-duo-banner__stat">
+              <span className="home-duo-banner__stat-label">누적 암기</span>
+              <span className="home-duo-banner__stat-value">{totalMemo}개</span>
+            </li>
+          </ul>
+          <p className="home-duo-banner__grade">
+            LV {rankLv} · {userGrade}
+          </p>
+          <p className="home-duo-banner__line">단어와 회화를 조금씩 나눠서 해도 좋아요.</p>
         </div>
         <Link to="/word-study" className="ui-btn ui-btn--secondary home-duo-banner__cta">
           경로 보기
         </Link>
-      </section>
-
-      <section
-        className="home-stats ui-card ui-card--dashboard home-dashboard-card home-dashboard-card--hub"
-        aria-labelledby="home-today-stats"
-      >
-        <div className="home-dashboard-card-head">
-          <h2 id="home-today-stats" className="ui-card__section-heading home-dashboard-card-head__title">
-            오늘의 학습
-          </h2>
-          <span className="ui-card__badge ui-card__badge--muted">기기 저장</span>
-        </div>
-        <ul className="home-stats__list home-hub-stats__list">
-          <li>오늘 {todayStudyCount}회 학습</li>
-          <li>누적 {cumulative.total}회 학습</li>
-          <li>{answerRateLine}</li>
-          <li>{streakLine}</li>
-          {hasRecentStudyLines ? (
-            <>
-              {recentWordLine !== null ? <li>{recentWordLine}</li> : null}
-              {recentConvLine !== null ? <li>{recentConvLine}</li> : null}
-            </>
-          ) : (
-            <li>학습 기록 없음</li>
-          )}
-          <li>단어 학습 완료: {wordDoneCount}일</li>
-          <li>실전회화 완료: {convDoneCount}일</li>
-        </ul>
       </section>
 
       <section

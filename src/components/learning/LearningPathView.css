@@ -131,8 +131,9 @@
 }
 
 .learning-path__step {
-  display: flex;
+  display: grid;
   width: 100%;
+  justify-items: center;
 }
 
 .learning-path__step-shell {
@@ -141,16 +142,16 @@
   align-items: center;
   gap: var(--space-1);
   max-width: 11rem;
+  justify-self: center;
 }
 
+/* 중앙 축 기준 ± 오프셋 지그재그 (듀오 경로형) */
 .learning-path__step--left .learning-path__step-shell {
-  align-self: flex-start;
-  margin-left: clamp(4%, var(--space-5), 15%);
+  transform: translateX(calc(-1 * clamp(24px, 7vw, 48px)));
 }
 
 .learning-path__step--right .learning-path__step-shell {
-  align-self: flex-end;
-  margin-right: clamp(4%, var(--space-5), 15%);
+  transform: translateX(clamp(24px, 7vw, 48px));
 }
 
 .learning-path__node {
@@ -244,6 +245,12 @@
   background: var(--color-bg-elevated);
 }
 
+.learning-path__status-pill--progress-lock {
+  color: var(--color-text-secondary);
+  background: rgb(148 163 184 / 0.16);
+  border-color: rgb(148 163 184 / 0.35);
+}
+
 .learning-path__node-star {
   translate: 0 -1px;
 }
@@ -310,6 +317,14 @@
   font-size: var(--font-size-xs);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-muted);
+}
+
+.learning-path-float__hint {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
 }
 
 .learning-path-float__actions {

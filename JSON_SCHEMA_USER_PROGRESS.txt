@@ -1,0 +1,97 @@
+하데스 보카 — 사용자 진행 데이터(UserProgress) JSON 명세
+============================================================
+
+□ 저장 위치
+  - 브라우저 localStorage 단일 키: hadesvoca:userProgress
+  - 값: 아래 객체를 JSON.stringify 한 문자열
+  - JSON 파일로 내보낼 때도 동일한 루트 구조만 포함(단어·회화 본문 콘텐츠 없음)
+
+
+□ 버전(version)
+  - 필드명: version
+  - 타입: number (고정값 3)
+  - 설명: 스키마 식별. version 1·2 레거시는 읽을 때 version 3으로 병합·보정된다.
+  - 현재 변경: 같은 version 3에 하위 호환 필드만 추가(userExp 등)하였으므로 버전 번호 유지.
+
+
+□ 루트 필드 목록
+
+  필드명                | 타입        | 설명 | 기본(없거나 잘못된 값)
+  ---------------------|-------------|------|------------------------
+  version              | number      | 스키마 3 | 새 데이터는 3
+  nickname             | string      | 상단 배지 이름, 최대 32자("") | ''
+  streakDays           | number      | 로컬 달력 기준 연속 학습일 | 0
+  lastStudyDateKey     | string      | 연속 계산 마지막 날짜 YYYY-MM-DD | ''
+  coins                | number      | 코인 보유 | 0
+  rankTier             | number      | 등급 티어(1~99), UI에서 LV 표시에 사용 | 1
+  userExp              | number      | 누적 EXP(후속 Phase에서 지급 로직 예정) | 0
+  dailyWordGoal        | number      | 일일 학습 목표 분모 · dailyStudyCount.count와 표시 pairing | 30
+  totalMemorizedWords  | number      | 누적 암기 단어 수(표시용, 게임 규칙은 후속) | 0
+  completedWordDays    | 배열       | 단어 Stage/Day 완료 참조 | []
+  completedConversationDays | 배열  | 회화 완료 참조 | []
+  savedWords           | 배열       | 단어장 단어 참조 | []
+  savedExpressions     | 배열       | 단어장 표현 참조 | []
+  wrongNotes           | 배열       | 오답노트 | []
+  recentStudy          | 객체|null  | 마지막 학습 위치 요약 | null
+  dailyStudyCount      | 객체       | 오늘(로컬일) 학습 세션 횟수 | dateKey 오늘, count 0
+  updatedAt            | string ISO8601 | 마지막 갱신 시각 | 새로 생성 시 now
+
+
+□ 중첩 구조
+
+  • CompletedWordDayRef (completedWordDays[])
+    stageId:number, dayId:number, completedAt:string(ISO8601)
+
+  • CompletedConversationDayRef (completedConversationDays[])
+    동일 형태
+
+  • SavedWordRef (savedWords[])
+    lemmaId:string (콘텐츠 WordContentEntry.id 와 매칭)
+    stageId:number, savedAt:string
+    dayId:number (선택)
+
+  • SavedExpressionRef (savedExpressions[])
+    expressionId:string, stageId:number, dayId:number, savedAt:string
+
+  • WrongNoteRef (wrongNotes[]) — 타입 파일 WrongNoteRef 참고
+    id, type(word|expression), stageId, dayId, wrongCount,
+    lastWrongAt, resolved, createdAt, updatedAt
+
+  • RecentStudySnapshot (recentStudy)
+    type: 'word' | 'conversation', stageId, dayId, savedAt
+
+  • DailyStudyCount (dailyStudyCount)
+    dateKey:string(YYYY-MM-DD), count:number
+
+
+□ 원칙
+  - 사용자 저장 데이터에는 단어 전체문·예문 등 콘텐츠 본문을 넣지 않는다.
+  - stageId, dayId, lemmaId(= 단어 항목 id), expressionId 등 참조만 둔다.
+
+
+□ 레거시
+  - version 1 오답 항목은 읽기 시 현재 WrongNote 형으로 마이그레이션된다.
+  - version 3 이전 블랍에 없는 userExp 등은 기본값으로 채워진다.
+
+
+□ 짧은 예시
+
+{
+  "version": 3,
+  "nickname": "테스트",
+  "streakDays": 2,
+  "lastStudyDateKey": "2026-05-10",
+  "coins": 40,
+  "rankTier": 5,
+  "userExp": 120,
+  "dailyWordGoal": 30,
+  "totalMemorizedWords": 12,
+  "completedWordDays": [{ "stageId": 1, "dayId": 1, "completedAt": "2026-05-09T..." }],
+  "completedConversationDays": [],
+  "savedWords": [{ "lemmaId": "s1-d1-w01", "stageId": 1, "dayId": 1, "savedAt": "..." }],
+  "savedExpressions": [],
+  "wrongNotes": [],
+  "recentStudy": { "type": "word", "stageId": 1, "dayId": 1, "savedAt": "..." },
+  "dailyStudyCount": { "dateKey": "2026-05-10", "count": 1 },
+  "updatedAt": "2026-05-10T12:00:00.000Z"
+}

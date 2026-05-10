@@ -4,6 +4,7 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { MobileStatsBar } from '../components/layout/MobileStatsBar'
 import { BottomTabBar } from '../components/navigation/BottomTabBar'
+import { downloadUserProgressBackup } from '../utils/storage'
 import './MobileLayout.css'
 
 function resolveMainTabStates(pathname: string): {
@@ -33,13 +34,25 @@ export default function MobileLayout() {
             LOGO
           </div>
           <div className="mobile-header__title">하데스 보카</div>
-          <NavLink
-            to="/info"
-            className={() => settingsClassName(tabs.info)}
-            end
-          >
-            설정
-          </NavLink>
+          <div className="mobile-header__actions">
+            <button
+              type="button"
+              className="mobile-header__quick-save"
+              aria-label="진행도 JSON 저장"
+              onClick={() => {
+                downloadUserProgressBackup()
+              }}
+            >
+              저장
+            </button>
+            <NavLink
+              to="/info"
+              className={() => settingsClassName(tabs.info)}
+              end
+            >
+              설정
+            </NavLink>
+          </div>
         </div>
       </header>
 

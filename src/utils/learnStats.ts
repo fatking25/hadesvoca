@@ -8,7 +8,7 @@ import type {
   CompletedWordDayRef,
   UserProgress,
 } from '../types/user-progress'
-import { formatLocalDateKey } from '../types/user-progress'
+import { DEFAULT_DAILY_WORD_GOAL, formatLocalDateKey } from '../types/user-progress'
 
 /** 오답 노트에 쌓인 “틀린 횟수” 합(정답 수와는 별개·참고용) */
 export function sumWrongNoteAttempts(progress: UserProgress): number {
@@ -213,4 +213,42 @@ export function computeStageProgressRatio(
   if (totalDaysInStage <= 0) return 0
   const c = Math.max(0, completedCount)
   return Math.min(1, c / totalDaysInStage)
+}
+
+/** MVP 표시 목표값 — `UserProgress.dailyWordGoal` 기본과 동일하게 둠 */
+export const MVP_DAILY_WORD_LEARN_GOAL = DEFAULT_DAILY_WORD_GOAL
+
+/**
+ * 동일 로컬일자에 단어 학습 Day를 완료 처리한 건수.
+ */
+export function countCompletedWordDaysToday(
+  progress: UserProgress,
+  now: Date = new Date(),
+): number {
+  const today = formatLocalDateKey(now)
+  let n = 0
+  for (const d of progress.completedWordDays) {
+    if (formatLocalDateKey(new Date(d.completedAt)) === today) n += 1
+  }
+  return n
+}
+
+/**
+ * 완료 Day당 대략 이수 어휘 수(mock 콘텐츠 3단어×유형 패턴 전제 표시 추정값).
+ */
+const MVP_WORDS_PER_COMPLETED_WORD_DAY = 3
+
+/**
+ * 저장 구조 변경 없이, 오늘 완료된 단어 Day 수로 학습량을 추정(표시 MVP).
+ */
+export function estimateTodayStudiedWordCountMvp(
+  progress: UserProgress,
+  now: Date = new Date(),
+): number {
+  return countCompletedWordDaysToday(progress, now) * MVP_WORDS_PER_COMPLETED_WORD_DAY
+}
+
+/** 단어장에 저장된 총 lemma 수 */
+export function countSavedWordsTotal(progress: UserProgress): number {
+  return progress.savedWords.length
 }

@@ -18,7 +18,9 @@ import type {
   WordStudyQuizResultNavigateState,
   WordStudyWrongItemSummary,
 } from '../types/wordStudySession'
+import { isSequentialDayUnlocked } from '../utils/learningUnlock'
 import {
+  isWordDayCompleted,
   loadUserProgress,
   persistRemoveSavedWord,
   persistUpsertSavedWord,
@@ -193,6 +195,23 @@ export default function WordStudyDayDetailPage() {
     return found ?? null
   }, [packState, dayNum])
 
+  useEffect(() => {
+    if (packState.status !== 'success' || dayNum === null || daySection === null) return
+    const sortedIds = [...packState.data.days]
+      .map((d) => d.dayId)
+      .filter((id) => Number.isFinite(id))
+      .sort((a, b) => a - b)
+    const p = loadUserProgress()
+    const completed = new Set<number>()
+    for (const d of p.completedWordDays) {
+      if (d.stageId === MVP_STAGE_ID) completed.add(d.dayId)
+    }
+    const replay = isWordDayCompleted(p, MVP_STAGE_ID, dayNum)
+    if (!replay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
+      navigate('/word-study', { replace: true })
+    }
+  }, [packState, dayNum, daySection, navigate])
+
   const quizItems = useMemo(() => (daySection ? buildQuizItems(daySection) : []), [daySection])
 
   const bookmarkLemmaId = useMemo((): string | null => {
@@ -354,11 +373,43 @@ export default function WordStudyDayDetailPage() {
         <p className="word-study__muted">{daySection.descriptionKo}</p>
       ) : null}
 
-      <section className="ui-card ui-card--dashboard" aria-labelledby="word-study-card-label">
-        <h2 id="word-study-card-label" className="ui-card__section-heading">
-          문제{' '}
-          <span className="word-study__type-chip">{questionTypeLabel(q)}</span>
-        </h2>
+      <section
+        className="ui-card ui-card--dashboard word-study__q-shell"
+        aria-labelledby="word-study-card-label"
+      >
+        <div className="word-study__q-head">
+          <h2 id="word-study-card-label" className="ui-card__section-heading word-study__q-title">
+            문제{' '}
+            <span className="word-study__type-chip">{questionTypeLabel(q)}</span>
+          </h2>
+          <button
+            type="button"
+            className={`word-study__bookmark${wordInVocab ? ' word-study__bookmark--on' : ''}`}
+            aria-pressed={wordInVocab}
+            aria-label={
+              bookmarkLemmaId === null
+                ? '단어 식별 없음'
+                : wordInVocab
+                  ? '단어장에서 삭제'
+                  : '단어장에 저장'
+            }
+            disabled={bookmarkLemmaId === null}
+            onClick={() => {
+              if (bookmarkLemmaId === null || dayNum === null) return
+              if (wordInVocab) {
+                persistRemoveSavedWord(bookmarkLemmaId)
+                setWordInVocab(false)
+              } else {
+                persistUpsertSavedWord(bookmarkLemmaId, MVP_STAGE_ID, dayNum)
+                setWordInVocab(true)
+              }
+            }}
+          >
+            <span aria-hidden className="word-study__bookmark-icon">
+              {wordInVocab ? '★' : '☆'}
+            </span>
+          </button>
+        </div>
         <div className="ui-card__body word-study__stem">{renderQuestionStem(word, q, revealed, correctAnswerText)}</div>
       </section>
 
@@ -412,25 +463,6 @@ export default function WordStudyDayDetailPage() {
           )}
         </div>
       ) : null}
-
-      <button
-        type="button"
-        className={`ui-btn ui-btn--secondary ui-btn--block word-study__vocab-btn${
-          wordInVocab ? ' word-study__vocab-btn--on' : ''
-        }`}
-        onClick={() => {
-          if (bookmarkLemmaId === null || dayNum === null) return
-          if (wordInVocab) {
-            persistRemoveSavedWord(bookmarkLemmaId)
-            setWordInVocab(false)
-          } else {
-            persistUpsertSavedWord(bookmarkLemmaId, MVP_STAGE_ID, dayNum)
-            setWordInVocab(true)
-          }
-        }}
-      >
-        {wordInVocab ? '단어장에서 삭제' : '단어장에 저장'}
-      </button>
 
       <button
         type="button"

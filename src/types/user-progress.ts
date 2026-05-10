@@ -4,11 +4,21 @@
  */
 
 /** `UserProgress.version` — 스키마 바꿀 때마다 올리고 `storage`에서 분기한다. */
-export const USER_PROGRESS_SCHEMA_VERSION = 2 as const
+export const USER_PROGRESS_SCHEMA_VERSION = 3 as const
 export type UserProgressVersion = typeof USER_PROGRESS_SCHEMA_VERSION
+
+/** 사용자 EXP(후속 Phase에서 지급 로직 연결 전까지 저장만) */
+export const DEFAULT_USER_EXP = 0 as const
+/** 일일 학습 목표(오늘 카운터 분모 · UI 표시) */
+export const DEFAULT_DAILY_WORD_GOAL = 30 as const
+/** 누적 암기 단어 수(게임 로직 연결 전까지 저장·표시용) */
+export const DEFAULT_TOTAL_MEMORIZED_WORDS = 0 as const
 
 /** v1 진행 저장과의 호환: 구 오답 `kind`(conversation)만 달랐던 값 */
 export const USER_PROGRESS_SCHEMA_VERSION_LEGACY = 1 as const
+
+/** v2 — streak·코인·등급 필드 없음 */
+export const USER_PROGRESS_SCHEMA_VERSION_2 = 2 as const
 
 /** 오답노트 한 건의 유형 — 단어 퀴즈 / 표현(회화) 퀴즈 */
 export type WrongNoteType = 'word' | 'expression'
@@ -92,12 +102,27 @@ export interface DailyStudyCount {
 }
 
 /**
- * localStorage에 직렬화해 두는 루트 객체.
- * 필드가 늘어나면 `version`을 올리고 `utils/storage`에서 병합·마이그레이션한다.
+ * localStorage 키 `hadesvoca:userProgress` 에 JSON으로 넣는 루트 스냅샷.
+ * 자동 저장(퀴즈·회화 완료, 단어장 등)과 수동 저장·임포트 모두 같은 형식이다.
+ * 필드 추가 시 `utils/storage.ts` 파서·sanitize에서 기본값으로 병합한다. 호환 깨지는 변경만 version 상향.
  */
 export interface UserProgress {
   readonly version: UserProgressVersion
   readonly nickname: string
+  /** 로컬 달력 기준 연속 학습일(첫 활동일 1부터, 날짜가 끊기면 1로 리셋) */
+  readonly streakDays: number
+  /** `streakDays`를 마지막으로 갱신한 로컬일 `YYYY-MM-DD` */
+  readonly lastStudyDateKey: string
+  /** 소프트 재화(MVP) */
+  readonly coins: number
+  /** 사용자 등급 티어(1~99, 완료 Day 수에서 파생·저장) — UI의 LV로 표시 */
+  readonly rankTier: number
+  /** 누적 경험치(EXP). 지급 규칙은 후속 작업. */
+  readonly userExp: number
+  /** 하루 학습 세션 목표(기본 30). `dailyStudyCount.count`와 짝을 이룸 */
+  readonly dailyWordGoal: number
+  /** 암기 처리한 단어 누적 수(본문 미저장 · 후속 로직에서 갱신) */
+  readonly totalMemorizedWords: number
   readonly completedWordDays: readonly CompletedWordDayRef[]
   readonly completedConversationDays: readonly CompletedConversationDayRef[]
   readonly savedWords: readonly SavedWordRef[]
@@ -124,6 +149,13 @@ export function createDefaultUserProgress(now: Date = new Date()): UserProgress 
   return {
     version: USER_PROGRESS_SCHEMA_VERSION,
     nickname: '',
+    streakDays: 0,
+    lastStudyDateKey: '',
+    coins: 0,
+    rankTier: 1,
+    userExp: DEFAULT_USER_EXP,
+    dailyWordGoal: DEFAULT_DAILY_WORD_GOAL,
+    totalMemorizedWords: DEFAULT_TOTAL_MEMORIZED_WORDS,
     completedWordDays: [],
     completedConversationDays: [],
     savedWords: [],

@@ -1,0 +1,41 @@
+하데스 보카 — 프로젝트 데이터 역할 분리 개요 (디버깅용)
+========================================================
+
+□ 역할 한눈에 보기
+
+  경로/저장소                        | 역할
+  ----------------------------------|-----------------------------------------------
+  public/content/                   | 앱 교재(JSON): 단어(words)·회화(conversations)·메타(stage-metadata 등)
+  localStorage:hadesvoca:userProgress | 기기별 자동 저장되는 UserProgress 단일 블록
+  사용자 다운로드 *.json 백업         | 진행 데이터 전체 스냅샷(import 시 덮어쓰기)
+  dist/                             | Vite 빌드 산출물(통상 Git 무시 대상 — 프로젝트 설정 따름)
+  node_modules/                     | 의존성(통상 Git 무시)
+
+
+□ 데이터 흐름
+
+  1) 앱 시작
+     → localStorage에서 UserProgress 로드(파실 시 기본값)
+  2) 필요 시 public/content 에서 단어 Stage·회화 Stage 등 JSON fetch
+  3) 학습·퀴즈·저장 버튼 동작 시 UserProgress 필드만 갱신 후 localStorage 저장
+  4) 사용자가 설정·헤더 [저장] 등으로 진행 파일을 받으면 UserProgress 구조(JSON) 파일만 포함
+
+
+□ 본문 vs 참조 원칙
+  • 콘텐츠 JSON: 교재 원문 보관만
+  • UserProgress: 사용자 상태·메타만(참조 id)
+  • 둘이 섞이지 않음
+
+
+□ 명세 세부 파일
+  • JSON_SCHEMA_USER_PROGRESS.txt
+  • JSON_SCHEMA_CONTENT_WORD_STAGE.txt
+  • JSON_SCHEMA_CONTENT_CONVERSATION_STAGE.txt
+
+
+□ 코드 위치 참고 (요약)
+
+  사용자 타입 및 기본 진행값: src/types/user-progress.ts
+  파싱·저장·export/import·정규화: src/utils/storage.ts
+  단어 콘텐츠 타입: src/types/content.ts
+  회화 콘텐츠 타입: src/types/conversation.ts

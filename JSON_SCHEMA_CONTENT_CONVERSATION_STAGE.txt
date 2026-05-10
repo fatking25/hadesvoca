@@ -1,0 +1,72 @@
+하데스 보카 — 실전 회화 Stage 콘텐츠 JSON 명세 (public/content/conversations/stage-{n}.json)
+===========================================================================================
+
+□ 역할
+  - 회화 학습 장면·대사·퀴즈가 들 있는 정적 데이터.
+  - 완료 여부·표현 저장은 UserProgress.completedConversationDays / savedExpressions에만 참조로 기록된다.
+
+
+□ 루트 (ConversationStage)
+
+  필드명              | 타입   | 설명
+  -------------------|--------|------------------------------------------
+  schemaVersion      | string | 예 "1"
+  stageId            | number | 회화 스테이지 ID
+  stageTitleKo       | string | 선택
+  stageDescriptionKo | string | 선택
+  days               | 배열   | ConversationDay[]
+
+
+□ Day (ConversationDay)
+
+  필드명             | 타입   | 설명
+  ------------------|--------|----------------------------------------
+  dayId             | number | 회화 일차(UserProgress 참조키)
+  titleKo           | string |
+  descriptionKo     | string | 선택
+  sceneDescriptionKo| string | 장면 요약(선택)
+  cutsceneImagePath | string | 이미지 경로(선택)
+  narrations        | 배열   | narration 블록
+  dialogue          | 배열   | 대사 한 줄 단위 (**필드명 복수가 아님**, JSON 키는 dialogue)
+  keyExpressions    | 배열   | 핵심 표현
+  quiz              | 배열   | 객관식 퀴즈 (**필드명 quiz**, 복수 아님)
+
+
+□ Narration (ConversationNarration)
+  id, textKo, textEn(선택)
+
+
+□ Dialogue line (ConversationDialogueLine)
+  id, speakerId(선택), speakerLabelKo(선택), textKo, textEn
+
+
+□ Key expression (ConversationKeyExpression)
+  id — UserProgress.savedExpressions.expressionId와 매칭 가능
+  expressionEn, expressionKo, tipKo(선택)
+
+
+□ Quiz (ConversationQuiz)
+  type: "multiple-choice"
+  id, promptKo, promptEn(선택), explanationKo(선택), explanationEn(선택)
+  options[{id,text}], correctOptionId
+
+
+□ 참조 ID
+  • stageId, dayId     : 완료 Day·오답노트에서 사용
+  • expressionId       : keyExpressions[].id
+  • 퀴즈 id              : quiz[].id (오답 기록 시 expression 퀴즈로 연결)
+
+
+□ 짧은 예시
+
+{
+  "schemaVersion": "1",
+  "stageId": 1,
+  "days": [{
+    "dayId": 1,
+    "narrations": [{ "id": "s1-d1-n1", "textKo": "..." }],
+    "dialogue": [{ "id": "s1-d1-d1", "textEn": "...", "textKo": "..." }],
+    "keyExpressions": [{ "id": "s1-d1-k1", "expressionEn": "...", "expressionKo": "..." }],
+    "quiz": [{ "type": "multiple-choice", "id": "s1-d1-q1", "promptKo": "...", "options": [], "correctOptionId": "a" }]
+  }]
+}
