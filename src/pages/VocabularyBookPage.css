@@ -1,0 +1,26 @@
+.vocab-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-stack-gap);
+}
+
+.vocab-page__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  color: var(--text-h);
+}
+
+.vocab-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.vocab-empty {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+  text-align: center;
+}

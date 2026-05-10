@@ -1,0 +1,350 @@
+.mobile-shell {
+  position: relative;
+  z-index: var(--z-base);
+  display: flex;
+  width: 100%;
+  max-width: var(--app-max-width);
+  flex: 1;
+  min-height: 0;
+  margin: 0 auto;
+  flex-direction: column;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: clip;
+  isolation: isolate;
+}
+
+.mobile-header {
+  position: relative;
+  z-index: var(--z-header);
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: calc(var(--space-2) + var(--safe-top))
+    calc(var(--space-3) + var(--safe-right)) var(--space-2)
+    calc(var(--space-3) + var(--safe-left));
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-header__brand-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.mobile-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.mobile-stats-bar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.mobile-stats-bar__item--life {
+  border-color: rgb(244 114 182 / 0.45);
+  background: rgb(252 231 243 / 0.7);
+}
+
+.mobile-stats-bar__icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+}
+
+.mobile-stats-bar__icon--lvl {
+  transform: translateY(-1px);
+}
+
+.mobile-stats-bar__chip {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  color: var(--color-accent-primary);
+  background: var(--color-accent-primary-soft);
+}
+
+.mobile-stats-bar__num {
+  color: var(--text-h);
+}
+
+.mobile-stats-bar__gem {
+  width: 13px;
+  height: 13px;
+  border-radius: var(--radius-xs);
+  transform: rotate(-8deg);
+  background: linear-gradient(
+    160deg,
+    var(--color-path-unit-blue-top),
+    var(--color-path-unit-blue-bottom)
+  );
+}
+
+.mobile-stats-bar__heart {
+  width: 12px;
+  height: 11px;
+  border-radius: var(--radius-xs);
+  transform: rotate(-25deg);
+  background: #f472b6;
+}
+
+.mobile-header__logo {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-xs);
+  border: 1px dashed var(--border);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-h);
+  letter-spacing: var(--letter-spacing-brand);
+}
+
+.mobile-header__title {
+  flex: 1;
+  margin: 0;
+  line-height: var(--line-height-tight);
+  overflow: hidden;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-h);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-header__settings {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-md);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    var(--transition-color),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.mobile-header__settings:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.mobile-header__settings--active {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.mobile-content {
+  flex: 1;
+  min-height: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-padding-block: var(--space-5);
+  padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-4)
+    max(var(--space-4), var(--safe-left));
+}
+
+.mobile-tabbar {
+  position: relative;
+  z-index: var(--z-tabbar);
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  gap: var(--space-1);
+  box-sizing: border-box;
+  isolation: isolate;
+  touch-action: manipulation;
+  padding:
+    var(--space-2)
+    max(var(--space-2), var(--safe-right))
+    max(var(--space-2), var(--safe-bottom))
+    max(var(--space-2), var(--safe-left));
+  border-top: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-elevated) 0%,
+    var(--color-bg-muted) 100%
+  );
+  box-shadow:
+    0 -4px 16px var(--shadow-color),
+    inset 0 1px 0 rgb(255 255 255 / 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  .mobile-tabbar {
+    box-shadow:
+      0 -4px 20px rgb(0 0 0 / 0.35),
+      inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+}
+
+.mobile-tabbar .ui-btn--nav {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-height: var(--space-tap-min);
+  flex: 1 1 0;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-2) var(--space-1) var(--space-2);
+  text-align: center;
+  transition:
+    opacity var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.mobile-tabbar .ui-btn--nav:active {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+.mobile-tabbar .ui-btn--nav:hover:not(:disabled):not([aria-disabled='true']) {
+  background: rgb(148 163 184 / 0.08);
+  color: var(--color-text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .mobile-tabbar .ui-btn--nav:hover:not(:disabled):not([aria-disabled='true']) {
+    background: rgb(255 255 255 / 0.06);
+  }
+}
+
+.mobile-tab__inner {
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  pointer-events: none;
+}
+
+.mobile-tab__icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--color-border-default);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text-muted);
+  letter-spacing: var(--letter-spacing-tight);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-tab__label {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+  color: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-tabbar .ui-btn--nav.ui-btn--active {
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  background: var(--color-accent-primary-soft);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-accent-primary-border);
+}
+
+.mobile-tabbar .ui-btn--nav.ui-btn--active:hover:not(:disabled):not([aria-disabled='true']) {
+  background: var(--color-accent-primary-soft);
+  color: var(--color-accent-primary);
+}
+
+.mobile-tabbar .ui-btn--nav.ui-btn--active .mobile-tab__icon {
+  border-style: solid;
+  border-color: var(--color-accent-primary-border);
+  color: var(--color-accent-primary);
+  background: var(--color-bg-elevated);
+}
+
+.mobile-tabbar .ui-btn--nav.ui-btn--active .mobile-tab__label {
+  font-weight: 700;
+}
+
+/* 포커스 시 가상 키보드·탭바와 겹침 완화 */
+.mobile-content :where(a, button, input, textarea, select):focus-visible {
+  scroll-margin-bottom: calc(var(--space-tap-min) + var(--space-5));
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .mobile-header {
+    padding-top: calc(var(--space-2) + var(--safe-top));
+    padding-bottom: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .mobile-header__logo {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-2xs);
+  }
+
+  .mobile-header__title {
+    font-size: var(--font-size-md);
+  }
+
+  .mobile-content {
+    padding: var(--space-3) max(var(--space-3), var(--safe-right))
+      var(--space-3) max(var(--space-3), var(--safe-left));
+  }
+
+  .mobile-tabbar .ui-btn--nav {
+    min-height: 44px;
+    padding-top: var(--space-1);
+    padding-bottom: var(--space-1);
+    gap: 0;
+  }
+
+  .mobile-tab__icon {
+    width: 24px;
+    height: 24px;
+    font-size: var(--font-size-2xs);
+  }
+
+  .mobile-tab__label {
+    font-size: var(--font-size-2xs);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 380px) {
+  .mobile-tab__label {
+    display: none;
+  }
+
+  .mobile-tabbar .ui-btn--nav {
+    min-height: 44px;
+  }
+}

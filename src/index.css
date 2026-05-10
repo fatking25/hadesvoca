@@ -1,0 +1,88 @@
+/**
+ * 전역 베이스 + 앱 셸(#root)
+ * 카드·플레이스홀더 시각 규칙은 styles/cards.css 를 따릅니다.
+ */
+
+html {
+  height: 100%;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--color-bg-base);
+}
+
+#root {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100%;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  margin: 0 auto;
+  text-align: start;
+  border-inline: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+/* BrowserRouter는 DOM 래퍼를 두지 않음 — 직계는 StartPage main 또는 MobileLayout 셸 */
+#root > .mobile-shell,
+#root > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--text-h);
+}
+
+h2 {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  line-height: var(--line-height-snug);
+  letter-spacing: normal;
+  color: var(--text-h);
+}
+
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: var(--radius-xs);
+  color: var(--text-h);
+}
+
+code {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-snug);
+  padding: var(--space-1) var(--space-2);
+  background: var(--code-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  #social .button-icon {
+    filter: invert(1) brightness(2);
+  }
+}

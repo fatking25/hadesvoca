@@ -1,0 +1,208 @@
+/**
+ * 하데스 보카 — 디자인 토큰 (Phase 2-1)
+ * 역할: 색·간격·타이포·반경·그림자·z-index·전환을 한곳에서 정의하고,
+ *       레거시 변수(--text, --accent 등)는 하위 호환용 별칭으로만 노출합니다.
+ */
+
+:root {
+  /* ----- Layout ----- */
+  --layout-app-max-width: 480px;
+
+  /* ----- Safe area (viewport-fit=cover, notch / 홈 인디케이터) ----- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  /* ----- Color: surface (밝고 부드러운 베이스 — 비주얼노벨·학습앱 톤) ----- */
+  --color-bg-base: #f6faf8;
+  --color-bg-elevated: #ffffff;
+  --color-bg-muted: #e8f4ef;
+  --color-bg-panel: #f0fdf4;
+  --color-border-subtle: #d1fae5;
+  --color-border-default: #c6e9dc;
+  --color-border-strong: #86cdb0;
+
+  /* ----- Color: text ----- */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #5c6d64;
+  --color-text-muted: #7d8c85;
+  --color-text-on-accent: #ffffff;
+
+  /* ----- Color: accent (듀오링고식 메인 액션 + 브랜드 보조) ----- */
+  --color-accent-primary: #22c55e;
+  --color-accent-primary-strong: #16a34a;
+  --color-accent-primary-soft: rgba(34, 197, 94, 0.12);
+  --color-accent-primary-border: rgba(34, 197, 94, 0.45);
+
+  --color-accent-secondary: #8b5cf6;
+  --color-accent-secondary-soft: rgba(139, 92, 246, 0.14);
+  --color-accent-secondary-border: rgba(139, 92, 246, 0.4);
+
+  /* 듀오 스타일 CTA 입체 하단 테두리 + 학습 유닛 배너 보조색 */
+  --color-accent-primary-press: #15803d;
+  --color-path-unit-blue-top: #38bdf8;
+  --color-path-unit-blue-bottom: #0284c7;
+  --color-path-node-lock: #94a3b8;
+
+  /* ----- Color: state (플레이스홀더·포커스) ----- */
+  --color-focus-ring: var(--color-accent-secondary);
+
+  /* ----- Spacing (4px 그리드, 모바일 터치 여유 포함) ----- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 14px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-tap-min: 48px;
+
+  /* 페이지 본문 블록 간격(허브·학습 흐름 통일) */
+  --page-stack-gap: var(--space-6);
+
+  /* ----- Border radius (둥근 카드·게임형 UI) ----- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-full: 9999px;
+
+  /* ----- Shadow (말랑한 떠있는 카드 느낌, 과하지 않게) ----- */
+  --shadow-color: rgb(15 116 73 / 0.07);
+  --shadow-sm:
+    0 1px 2px var(--shadow-color),
+    0 1px 3px rgb(15 23 42 / 0.04);
+  --shadow-md:
+    0 4px 6px rgb(15 116 73 / 0.06),
+    0 10px 20px rgb(15 23 42 / 0.06);
+  --shadow-lg:
+    0 10px 25px rgb(15 116 73 / 0.08),
+    0 20px 40px rgb(15 23 42 / 0.08);
+
+  /* ----- Typography ----- */
+  --font-family-sans: system-ui, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', sans-serif;
+  --font-family-heading: var(--font-family-sans);
+  --font-family-mono: ui-monospace, Consolas, monospace;
+
+  --font-size-2xs: 0.625rem;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.35;
+  --line-height-normal: 1.45;
+  --line-height-relaxed: 1.55;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0.01em;
+  --letter-spacing-brand: 0.03em;
+
+  /* ----- z-index (탭바·헤더·오버레이 예약) ----- */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-header: 20;
+  --z-tabbar: 30;
+  --z-dropdown: 40;
+  --z-modal: 100;
+  --z-toast: 200;
+
+  /* ----- Motion ----- */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-bounce-soft: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --transition-color: color var(--duration-fast) var(--easing-standard);
+  --transition-border: border-color var(--duration-fast) var(--easing-standard);
+  --transition-transform: transform var(--duration-normal) var(--easing-standard);
+  --transition-shadow: box-shadow var(--duration-normal) var(--easing-standard);
+
+  /* ----- Document base (모바일 우선) ----- */
+  color-scheme: light dark;
+  font: var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-base);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: var(--font-size-md);
+  }
+}
+
+/* ----- Dark: 대비 유지 + 액센트 살짝 밝게 ----- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-base: #101816;
+    --color-bg-elevated: #141e1a;
+    --color-bg-muted: #1a2620;
+    --color-bg-panel: #15221c;
+    --color-border-subtle: #2a3d34;
+    --color-border-default: #334840;
+    --color-border-strong: #3d5c4d;
+
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #9eb0a6;
+    --color-text-muted: #7a8c82;
+
+    --color-accent-primary: #4ade80;
+    --color-accent-primary-strong: #22c55e;
+    --color-accent-primary-soft: rgba(74, 222, 128, 0.15);
+    --color-accent-primary-border: rgba(74, 222, 128, 0.45);
+
+    --color-accent-secondary: #c4b5fd;
+    --color-accent-secondary-soft: rgba(196, 181, 253, 0.12);
+    --color-accent-secondary-border: rgba(196, 181, 253, 0.45);
+
+    --color-accent-primary-press: #166534;
+    --color-path-node-lock: #64748b;
+
+    --shadow-color: rgb(0 0 0 / 0.35);
+    --shadow-sm:
+      0 1px 2px var(--shadow-color),
+      0 1px 3px rgb(0 0 0 / 0.25);
+    --shadow-md:
+      0 4px 10px rgb(0 0 0 / 0.35),
+      0 12px 24px rgb(0 0 0 / 0.2);
+    --shadow-lg:
+      0 12px 30px rgb(0 0 0 / 0.4),
+      0 24px 48px rgb(0 0 0 / 0.28);
+  }
+}
+
+/**
+ * 레거시 토큰 (Phase 1 페이지·컴포넌트)
+ * 새 코드에서는 --color-*, --space-*, --radius-* 우선 사용.
+ */
+:root {
+  --app-max-width: var(--layout-app-max-width);
+  --text: var(--color-text-secondary);
+  --text-h: var(--color-text-primary);
+  --bg: var(--color-bg-elevated);
+  --border: var(--color-border-default);
+  --code-bg: var(--color-bg-muted);
+  --accent: var(--color-accent-primary);
+  --accent-bg: var(--color-accent-primary-soft);
+  --accent-border: var(--color-accent-primary-border);
+  --social-bg: var(--color-bg-panel);
+  --shadow: var(--shadow-md);
+
+  --sans: var(--font-family-sans);
+  --heading: var(--font-family-heading);
+  --mono: var(--font-family-mono);
+}

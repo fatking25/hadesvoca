@@ -1,0 +1,184 @@
+/**
+ * 공통 카드 시스템 (Phase 2-2)
+ * 역할: Dashboard / Menu / Info / Placeholder 변형과 타이포·배지·상호작용을 캡슐화합니다.
+ */
+
+/* ---------- Base ---------- */
+.ui-card {
+  box-sizing: border-box;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Variants ---------- */
+.ui-card--dashboard {
+  padding: var(--space-5);
+  background: var(--social-bg);
+  border-color: var(--color-border-subtle);
+}
+
+.ui-card--menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: calc(var(--space-tap-min) + var(--space-2));
+  padding: var(--space-5);
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-bg-elevated);
+}
+
+.ui-card--info {
+  padding: var(--space-5);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
+}
+
+.ui-card--info-accent {
+  padding: var(--space-5);
+  border-color: var(--color-accent-secondary-border);
+  background: var(--color-accent-secondary-soft);
+  box-shadow: none;
+}
+
+.ui-card--placeholder {
+  border-style: dashed;
+  border-color: var(--color-border-default);
+  background: var(--code-bg);
+  box-shadow: none;
+}
+
+/* ---------- Interactive (Menu / Day pick) ---------- */
+.ui-card--interactive {
+  cursor: pointer;
+  transition:
+    var(--transition-border),
+    box-shadow var(--duration-fast) var(--easing-standard),
+    transform var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.ui-card--interactive:hover {
+  border-color: var(--color-accent-primary-border);
+  background: var(--color-accent-primary-soft);
+  box-shadow: var(--shadow-md);
+}
+
+.ui-card--interactive:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+.ui-card--interactive:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.ui-card--interactive.ui-card--muted {
+  opacity: 0.92;
+}
+
+.ui-card--interactive.ui-card--muted:hover {
+  opacity: 1;
+}
+
+.ui-card--muted:not(:hover) .ui-card__title {
+  color: var(--text);
+}
+
+/* ---------- Title / subtitle ---------- */
+.ui-card__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: var(--line-height-snug);
+  color: var(--text-h);
+}
+
+.ui-card__subtitle {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: var(--line-height-snug);
+  color: var(--text);
+}
+
+.ui-card__body {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--text);
+}
+
+.ui-card__section-heading {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: var(--line-height-snug);
+  color: var(--text-h);
+}
+
+/* ---------- Badges ---------- */
+.ui-card__badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-brand);
+  color: var(--color-accent-secondary);
+  background: var(--color-accent-secondary-soft);
+  border: 1px solid var(--color-accent-secondary-border);
+}
+
+.ui-card--muted .ui-card__badge,
+.ui-card__badge--muted {
+  color: var(--color-text-secondary);
+  background: var(--code-bg);
+  border-color: var(--color-border-default);
+}
+
+/* ---------- 플레이스홀더 비주얼 (기존 클래스와 조합) ---------- */
+.app-placeholder-visual.ui-card--placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: var(--space-4);
+  min-height: 136px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-text-muted);
+  transition:
+    var(--transition-border),
+    var(--transition-shadow);
+}
+
+.app-placeholder-visual--hero.ui-card--placeholder {
+  min-height: 160px;
+  border-radius: var(--radius-lg);
+}
+
+.app-placeholder-visual--compact.ui-card--placeholder {
+  min-height: 88px;
+  border-radius: var(--radius-sm);
+}
+
+.app-placeholder-box.ui-card--placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 72px;
+  padding: var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-text-muted);
+  background: var(--social-bg, var(--code-bg));
+}

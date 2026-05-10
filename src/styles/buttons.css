@@ -1,0 +1,157 @@
+/**
+ * 공통 버튼 시스템 (Phase 2-3)
+ * <button>, <a> 등 인터랙티브 타겟에 동일 클래스 조합 적용 (라이브러리 없음).
+ */
+
+.ui-btn {
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-tap-min);
+  padding: var(--space-3) var(--space-6);
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-normal);
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+  box-shadow: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard),
+    filter var(--duration-fast) var(--easing-standard);
+}
+
+.ui-btn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.ui-btn:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(1px);
+}
+
+.ui-btn:disabled,
+.ui-btn[aria-disabled='true'] {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* ----- Variants ----- */
+
+.ui-btn--primary {
+  border: none;
+  border-bottom: 4px solid var(--color-accent-primary-press);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-on-accent);
+  background: var(--color-accent-primary);
+  box-shadow: none;
+}
+
+.ui-btn--primary:hover:not(:disabled):not([aria-disabled='true']) {
+  filter: brightness(1.06);
+}
+
+.ui-btn--primary:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.ui-btn--secondary {
+  border-color: var(--color-accent-primary-border);
+  color: var(--color-accent-primary);
+  background: var(--color-accent-primary-soft);
+  font-weight: 600;
+}
+
+.ui-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) {
+  filter: brightness(1.03);
+}
+
+.ui-btn--ghost {
+  border-color: var(--color-border-default);
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+  font-weight: 500;
+}
+
+.ui-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) {
+  border-color: var(--color-accent-primary-border);
+  background: var(--color-accent-primary-soft);
+  color: var(--color-accent-primary);
+}
+
+.ui-btn--block {
+  width: 100%;
+}
+
+.ui-btn--align-start {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.ui-btn--tab {
+  flex: 0 0 auto;
+  min-height: var(--space-tap-min);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: var(--line-height-snug);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-elevated);
+  box-shadow: none;
+}
+
+.ui-btn--tab:hover:not(:disabled):not([aria-disabled='true']) {
+  border-color: var(--color-accent-primary-border);
+  color: var(--color-text-primary);
+}
+
+.ui-btn--tab[aria-selected='true'] {
+  border-color: var(--color-accent-primary-border);
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  background: var(--color-accent-primary-soft);
+}
+
+.ui-btn--nav {
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: var(--space-tap-min);
+  padding: var(--space-2) var(--space-1);
+  border-radius: var(--radius-sm);
+  border: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: var(--line-height-tight);
+  color: var(--color-text-secondary);
+  background: transparent;
+  box-shadow: none;
+}
+
+.ui-btn--nav:hover:not(:disabled):not([aria-disabled='true']) {
+  color: var(--color-text-primary);
+  background: var(--color-accent-primary-soft);
+}
+
+.ui-btn--nav.ui-btn--active {
+  font-weight: 700;
+  color: var(--color-accent-primary);
+}

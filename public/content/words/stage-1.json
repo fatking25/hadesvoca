@@ -1,0 +1,1023 @@
+{
+  "schemaVersion": "1",
+  "stageId": 1,
+  "stageTitleKo": "Stage 1 · 기초 TOEIC 단어",
+  "stageDescriptionKo": "하루 한 묶음만 풀어도 되는 짧은 mock 세트입니다.",
+  "days": [
+    {
+      "dayId": 1,
+      "titleKo": "사무·회사 기본 단어",
+      "descriptionKo": "일정·마감·동료 표현 (3단어 × 3유형 · mock)",
+      "words": [
+        {
+          "id": "s1-d1-w01",
+          "word": "schedule",
+          "meaning": "일정, 시간표; (동사) 일정을 잡다",
+          "exampleSentence": "Can we schedule a call for Tuesday?",
+          "exampleMeaning": "화요일에 통화 일정을 잡을 수 있을까요?",
+          "explanation": "명사·동사 모두 시험에서 자주 나옵니다.",
+          "questions": [
+            {
+              "id": "s1-d1-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "schedule",
+              "options": [
+                { "id": "a", "text": "일정, 시간표" },
+                { "id": "b", "text": "마감" },
+                { "id": "c", "text": "동료" },
+                { "id": "d", "text": "보고서" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "일정을 잡다 (동사에 가까운 영어 단어)",
+              "options": [
+                { "id": "a", "text": "schedule" },
+                { "id": "b", "text": "deadline" },
+                { "id": "c", "text": "colleague" },
+                { "id": "d", "text": "invoice" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Please send me your {{blank}} for next week.",
+              "options": [
+                { "id": "a", "text": "schedule" },
+                { "id": "b", "text": "receipt" },
+                { "id": "c", "text": "discount" },
+                { "id": "d", "text": "luggage" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d1-w02",
+          "word": "deadline",
+          "meaning": "마감일, 마감 시한",
+          "exampleSentence": "The deadline is this Friday at 5 p.m.",
+          "exampleMeaning": "마감은 이번 주 금요일 오후 5시입니다.",
+          "explanation": "due date와 비슷하게 씁니다.",
+          "questions": [
+            {
+              "id": "s1-d1-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "deadline",
+              "options": [
+                { "id": "a", "text": "마감일" },
+                { "id": "b", "text": "출근" },
+                { "id": "c", "text": "휴가" },
+                { "id": "d", "text": "급여" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "제출·완료의 최종 시한",
+              "options": [
+                { "id": "a", "text": "deadline" },
+                { "id": "b", "text": "schedule" },
+                { "id": "c", "text": "discount" },
+                { "id": "d", "text": "forward" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "We cannot miss the {{blank}}.",
+              "options": [
+                { "id": "a", "text": "deadline" },
+                { "id": "b", "text": "colleague" },
+                { "id": "c", "text": "agenda" },
+                { "id": "d", "text": "receipt" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d1-w03",
+          "word": "colleague",
+          "meaning": "동료",
+          "exampleSentence": "I discussed the issue with a colleague.",
+          "exampleMeaning": "그 문제를 동료와 논의했습니다.",
+          "explanation": "직장 동료에 흔히 쓰입니다.",
+          "questions": [
+            {
+              "id": "s1-d1-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "colleague",
+              "options": [
+                { "id": "a", "text": "동료" },
+                { "id": "b", "text": "고객" },
+                { "id": "c", "text": "상사" },
+                { "id": "d", "text": "인턴" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "같이 일하는 사람 (직장)",
+              "options": [
+                { "id": "a", "text": "colleague" },
+                { "id": "b", "text": "client" },
+                { "id": "c", "text": "supplier" },
+                { "id": "d", "text": "visitor" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d1-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "She is a helpful {{blank}} in our team.",
+              "options": [
+                { "id": "a", "text": "colleague" },
+                { "id": "b", "text": "deadline" },
+                { "id": "c", "text": "calendar" },
+                { "id": "d", "text": "minute" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 2,
+      "titleKo": "일정·회의 단어",
+      "descriptionKo": "연기·안건·참석 (mock)",
+      "words": [
+        {
+          "id": "s1-d2-w01",
+          "word": "postpone",
+          "meaning": "연기하다, 미루다",
+          "exampleSentence": "We had to postpone the meeting.",
+          "exampleMeaning": "회의를 연기해야 했습니다.",
+          "explanation": "동사로 쓰입니다.",
+          "questions": [
+            {
+              "id": "s1-d2-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "postpone",
+              "options": [
+                { "id": "a", "text": "연기하다" },
+                { "id": "b", "text": "취소하다" },
+                { "id": "c", "text": "참석하다" },
+                { "id": "d", "text": "기록하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "일정을 뒤로 미루다",
+              "options": [
+                { "id": "a", "text": "postpone" },
+                { "id": "b", "text": "attend" },
+                { "id": "c", "text": "confirm" },
+                { "id": "d", "text": "attach" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "They decided to {{blank}} the launch by one week.",
+              "options": [
+                { "id": "a", "text": "postpone" },
+                { "id": "b", "text": "print" },
+                { "id": "c", "text": "hire" },
+                { "id": "d", "text": "pack" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d2-w02",
+          "word": "agenda",
+          "meaning": "의제, 안건",
+          "exampleSentence": "Let's follow the agenda.",
+          "exampleMeaning": "안건 순서대로 진행합시다.",
+          "explanation": "회의 자료 첫 페이지에 자주 등장합니다.",
+          "questions": [
+            {
+              "id": "s1-d2-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "agenda",
+              "options": [
+                { "id": "a", "text": "안건, 의제" },
+                { "id": "b", "text": "회의록" },
+                { "id": "c", "text": "첨부파일" },
+                { "id": "d", "text": "참석자" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "회의에서 논의할 항목 목록",
+              "options": [
+                { "id": "a", "text": "agenda" },
+                { "id": "b", "text": "minutes" },
+                { "id": "c", "text": "subject" },
+                { "id": "d", "text": "signature" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Please add this item to the meeting {{blank}}.",
+              "options": [
+                { "id": "a", "text": "agenda" },
+                { "id": "b", "text": "receipt" },
+                { "id": "c", "text": "passport" },
+                { "id": "d", "text": "ticket" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d2-w03",
+          "word": "attend",
+          "meaning": "참석하다, 참가하다",
+          "exampleSentence": "How many people will attend?",
+          "exampleMeaning": "몇 명이 참석할까요?",
+          "explanation": "회의·행사에 자주 씁니다.",
+          "questions": [
+            {
+              "id": "s1-d2-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "attend",
+              "options": [
+                { "id": "a", "text": "참석하다" },
+                { "id": "b", "text": "주최하다" },
+                { "id": "c", "text": "연기하다" },
+                { "id": "d", "text": "기각하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "회의에 나가다 (동사)",
+              "options": [
+                { "id": "a", "text": "attend" },
+                { "id": "b", "text": "ignore" },
+                { "id": "c", "text": "delete" },
+                { "id": "d", "text": "ship" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d2-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "All managers must {{blank}} the briefing.",
+              "options": [
+                { "id": "a", "text": "attend" },
+                { "id": "b", "text": "refund" },
+                { "id": "c", "text": "print" },
+                { "id": "d", "text": "save" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 3,
+      "titleKo": "이메일·문서 단어",
+      "descriptionKo": "첨부·확인·전달 (mock)",
+      "words": [
+        {
+          "id": "s1-d3-w01",
+          "word": "attach",
+          "meaning": "첨부하다",
+          "exampleSentence": "I will attach the file to the email.",
+          "exampleMeaning": "이메일에 파일을 첨부하겠습니다.",
+          "explanation": "이메일 표현의 핵심 동사입니다.",
+          "questions": [
+            {
+              "id": "s1-d3-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "attach",
+              "options": [
+                { "id": "a", "text": "첨부하다" },
+                { "id": "b", "text": "삭제하다" },
+                { "id": "c", "text": "인쇄하다" },
+                { "id": "d", "text": "보관하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "파일을 메일에 붙이다",
+              "options": [
+                { "id": "a", "text": "attach" },
+                { "id": "b", "text": "reply" },
+                { "id": "c", "text": "spam" },
+                { "id": "d", "text": "inbox" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Do not forget to {{blank}} the invoice.",
+              "options": [
+                { "id": "a", "text": "attach" },
+                { "id": "b", "text": "attend" },
+                { "id": "c", "text": "argue" },
+                { "id": "d", "text": "allow" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d3-w02",
+          "word": "confirm",
+          "meaning": "확인하다, 확인해 주다",
+          "exampleSentence": "Could you confirm the time?",
+          "exampleMeaning": "시간 확인해 주실 수 있나요?",
+          "explanation": "요청 형태로 자주 등장합니다.",
+          "questions": [
+            {
+              "id": "s1-d3-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "confirm",
+              "options": [
+                { "id": "a", "text": "확인하다" },
+                { "id": "b", "text": "추측하다" },
+                { "id": "c", "text": "거절하다" },
+                { "id": "d", "text": "외우다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "사실 여부를 다시 받다 (동사)",
+              "options": [
+                { "id": "a", "text": "confirm" },
+                { "id": "b", "text": "guess" },
+                { "id": "c", "text": "wonder" },
+                { "id": "d", "text": "doubt" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Please {{blank}} receipt of this email.",
+              "options": [
+                { "id": "a", "text": "confirm" },
+                { "id": "b", "text": "complete" },
+                { "id": "c", "text": "compare" },
+                { "id": "d", "text": "comment" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d3-w03",
+          "word": "forward",
+          "meaning": "전달하다 (이메일 등)",
+          "exampleSentence": "I will forward the message.",
+          "exampleMeaning": "메시지를 전달하겠습니다.",
+          "explanation": "이메일에서 자주 나옵니다.",
+          "questions": [
+            {
+              "id": "s1-d3-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "forward",
+              "options": [
+                { "id": "a", "text": "전달하다" },
+                { "id": "b", "text": "수신하다" },
+                { "id": "c", "text": "발신하다" },
+                { "id": "d", "text": "저장하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "(메일을) 다음 사람에게 넘기다",
+              "options": [
+                { "id": "a", "text": "forward" },
+                { "id": "b", "text": "attach" },
+                { "id": "c", "text": "delete" },
+                { "id": "d", "text": "block" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d3-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Could you {{blank}} this thread to HR?",
+              "options": [
+                { "id": "a", "text": "forward" },
+                { "id": "b", "text": "postpone" },
+                { "id": "c", "text": "review" },
+                { "id": "d", "text": "pack" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 4,
+      "titleKo": "채용·인사 단어",
+      "descriptionKo": "채용·지원·면접 (mock)",
+      "words": [
+        {
+          "id": "s1-d4-w01",
+          "word": "hire",
+          "meaning": "고용하다, 채용하다",
+          "exampleSentence": "We plan to hire two interns.",
+          "exampleMeaning": "인턴 두 명을 채용할 계획입니다.",
+          "explanation": "HR 맥락에서 빈출.",
+          "questions": [
+            {
+              "id": "s1-d4-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "hire",
+              "options": [
+                { "id": "a", "text": "채용하다" },
+                { "id": "b", "text": "해고하다" },
+                { "id": "c", "text": "승진시키다" },
+                { "id": "d", "text": "투자하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "새 직원을 받아들이다",
+              "options": [
+                { "id": "a", "text": "hire" },
+                { "id": "b", "text": "fire" },
+                { "id": "c", "text": "quit" },
+                { "id": "d", "text": "retire" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "HR will {{blank}} a replacement soon.",
+              "options": [
+                { "id": "a", "text": "hire" },
+                { "id": "b", "text": "hope" },
+                { "id": "c", "text": "hold" },
+                { "id": "d", "text": "hide" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d4-w02",
+          "word": "apply",
+          "meaning": "지원하다, 신청하다",
+          "exampleSentence": "She decided to apply for the position.",
+          "exampleMeaning": "그녀는 그 직책에 지원하기로 했습니다.",
+          "explanation": "apply for + 직무",
+          "questions": [
+            {
+              "id": "s1-d4-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "apply",
+              "options": [
+                { "id": "a", "text": "지원하다" },
+                { "id": "b", "text": "면접하다" },
+                { "id": "c", "text": "합격시키다" },
+                { "id": "d", "text": "등록금을 내다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "(직무에) 입사 지원을 하다",
+              "options": [
+                { "id": "a", "text": "apply" },
+                { "id": "b", "text": "assign" },
+                { "id": "c", "text": "assume" },
+                { "id": "d", "text": "appoint" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Candidates must {{blank}} online by Sunday.",
+              "options": [
+                { "id": "a", "text": "apply" },
+                { "id": "b", "text": "supply" },
+                { "id": "c", "text": "reply" },
+                { "id": "d", "text": "repair" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d4-w03",
+          "word": "interview",
+          "meaning": "면접",
+          "exampleSentence": "The interview lasted thirty minutes.",
+          "exampleMeaning": "면접은 삼십 분 걸렸습니다.",
+          "explanation": "명사·동사 활용 가능",
+          "questions": [
+            {
+              "id": "s1-d4-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "interview",
+              "options": [
+                { "id": "a", "text": "면접" },
+                { "id": "b", "text": "계약" },
+                { "id": "c", "text": "퇴직" },
+                { "id": "d", "text": "복지" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "채용 심사 대면",
+              "options": [
+                { "id": "a", "text": "interview" },
+                { "id": "b", "text": "invoice" },
+                { "id": "c", "text": "internet" },
+                { "id": "d", "text": "interest" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d4-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Prepare questions before the {{blank}}.",
+              "options": [
+                { "id": "a", "text": "interview" },
+                { "id": "b", "text": "invoice" },
+                { "id": "c", "text": "internet" },
+                { "id": "d", "text": "introduction" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 5,
+      "titleKo": "쇼핑·결제 단어",
+      "descriptionKo": "환불·영수증·할인 (mock)",
+      "words": [
+        {
+          "id": "s1-d5-w01",
+          "word": "refund",
+          "meaning": "환불",
+          "exampleSentence": "We requested a refund.",
+          "exampleMeaning": "환불을 요청했습니다.",
+          "explanation": "명사가 자주 등장합니다.",
+          "questions": [
+            {
+              "id": "s1-d5-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "refund",
+              "options": [
+                { "id": "a", "text": "환불" },
+                { "id": "b", "text": "교환" },
+                { "id": "c", "text": "배송" },
+                { "id": "d", "text": "할부" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "결제 금액을 돌려받음",
+              "options": [
+                { "id": "a", "text": "refund" },
+                { "id": "b", "text": "review" },
+                { "id": "c", "text": "receipt" },
+                { "id": "d", "text": "request" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Eligible orders qualify for a full {{blank}}.",
+              "options": [
+                { "id": "a", "text": "refund" },
+                { "id": "b", "text": "report" },
+                { "id": "c", "text": "reason" },
+                { "id": "d", "text": "region" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d5-w02",
+          "word": "receipt",
+          "meaning": "영수증",
+          "exampleSentence": "Keep your receipt for returns.",
+          "exampleMeaning": "반품을 위해 영수증을 간직하세요.",
+          "explanation": "발음은 /리싯/에 가깝습니다.",
+          "questions": [
+            {
+              "id": "s1-d5-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "receipt",
+              "options": [
+                { "id": "a", "text": "영수증" },
+                { "id": "b", "text": "카드 한도" },
+                { "id": "c", "text": "현금함" },
+                { "id": "d", "text": "쿠폰" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "결제 증명용 종이·전표",
+              "options": [
+                { "id": "a", "text": "receipt" },
+                { "id": "b", "text": "ticket" },
+                { "id": "c", "text": "label" },
+                { "id": "d", "text": "coupon" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Attach a photo of your {{blank}}.",
+              "options": [
+                { "id": "a", "text": "receipt" },
+                { "id": "b", "text": "request" },
+                { "id": "c", "text": "refund" },
+                { "id": "d", "text": "review" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d5-w03",
+          "word": "discount",
+          "meaning": "할인",
+          "exampleSentence": "There is a 10% discount today.",
+          "exampleMeaning": "오늘 10퍼센트 할인이 있습니다.",
+          "explanation": "상업 문맥 빈출",
+          "questions": [
+            {
+              "id": "s1-d5-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "discount",
+              "options": [
+                { "id": "a", "text": "할인" },
+                { "id": "b", "text": "배달료" },
+                { "id": "c", "text": "적립" },
+                { "id": "d", "text": "세금" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "정가보다 깎아 줌",
+              "options": [
+                { "id": "a", "text": "discount" },
+                { "id": "b", "text": "delivery" },
+                { "id": "c", "text": "display" },
+                { "id": "d", "text": "detail" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d5-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Employees get an extra employee {{blank}}.",
+              "options": [
+                { "id": "a", "text": "discount" },
+                { "id": "b", "text": "discussion" },
+                { "id": "c", "text": "document" },
+                { "id": "d", "text": "direction" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 6,
+      "titleKo": "여행·숙박 단어",
+      "descriptionKo": "예약·취소·수하물 (mock)",
+      "words": [
+        {
+          "id": "s1-d6-w01",
+          "word": "reservation",
+          "meaning": "예약",
+          "exampleSentence": "I have a hotel reservation.",
+          "exampleMeaning": "호텔 예약이 있습니다.",
+          "explanation": "명사로 자주 씁니다.",
+          "questions": [
+            {
+              "id": "s1-d6-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "reservation",
+              "options": [
+                { "id": "a", "text": "예약" },
+                { "id": "b", "text": "환승" },
+                { "id": "c", "text": "탑승구" },
+                { "id": "d", "text": "여권" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "자리·객실을 미리 잡아 둠",
+              "options": [
+                { "id": "a", "text": "reservation" },
+                { "id": "b", "text": "restaurant" },
+                { "id": "c", "text": "registration" },
+                { "id": "d", "text": "recommendation" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Show your {{blank}} code at check-in.",
+              "options": [
+                { "id": "a", "text": "reservation" },
+                { "id": "b", "text": "restaurant" },
+                { "id": "c", "text": "restriction" },
+                { "id": "d", "text": "response" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d6-w02",
+          "word": "cancel",
+          "meaning": "취소하다",
+          "exampleSentence": "You can cancel up to 24 hours before.",
+          "exampleMeaning": "24시간 전까지 취소할 수 있습니다.",
+          "explanation": "여행·구독 문맥",
+          "questions": [
+            {
+              "id": "s1-d6-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "cancel",
+              "options": [
+                { "id": "a", "text": "취소하다" },
+                { "id": "b", "text": "연장하다" },
+                { "id": "c", "text": "체크인하다" },
+                { "id": "d", "text": "탑승하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "예약을 무효로 하다",
+              "options": [
+                { "id": "a", "text": "cancel" },
+                { "id": "b", "text": "carry" },
+                { "id": "c", "text": "collect" },
+                { "id": "d", "text": "compare" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "You may {{blank}} without a fee until noon.",
+              "options": [
+                { "id": "a", "text": "cancel" },
+                { "id": "b", "text": "call" },
+                { "id": "c", "text": "copy" },
+                { "id": "d", "text": "cover" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d6-w03",
+          "word": "luggage",
+          "meaning": "수하물",
+          "exampleSentence": "Where is the luggage claim?",
+          "exampleMeaning": "수하물 찾는 곳이 어디인가요?",
+          "explanation": "불가산 명사로 취급합니다.",
+          "questions": [
+            {
+              "id": "s1-d6-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "luggage",
+              "options": [
+                { "id": "a", "text": "수하물" },
+                { "id": "b", "text": "탑승권" },
+                { "id": "c", "text": "기내식" },
+                { "id": "d", "text": "출국심사" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "여행용 짐(특히 비행기)",
+              "options": [
+                { "id": "a", "text": "luggage" },
+                { "id": "b", "text": "language" },
+                { "id": "c", "text": "license" },
+                { "id": "d", "text": "ladder" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d6-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Do not leave {{blank}} unattended.",
+              "options": [
+                { "id": "a", "text": "luggage" },
+                { "id": "b", "text": "language" },
+                { "id": "c", "text": "lunch" },
+                { "id": "d", "text": "license" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayId": 7,
+      "titleKo": "Stage 1 복습",
+      "descriptionKo": "짧은 복습 세트 (mock)",
+      "words": [
+        {
+          "id": "s1-d7-w01",
+          "word": "review",
+          "meaning": "복습하다; 검토하다",
+          "exampleSentence": "Let's review the key terms.",
+          "exampleMeaning": "핵심 용어를 복습합시다.",
+          "explanation": "학습·업무 모두에서 씁니다.",
+          "questions": [
+            {
+              "id": "s1-d7-w01-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "review",
+              "options": [
+                { "id": "a", "text": "복습·검토하다" },
+                { "id": "b", "text": "거절하다" },
+                { "id": "c", "text": "녹음하다" },
+                { "id": "d", "text": "출판하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w01-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "다시 훑어 보다 (동사)",
+              "options": [
+                { "id": "a", "text": "review" },
+                { "id": "b", "text": "remove" },
+                { "id": "c", "text": "receive" },
+                { "id": "d", "text": "relate" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w01-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Please {{blank}} section 2 before the quiz.",
+              "options": [
+                { "id": "a", "text": "review" },
+                { "id": "b", "text": "refund" },
+                { "id": "c", "text": "reserve" },
+                { "id": "d", "text": "raise" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d7-w02",
+          "word": "progress",
+          "meaning": "진행, 진척",
+          "exampleSentence": "We made good progress this week.",
+          "exampleMeaning": "이번 주에 진척이 좋았습니다.",
+          "explanation": "명사로 자주 씁니다.",
+          "questions": [
+            {
+              "id": "s1-d7-w02-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "progress",
+              "options": [
+                { "id": "a", "text": "진행, 진척" },
+                { "id": "b", "text": "지연" },
+                { "id": "c", "text": "목표" },
+                { "id": "d", "text": "보고" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w02-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "앞으로 나아간 정도",
+              "options": [
+                { "id": "a", "text": "progress" },
+                { "id": "b", "text": "process" },
+                { "id": "c", "text": "program" },
+                { "id": "d", "text": "problem" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w02-q-fb",
+              "type": "fill-blank",
+              "templateEn": "Track your weekly {{blank}} in the app.",
+              "options": [
+                { "id": "a", "text": "progress" },
+                { "id": "b", "text": "product" },
+                { "id": "c", "text": "project" },
+                { "id": "d", "text": "promise" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        },
+        {
+          "id": "s1-d7-w03",
+          "word": "complete",
+          "meaning": "완료하다",
+          "exampleSentence": "Complete the form and submit it.",
+          "exampleMeaning": "양식을 작성해 제출하세요.",
+          "explanation": "동사·형용사 모두 가능",
+          "questions": [
+            {
+              "id": "s1-d7-w03-q-w2m",
+              "type": "word-to-meaning",
+              "promptEn": "complete",
+              "options": [
+                { "id": "a", "text": "완료하다" },
+                { "id": "b", "text": "시작하다" },
+                { "id": "c", "text": "연기하다" },
+                { "id": "d", "text": "삭제하다" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w03-q-m2w",
+              "type": "meaning-to-word",
+              "promptKo": "끝까지 마치다 (동사)",
+              "options": [
+                { "id": "a", "text": "complete" },
+                { "id": "b", "text": "compare" },
+                { "id": "c", "text": "compete" },
+                { "id": "d", "text": "complain" }
+              ],
+              "correctOptionId": "a"
+            },
+            {
+              "id": "s1-d7-w03-q-fb",
+              "type": "fill-blank",
+              "templateEn": "You must {{blank}} all tasks to finish the day.",
+              "options": [
+                { "id": "a", "text": "complete" },
+                { "id": "b", "text": "cancel" },
+                { "id": "c", "text": "confirm" },
+                { "id": "d", "text": "collect" }
+              ],
+              "correctOptionId": "a"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
