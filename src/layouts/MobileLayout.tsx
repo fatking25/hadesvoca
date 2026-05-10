@@ -1,34 +1,77 @@
 /**
- * 모바일 앱 형태의 공통 프레임: 상단 헤더(플레이스홀더 로고·설정 링크), 스크롤 가능한 본문(Outlet), 하단 탭 네비게이션.
+ * 모바일 앱 형태의 공통 프레임: 상단 헤더, 본문, 하단 탭. 설정은 시트 오버레이.
  */
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import type { AppSettingsView } from '../components/layout/AppSettingsSheet'
+import { AppSettingsSheet } from '../components/layout/AppSettingsSheet'
 import { MobileStatsBar } from '../components/layout/MobileStatsBar'
+import { ProfileNickSheet } from '../components/layout/ProfileNickSheet'
 import { BottomTabBar } from '../components/navigation/BottomTabBar'
 import { downloadUserProgressBackup } from '../utils/storage'
 import './MobileLayout.css'
 
-function resolveMainTabStates(pathname: string): {
-  info: boolean
-} {
-  return {
-    info: pathname === '/info',
-  }
-}
-
-function settingsClassName(isActive: boolean): string {
-  return isActive
-    ? 'mobile-header__settings mobile-header__settings--active'
-    : 'mobile-header__settings'
-}
+type LaunchSettingsState = Readonly<{ appSettings?: AppSettingsView }>
 
 export default function MobileLayout() {
-  const { pathname } = useLocation()
-  const tabs = resolveMainTabStates(pathname)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [settingsEntryView, setSettingsEntryView] = useState<AppSettingsView>('menu')
+
+  useEffect(() => {
+    const lock = profileOpen || settingsOpen
+    if (!lock) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return (): void => {
+      document.body.style.overflow = prev
+    }
+  }, [profileOpen, settingsOpen])
+
+  useEffect(() => {
+    const raw = location.state as LaunchSettingsState | null | undefined
+    const panel = raw?.appSettings
+    if (
+      panel !== 'copyright'
+      && panel !== 'help'
+      && panel !== 'menu'
+    ) {
+      return
+    }
+    setProfileOpen(false)
+    setSettingsEntryView(panel)
+    setSettingsOpen(true)
+    navigate(`${location.pathname}${location.search}${location.hash}`, {
+      replace: true,
+      state: {},
+    })
+  }, [location, navigate])
+
+  const closeSettings = useCallback((): void => {
+    setSettingsOpen(false)
+    setSettingsEntryView('menu')
+  }, [])
+
+  const openSettingsMenu = useCallback((): void => {
+    setProfileOpen(false)
+    setSettingsEntryView('menu')
+    setSettingsOpen(true)
+  }, [])
 
   return (
     <div className="mobile-shell">
+      <ProfileNickSheet open={profileOpen} onClose={() => setProfileOpen(false)} />
+      <AppSettingsSheet open={settingsOpen} onClose={closeSettings} initialView={settingsEntryView} />
+
       <header className="mobile-header">
-        <MobileStatsBar />
+        <MobileStatsBar
+          onProfilePress={() => {
+            setSettingsOpen(false)
+            setProfileOpen(true)
+          }}
+        />
         <div className="mobile-header__brand-row">
           <div className="mobile-header__logo" aria-hidden>
             LOGO
@@ -45,13 +88,21 @@ export default function MobileLayout() {
             >
               저장
             </button>
-            <NavLink
-              to="/info"
-              className={() => settingsClassName(tabs.info)}
-              end
+            <button
+              type="button"
+              className={
+                settingsOpen
+                  ? 'mobile-header__settings mobile-header__settings--active'
+                  : 'mobile-header__settings'
+              }
+              aria-expanded={settingsOpen}
+              aria-controls="app-settings-sheet"
+              onClick={() => {
+                openSettingsMenu()
+              }}
             >
               설정
-            </NavLink>
+            </button>
           </div>
         </div>
       </header>

@@ -54,6 +54,20 @@
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border-subtle);
   background: var(--color-bg-elevated);
+  font: inherit;
+  text-align: start;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-stats-bar__user:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 45%, var(--color-border-subtle));
+}
+
+.mobile-stats-bar__user:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
 
 .mobile-stats-bar__user-label {
@@ -199,11 +213,16 @@
 
 .mobile-header__settings {
   flex-shrink: 0;
+  margin: 0;
   padding: var(--space-1) var(--space-2);
+  border: none;
   border-radius: var(--radius-xs);
+  font: inherit;
   font-size: var(--font-size-md);
   color: var(--text);
   text-decoration: none;
+  background: transparent;
+  cursor: pointer;
   transition:
     var(--transition-color),
     background-color var(--duration-fast) var(--easing-standard);

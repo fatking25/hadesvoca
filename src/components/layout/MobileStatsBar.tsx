@@ -13,7 +13,12 @@ function formatCoins(n: number): string {
   return String(Math.max(0, Math.floor(n)))
 }
 
-export function MobileStatsBar() {
+export type MobileStatsBarProps = Readonly<{
+  onProfilePress?: () => void
+}>
+
+export function MobileStatsBar(props: MobileStatsBarProps) {
+  const { onProfilePress } = props
   const [rev, setRev] = useState(0)
 
   const bump = useCallback(() => setRev((k) => k + 1), [])
@@ -47,12 +52,20 @@ export function MobileStatsBar() {
 
   return (
     <div className="mobile-stats-bar">
-      <div className="mobile-stats-bar__user" title={nick}>
+      <button
+        type="button"
+        className="mobile-stats-bar__user"
+        title="프로필 · 닉네임 바꾸기"
+        aria-label={`프로필, 닉네임 ${nick}`}
+        onClick={() => {
+          onProfilePress?.()
+        }}
+      >
         <span className="mobile-stats-bar__user-label" aria-hidden>
           나
         </span>
         <span className="mobile-stats-bar__nick">{nick}</span>
-      </div>
+      </button>
       <div className="mobile-stats-bar__item" aria-label={`등급 티어 ${tier}`}>
         <span className="mobile-stats-bar__icon mobile-stats-bar__icon--lvl" aria-hidden>
           ⚡

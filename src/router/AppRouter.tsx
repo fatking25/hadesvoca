@@ -5,7 +5,6 @@ import ConversationDayDetailPage from '../pages/conversation/ConversationDayDeta
 import ConversationDayResultPage from '../pages/conversation/ConversationDayResultPage'
 import ConversationStageListPage from '../pages/conversation/ConversationStageListPage'
 import HomePage from '../pages/HomePage'
-import InfoPage from '../pages/InfoPage'
 import StartPage from '../pages/StartPage'
 import VocabularyBookPage from '../pages/VocabularyBookPage'
 import WordStudyDayDetailPage from '../pages/WordStudyDayDetailPage'
@@ -29,7 +28,6 @@ export default function AppRouter() {
           <Route path="/conversation/:dayId" element={<ConversationDayDetailPage />} />
           <Route path="/vocabulary-book" element={<VocabularyBookPage />} />
           <Route path="/wrong-note" element={<WrongNotePage />} />
-          <Route path="/info" element={<InfoPage />} />
         </Route>
       </Routes>
       </ConversationSessionProvider>

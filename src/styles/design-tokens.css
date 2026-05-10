@@ -127,6 +127,13 @@
   --transition-transform: transform var(--duration-normal) var(--easing-standard);
   --transition-shadow: box-shadow var(--duration-normal) var(--easing-standard);
 
+  /* ----- Scrollbar (브랜드 녹색 톤 · 얇은 둥근 썸) ----- */
+  --scrollbar-size: 8px;
+  --scrollbar-corner: transparent;
+  --scrollbar-track: color-mix(in srgb, var(--color-border-subtle) 55%, transparent);
+  --scrollbar-thumb: color-mix(in srgb, var(--color-accent-primary) 82%, var(--color-accent-primary-strong));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--color-accent-primary-strong) 55%, var(--color-accent-primary-press));
+
   /* ----- Document base (모바일 우선) ----- */
   color-scheme: light dark;
   font: var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
@@ -182,6 +189,10 @@
     --shadow-lg:
       0 12px 30px rgb(0 0 0 / 0.4),
       0 24px 48px rgb(0 0 0 / 0.28);
+
+    --scrollbar-track: color-mix(in srgb, var(--color-border-subtle) 40%, transparent);
+    --scrollbar-thumb: color-mix(in srgb, var(--color-accent-primary) 70%, var(--color-accent-primary-strong));
+    --scrollbar-thumb-hover: var(--color-accent-primary);
   }
 }
 
