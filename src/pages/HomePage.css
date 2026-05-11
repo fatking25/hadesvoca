@@ -240,24 +240,6 @@
   color: var(--color-text-primary);
 }
 
-.home-dashboard-card--spotlight {
-  border-radius: var(--radius-lg);
-  border-color: var(--color-accent-secondary-border);
-  background:
-    linear-gradient(
-      145deg,
-      var(--color-accent-secondary-soft),
-      var(--social-bg) 55%
-    );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.25),
-    var(--shadow-sm);
-}
-
-.home-dashboard-card--spotlight .ui-card__section-heading {
-  color: var(--color-text-primary);
-}
-
 .home-dashboard-card--quiet {
   border-radius: var(--radius-md);
   border-style: dashed;
@@ -276,6 +258,142 @@
 
 .home-continue__hint {
   margin: 0;
+}
+
+/* ----- 최근 틀린 단어·표현 · 미해결 상위 3건 미리보기 ----- */
+.home-recent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.home-recent__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.home-recent__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.home-recent__cta {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  text-decoration: none;
+}
+
+.home-recent__cta:hover {
+  text-decoration: underline;
+}
+
+.home-recent__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-recent__row {
+  margin: 0;
+}
+
+.home-recent__entry {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-elevated);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.home-recent__entry:hover {
+  border-color: var(--color-accent-primary-border, var(--color-border-subtle));
+  background: var(--color-accent-primary-soft);
+}
+
+.home-recent__entry:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.home-recent__entry:active {
+  transform: scale(0.995);
+}
+
+.home-recent__entry--missing,
+.home-recent__entry--loading {
+  background: var(--color-bg-muted);
+}
+
+.home-recent__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.home-recent__badge--expr {
+  border-color: var(--color-accent-primary-border, var(--color-border-subtle));
+  color: var(--color-accent-primary);
+  background: var(--color-accent-primary-soft);
+}
+
+.home-recent__main {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+}
+
+.home-recent__word {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.home-recent__meaning {
+  color: var(--color-text-secondary);
+}
+
+.home-recent__sep {
+  color: var(--color-text-muted);
+}
+
+.home-recent__refs {
+  font-size: var(--font-size-2xs, 11px);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.home-recent__loading,
+.home-recent__fallback {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }
 
 /* ----- 메인 메뉴 · hierarchy ----- */

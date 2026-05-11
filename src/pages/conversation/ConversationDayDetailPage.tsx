@@ -93,7 +93,12 @@ export default function ConversationDayDetailPage() {
   const navigate = useNavigate()
   const dayIdNum = parseDayId(dayIdParam)
 
-  const [packState, setPackState] = useState<RemoteContentState<ConversationStage>>({ status: 'idle' })
+  // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
+  // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 로딩 UI 라
+  // 렌더 결과는 동일하다.
+  const [packState, setPackState] = useState<RemoteContentState<ConversationStage>>({
+    status: 'loading',
+  })
   const [currentStep, setCurrentStep] = useState<FlowStep>('cutscene')
   const [narrationIndex, setNarrationIndex] = useState(0)
   const [dialogueIndex, setDialogueIndex] = useState(0)
@@ -106,17 +111,23 @@ export default function ConversationDayDetailPage() {
   /** 단어장(표현) 저장 버튼 반영용 — `loadUserProgress` 재읽기 트리거 */
   const [exprVocabTick, setExprVocabTick] = useState(0)
 
-  const resetQuizLocals = useCallback(() => {
+  // 렌더 중에도 호출할 수 있도록 state 리셋만 분리한다(ref 는 건드리지 않음).
+  // react-hooks/refs 룰: 렌더 중에는 ref.current 접근 금지.
+  const resetQuizStateLocals = useCallback(() => {
     setQuizIndex(0)
     setQuizSelected(null)
     setQuizRevealed(false)
+  }, [])
+
+  // 이벤트 핸들러(클릭 등)에서 그대로 부르는 진입점. state + ref 모두 리셋.
+  const resetQuizLocals = useCallback(() => {
+    resetQuizStateLocals()
     quizCorrectRef.current = 0
     wrongQuizIdsRef.current = []
-  }, [])
+  }, [resetQuizStateLocals])
 
   useEffect(() => {
     let cancelled = false
-    setPackState({ status: 'loading' })
     getConversationStage(MVP_CONV_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
@@ -161,74 +172,82 @@ export default function ConversationDayDetailPage() {
     return nextDayIdInStage(packState.data, day.dayId)
   }, [packState, day])
 
-  useEffect(() => {
+  // ─────────────────────────────────────────────────────────────────────────
+  // dayId / day 변경 시 스텝을 'cutscene' 으로 리셋(=Resetting state with a prop).
+  // 기존에는 useEffect 안에서 동기 setState 를 호출해 react-hooks/set-state-in-effect
+  // 룰을 위반했다. 같은 의미를 effect 밖(렌더 중)에서 가드된 setState 로 표현한다.
+  // 무한 루프 방지: stepResetKey 가 currentResetKey 와 같아지면 분기 false → 종료.
+  // ─────────────────────────────────────────────────────────────────────────
+  const [stepResetKey, setStepResetKey] = useState<string | null>(null)
+  const currentResetKey =
+    day !== null ? `day:${day.dayId}` : `id:${dayIdNum ?? 'null'}`
+  if (stepResetKey !== currentResetKey) {
+    setStepResetKey(currentResetKey)
     setCurrentStep('cutscene')
     setNarrationIndex(0)
     setDialogueIndex(0)
-    resetQuizLocals()
-  }, [dayIdNum, day, resetQuizLocals])
+    resetQuizStateLocals()
+  }
 
-  /** 빈 섹션은 통과 스킵 */
+  // ─────────────────────────────────────────────────────────────────────────
+  // Day 변경 시점(=stepResetKey 변경)에 quiz 카운터 ref 도 리셋한다.
+  // react-hooks/refs 룰: ref 접근은 렌더 밖(=effect)에서만. 같은 Day 안의
+  // 이벤트 흐름에서는 resetQuizLocals 가 ref 도 함께 리셋한다.
+  // ─────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (day === null) return
+    quizCorrectRef.current = 0
+    wrongQuizIdsRef.current = []
+  }, [stepResetKey])
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // 빈 섹션 자동 스킵(=state derivation during render).
+  // 각 가드는 다음 렌더에서 자동으로 false 가 되므로 무한 루프가 없다.
+  // navigate(외부 시스템) 와는 분리해 lint 룰의 본래 의도(=effect 는 외부 동기화)에
+  // 맞춘다.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (day !== null) {
     if (currentStep === 'narration' && day.narrations.length === 0) {
       setCurrentStep('dialogue')
       setDialogueIndex(0)
-    }
-    if (currentStep === 'dialogue' && day.dialogue.length === 0) {
+    } else if (currentStep === 'dialogue' && day.dialogue.length === 0) {
       setCurrentStep('expressions')
-    }
-    if (currentStep === 'expressions' && day.keyExpressions.length === 0 && day.quiz.length > 0) {
-      resetQuizLocals()
+    } else if (
+      currentStep === 'expressions' &&
+      day.keyExpressions.length === 0 &&
+      day.quiz.length > 0
+    ) {
       setCurrentStep('quiz')
+      resetQuizStateLocals()
     }
-    if (
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // expressions/quiz 가 모두 비어 있는 Day 는 결과 페이지로 자동 이동.
+  // navigate 는 외부 시스템(라우터) 동기화이므로 effect 안에서 처리해야 한다.
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (day === null) return
+    if (dayIdParam === undefined || dayIdParam === '') return
+    const expressionsEmpty =
       currentStep === 'expressions' &&
       day.keyExpressions.length === 0 &&
       day.quiz.length === 0
-    ) {
-      if (dayIdParam !== undefined && dayIdParam !== '') {
-        const noQuizPayload: ConversationDayResultLocationState = {
-          fromFlow: true,
-          quizCorrect: 0,
-          quizTotal: 0,
-          skippedQuiz: true,
-          nextDayId: nextDayForResult,
-          persistNonce: createPersistNonce(),
-          wrongQuizIds: [],
-        }
-        navigate(`/conversation/${dayIdParam}/result`, {
-          replace: true,
-          state: noQuizPayload,
-        })
-      }
+    const quizEmpty = currentStep === 'quiz' && day.quiz.length === 0
+    if (!(expressionsEmpty || quizEmpty)) return
+    const noQuizPayload: ConversationDayResultLocationState = {
+      fromFlow: true,
+      quizCorrect: 0,
+      quizTotal: 0,
+      skippedQuiz: true,
+      nextDayId: nextDayForResult,
+      persistNonce: createPersistNonce(),
+      wrongQuizIds: [],
     }
-    if (currentStep === 'quiz' && day.quiz.length === 0) {
-      if (dayIdParam !== undefined && dayIdParam !== '') {
-        const noQuizPayload: ConversationDayResultLocationState = {
-          fromFlow: true,
-          quizCorrect: 0,
-          quizTotal: 0,
-          skippedQuiz: true,
-          nextDayId: nextDayForResult,
-          persistNonce: createPersistNonce(),
-          wrongQuizIds: [],
-        }
-        navigate(`/conversation/${dayIdParam}/result`, {
-          replace: true,
-          state: noQuizPayload,
-        })
-      }
-    }
-  }, [
-    currentStep,
-    day,
-    navigate,
-    dayIdParam,
-    resetQuizLocals,
-    nextDayForResult,
-  ])
+    navigate(`/conversation/${dayIdParam}/result`, {
+      replace: true,
+      state: noQuizPayload,
+    })
+  }, [currentStep, day, navigate, dayIdParam, nextDayForResult])
 
   const cutsceneSrc = day?.cutsceneImagePath?.trim()
     ? publicAssetUrl(day.cutsceneImagePath)

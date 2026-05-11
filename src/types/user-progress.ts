@@ -102,6 +102,40 @@ export interface DailyStudyCount {
 }
 
 /**
+ * 보상/코인 거래 1건의 사유. UI 메시지·통계 분류·중복 지급 가드(`refId`)에 함께 쓰인다.
+ * - `daily_coin`                : 매일 1회 무료 코인 지급
+ * - `word_day_complete`         : 단어 Day 최초 완료 보상
+ * - `conversation_day_complete` : 회화 Day 최초 완료 보상(현재는 지급 보류, 자리 예약)
+ * - `stage_complete`            : Stage 최초 완료 보상(단어 우선, 회화 보류)
+ * - `manual`                    : 수동 보정·디버그용 1회 항목
+ */
+export type RewardTransactionReason =
+  | 'daily_coin'
+  | 'word_day_complete'
+  | 'conversation_day_complete'
+  | 'stage_complete'
+  | 'manual'
+
+/**
+ * 보상/코인 거래 한 건. EXP·코인 변동을 한 줄에 합쳐 적고, `(reason, refId)` 단일성으로
+ * 중복 지급을 차단한다. 본문 저장 금지 원칙상 콘텐츠 텍스트는 들어가지 않으며 참조 id 문자열만 둔다.
+ * 지급 규칙·sanitize 길이 캡 등 실제 적용 로직은 후속 Phase 에서 연결한다.
+ */
+export interface RewardTransaction {
+  /** 거래 자체의 고유 id(예: UUID). 동일 거래 재기록 방지에 사용 */
+  readonly id: string
+  readonly reason: RewardTransactionReason
+  /** 멱등 키(예: `word-day-clear-first:stage:1:day:3`). 같은 키 재기록 금지 */
+  readonly refId: string | null
+  /** 이번 거래로 더할 EXP 변화량. 지급은 양수, 보정은 음수 가능 */
+  readonly expDelta: number
+  /** 이번 거래로 더할 코인 변화량. 지급은 양수, 차감은 음수 */
+  readonly coinDelta: number
+  /** ISO8601 타임스탬프 */
+  readonly createdAt: string
+}
+
+/**
  * localStorage 키 `hadesvoca:userProgress` 에 JSON으로 넣는 루트 스냅샷.
  * 자동 저장(퀴즈·회화 완료, 단어장 등)과 수동 저장·임포트 모두 같은 형식이다.
  * 필드 추가 시 `utils/storage.ts` 파서·sanitize에서 기본값으로 병합한다. 호환 깨지는 변경만 version 상향.
@@ -109,12 +143,21 @@ export interface DailyStudyCount {
 export interface UserProgress {
   readonly version: UserProgressVersion
   readonly nickname: string
+  /**
+   * 로컬에서 생성된 익명 사용자 id(첫 진입 시 자동 발급, PII와 결합하지 않음).
+   * 서버/로그인 도입 시 계정 id 로 1:1 승격 가능. 발급 함수는 후속 Phase에서 연결.
+   */
+  readonly userId: string
   /** 로컬 달력 기준 연속 학습일(첫 활동일 1부터, 날짜가 끊기면 1로 리셋) */
   readonly streakDays: number
   /** `streakDays`를 마지막으로 갱신한 로컬일 `YYYY-MM-DD` */
   readonly lastStudyDateKey: string
   /** 소프트 재화(MVP) */
   readonly coins: number
+  /** 사용자별 일일 무료 코인 지급량(현재 정책 기본 30, sanitize 단계에서 범위 클램프) */
+  readonly dailyCoinAmount: number
+  /** 마지막으로 일일 코인을 지급한 로컬일 `YYYY-MM-DD`. 미지급이면 `null` */
+  readonly lastDailyCoinGrantedDate: string | null
   /** 사용자 등급 티어(1~99, 완료 Day 수에서 파생·저장) — UI의 LV로 표시 */
   readonly rankTier: number
   /** 누적 경험치(EXP). 지급 규칙은 후속 작업. */
@@ -128,6 +171,11 @@ export interface UserProgress {
   readonly savedWords: readonly SavedWordRef[]
   readonly savedExpressions: readonly SavedExpressionRef[]
   readonly wrongNotes: readonly WrongNoteRef[]
+  /**
+   * 보상/코인 거래 이력. `(reason, refId)` 단일성으로 중복 지급을 차단하고,
+   * sanitize 단계의 길이 캡으로 무한 누적을 방지한다(캡 수치는 후속 Phase에서 확정).
+   */
+  readonly rewardTransactionHistory: readonly RewardTransaction[]
   readonly recentStudy: RecentStudySnapshot | null
   readonly dailyStudyCount: DailyStudyCount
   readonly updatedAt: string
@@ -149,9 +197,12 @@ export function createDefaultUserProgress(now: Date = new Date()): UserProgress 
   return {
     version: USER_PROGRESS_SCHEMA_VERSION,
     nickname: '',
+    userId: '',
     streakDays: 0,
     lastStudyDateKey: '',
     coins: 0,
+    dailyCoinAmount: 30,
+    lastDailyCoinGrantedDate: null,
     rankTier: 1,
     userExp: DEFAULT_USER_EXP,
     dailyWordGoal: DEFAULT_DAILY_WORD_GOAL,
@@ -161,6 +212,7 @@ export function createDefaultUserProgress(now: Date = new Date()): UserProgress 
     savedWords: [],
     savedExpressions: [],
     wrongNotes: [],
+    rewardTransactionHistory: [],
     recentStudy: null,
     dailyStudyCount: {
       dateKey: formatLocalDateKey(now),

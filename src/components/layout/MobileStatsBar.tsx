@@ -1,9 +1,11 @@
 /**
- * 상단 사용자·게이지: 닉네임, 등급(Lv), 연속 학습일, 코인 (`UserProgress` 연동).
+ * 헤더 우측 컴팩트 통계: 프로필(닉네임) · 등급(Lv) · 연속 학습일 · 코인.
+ * - 좌측의 닉네임 chip 버튼만 클릭 가능하며, 누르면 프로필/닉네임 시트가 열린다.
+ * - 나머지 chip 3개(Lv / streak / coin)는 표시 전용(클릭 불가).
+ * - `UserProgress` 갱신은 가시성 / `HADES_USER_PROGRESS_EVENT` 로 재구독한다.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { getTodayStudySessionCount } from '../../utils/learnStats'
 import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../../utils/storage'
 
 function formatCoins(n: number): string {
@@ -11,6 +13,15 @@ function formatCoins(n: number): string {
   if (n >= 1_000_000) return `${Math.round(n / 100_000) / 10}M`
   if (n >= 10_000) return `${Math.round(n / 1000)}k`
   return String(Math.max(0, Math.floor(n)))
+}
+
+/** surrogate-pair 안전 첫 글자. 닉네임이 비어 있으면 한국어 기본값 '나'. */
+function avatarInitial(nick: string): string {
+  const trimmed = nick.trim()
+  if (trimmed === '') return '나'
+  const cp = trimmed.codePointAt(0)
+  if (cp === undefined) return '나'
+  return String.fromCodePoint(cp)
 }
 
 export type MobileStatsBarProps = Readonly<{
@@ -47,53 +58,49 @@ export function MobileStatsBar(props: MobileStatsBarProps) {
   const streak = Math.max(0, Math.floor(progress.streakDays))
   const tier = Math.max(1, Math.min(99, Math.floor(progress.rankTier)))
   const coins = formatCoins(progress.coins)
-  const todaySessions = getTodayStudySessionCount(progress)
-  const goal = Math.max(1, Math.floor(progress.dailyWordGoal) || 1)
+  const initial = avatarInitial(nick)
 
   return (
     <div className="mobile-stats-bar">
       <button
         type="button"
-        className="mobile-stats-bar__user"
+        className="mobile-stats-bar__profile"
         title="프로필 · 닉네임 바꾸기"
         aria-label={`프로필, 닉네임 ${nick}`}
         onClick={() => {
           onProfilePress?.()
         }}
       >
-        <span className="mobile-stats-bar__user-label" aria-hidden>
-          나
+        <span className="mobile-stats-bar__profile-initial" aria-hidden>
+          {initial}
         </span>
-        <span className="mobile-stats-bar__nick">{nick}</span>
+        <span className="mobile-stats-bar__profile-name">{nick}</span>
       </button>
-      <div className="mobile-stats-bar__item" aria-label={`등급 티어 ${tier}`}>
+      <div
+        className="mobile-stats-bar__item mobile-stats-bar__item--lvl"
+        aria-label={`등급 티어 ${tier}`}
+      >
         <span className="mobile-stats-bar__icon mobile-stats-bar__icon--lvl" aria-hidden>
           ⚡
         </span>
         <span className="mobile-stats-bar__chip">Lv</span>
         <span className="mobile-stats-bar__num">{tier}</span>
       </div>
-      <div className="mobile-stats-bar__item" aria-label={`연속 학습 ${streak}일`}>
+      <div
+        className="mobile-stats-bar__item mobile-stats-bar__item--streak"
+        aria-label={`연속 학습 ${streak}일`}
+      >
         <span className="mobile-stats-bar__icon" aria-hidden>
           🔥
         </span>
         <span className="mobile-stats-bar__num">{streak}</span>
       </div>
-      <div className="mobile-stats-bar__item" aria-label={`코인 ${coins}`}>
+      <div
+        className="mobile-stats-bar__item mobile-stats-bar__item--coin"
+        aria-label={`코인 ${coins}`}
+      >
         <span className="mobile-stats-bar__gem" aria-hidden />
         <span className="mobile-stats-bar__num">{coins}</span>
-      </div>
-      <div
-        className="mobile-stats-bar__item mobile-stats-bar__item--today"
-        aria-label={`오늘 학습 세션 ${todaySessions}회, 목표 ${goal}회`}
-        title={`당일 세션 수 / 일일 목표 (${goal})`}
-      >
-        <span className="mobile-stats-bar__today-label" aria-hidden>
-          오늘
-        </span>
-        <span className="mobile-stats-bar__num">
-          {todaySessions}/{goal}
-        </span>
       </div>
     </div>
   )

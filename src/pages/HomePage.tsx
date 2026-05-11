@@ -1,12 +1,39 @@
 /**
- * 메인 허브(대시보드): localStorage + Phase 6-2 통계 파생 값 표시(MVP).
+ * 메인 허브(대시보드): localStorage + Phase 6-2 통계 파생 값 표시.
+ * - "최근 틀린 단어·표현" 섹션은 `wrongNotes`에서 미해결 항목 최근 3건을 골라
+ *   `contentJoin` 헬퍼로 본문을 join해 표시한다. 본문은 표시 시점에만 fetch.
+ * - 본문은 사용자 저장 데이터에 넣지 않고 콘텐츠 JSON에서만 읽는다.
+ * - `wrongNotes` 가 비어 있으면 섹션 자체를 숨겨 mock 표기를 남기지 않는다.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import type { StageWordsFile } from '../types/content'
+import type { ConversationStage } from '../types/conversation'
+import type { WrongNoteRef } from '../types/user-progress'
+import {
+  findExpressionQuiz,
+  findWordQuestionWithEntry,
+  loadConversationStageCached,
+  loadStageWordsCached,
+} from '../utils/contentJoin'
 import { getTodayStudySessionCount } from '../utils/learnStats'
-import { deriveUserGradeLabel } from '../utils/userGrade'
 import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../utils/storage'
+import { deriveUserGradeLabel } from '../utils/userGrade'
 import './HomePage.css'
+
+type WordPacks = Readonly<Record<number, StageWordsFile | null>>
+type ConvPacks = Readonly<Record<number, ConversationStage | null>>
+
+const HOME_RECENT_WRONG_MAX = 3
+
+function stageIdKey(ids: readonly number[]): string {
+  return [...new Set(ids)].sort((a, b) => a - b).join(',')
+}
+
+function parseStageIdKey(key: string): readonly number[] {
+  if (key === '') return []
+  return key.split(',').map((s) => Number(s))
+}
 
 export default function HomePage() {
   const [reloadNonce, setReloadNonce] = useState(0)
@@ -65,6 +92,85 @@ export default function HomePage() {
       : recent.type === 'word'
         ? `이어서 단어 Day ${recent.dayId} 학습하기`
         : `이어서 회화 Day ${recent.dayId} 진행하기`
+
+  const recentWrong = useMemo<readonly WrongNoteRef[]>(
+    () =>
+      [...progress.wrongNotes]
+        .filter((w) => w.resolved === false)
+        .sort((a, b) => b.lastWrongAt.localeCompare(a.lastWrongAt))
+        .slice(0, HOME_RECENT_WRONG_MAX),
+    [progress.wrongNotes],
+  )
+
+  const wordStageKey = useMemo(
+    () =>
+      stageIdKey(
+        recentWrong.filter((w) => w.type === 'word').map((w) => w.stageId),
+      ),
+    [recentWrong],
+  )
+  const exprStageKey = useMemo(
+    () =>
+      stageIdKey(
+        recentWrong.filter((w) => w.type === 'expression').map((w) => w.stageId),
+      ),
+    [recentWrong],
+  )
+
+  const [wordPacks, setWordPacks] = useState<WordPacks>({})
+  const [convPacks, setConvPacks] = useState<ConvPacks>({})
+
+  useEffect(() => {
+    const stageIds = parseStageIdKey(wordStageKey)
+    let cancelled = false
+    Promise.all(
+      stageIds.map((id) =>
+        loadStageWordsCached(id)
+          .then((pack): { id: number; pack: StageWordsFile | null } => ({
+            id,
+            pack,
+          }))
+          .catch((): { id: number; pack: StageWordsFile | null } => ({
+            id,
+            pack: null,
+          })),
+      ),
+    ).then((rows) => {
+      if (cancelled) return
+      const next: Record<number, StageWordsFile | null> = {}
+      for (const row of rows) next[row.id] = row.pack
+      setWordPacks(next)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [wordStageKey])
+
+  useEffect(() => {
+    const stageIds = parseStageIdKey(exprStageKey)
+    let cancelled = false
+    Promise.all(
+      stageIds.map((id) =>
+        loadConversationStageCached(id)
+          .then((pack): { id: number; pack: ConversationStage | null } => ({
+            id,
+            pack,
+          }))
+          .catch((): { id: number; pack: ConversationStage | null } => ({
+            id,
+            pack: null,
+          })),
+      ),
+    ).then((rows) => {
+      if (cancelled) return
+      const next: Record<number, ConversationStage | null> = {}
+      for (const row of rows) next[row.id] = row.pack
+      setConvPacks(next)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [exprStageKey])
 
   return (
     <main className="home-page">
@@ -139,29 +245,35 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section
-        className="home-recommend ui-card ui-card--dashboard home-dashboard-card home-dashboard-card--spotlight"
-        aria-labelledby="home-recommend-title"
-      >
-        <h2 id="home-recommend-title" className="ui-card__section-heading">
-          오늘 추천 학습
-        </h2>
-        <p className="ui-card__body">
-          단어 학습 Stage 1 Day 1 또는 하데스 실전회화 Day 1 진행을 권장합니다. (mock)
-        </p>
-      </section>
-
-      <section
-        className="home-recent ui-card ui-card--dashboard home-dashboard-card home-dashboard-card--quiet"
-        aria-labelledby="home-recent-title"
-      >
-        <h2 id="home-recent-title" className="ui-card__section-heading">
-          최근 틀린 단어·표현
-        </h2>
-        <p className="ui-card__body">
-          오답이 생기면 최대 3개까지 여기에 표시 예정입니다. (mock 비어 있음)
-        </p>
-      </section>
+      {recentWrong.length > 0 ? (
+        <section
+          className="home-recent ui-card ui-card--dashboard home-dashboard-card home-dashboard-card--quiet"
+          aria-labelledby="home-recent-title"
+        >
+          <div className="home-recent__head">
+            <h2 id="home-recent-title" className="ui-card__section-heading home-recent__title">
+              최근 틀린 단어·표현
+            </h2>
+            <Link to="/wrong-note" className="home-recent__cta">
+              전체 보기 →
+            </Link>
+          </div>
+          <ul className="home-recent__list" aria-label="최근 틀린 항목">
+            {recentWrong.map((w) => (
+              <li
+                key={`${w.type}:${w.id}:${w.stageId}:${w.dayId}`}
+                className="home-recent__row"
+              >
+                <HomeRecentWrongBody
+                  note={w}
+                  wordPack={w.type === 'word' ? wordPacks[w.stageId] : undefined}
+                  convStage={w.type === 'expression' ? convPacks[w.stageId] : undefined}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <nav className="home-menu" aria-label="학습 메뉴">
         <div className="home-menu__section-head">
@@ -202,5 +314,98 @@ export default function HomePage() {
         </Link>
       </nav>
     </main>
+  )
+}
+
+function HomeRecentWrongBody({
+  note,
+  wordPack,
+  convStage,
+}: {
+  readonly note: WrongNoteRef
+  readonly wordPack: StageWordsFile | null | undefined
+  readonly convStage: ConversationStage | null | undefined
+}) {
+  const refLine = `Stage ${note.stageId} · Day ${note.dayId} · 틀린 ${note.wrongCount}회`
+
+  if (note.type === 'word') {
+    if (wordPack === undefined) {
+      return (
+        <Link to="/wrong-note" className="home-recent__entry home-recent__entry--loading">
+          <span className="home-recent__loading">불러오는 중…</span>
+          <span className="home-recent__refs">{refLine}</span>
+        </Link>
+      )
+    }
+    const found =
+      wordPack !== null
+        ? findWordQuestionWithEntry(wordPack, note.dayId, note.id)
+        : null
+    if (found === null) {
+      return (
+        <Link to="/wrong-note" className="home-recent__entry home-recent__entry--missing">
+          <span className="home-recent__fallback">해당 문제를 찾지 못했습니다.</span>
+          <span className="home-recent__refs">{refLine}</span>
+        </Link>
+      )
+    }
+    return (
+      <Link to="/wrong-note" className="home-recent__entry">
+        <span className="home-recent__badge">단어</span>
+        <span className="home-recent__main">
+          <span className="home-recent__word" lang="en">
+            {found.entry.word}
+          </span>
+          <span className="home-recent__sep" aria-hidden>
+            ·
+          </span>
+          <span className="home-recent__meaning" lang="ko">
+            {found.entry.meaning}
+          </span>
+        </span>
+        <span className="home-recent__refs">{refLine}</span>
+      </Link>
+    )
+  }
+
+  if (convStage === undefined) {
+    return (
+      <Link to="/wrong-note" className="home-recent__entry home-recent__entry--loading">
+        <span className="home-recent__loading">불러오는 중…</span>
+        <span className="home-recent__refs">{refLine}</span>
+      </Link>
+    )
+  }
+  const quiz =
+    convStage !== null ? findExpressionQuiz(convStage, note.dayId, note.id) : null
+  if (quiz === null) {
+    return (
+      <Link to="/wrong-note" className="home-recent__entry home-recent__entry--missing">
+        <span className="home-recent__fallback">해당 문제를 찾지 못했습니다.</span>
+        <span className="home-recent__refs">{refLine}</span>
+      </Link>
+    )
+  }
+  const correct = quiz.options.find((o) => o.id === quiz.correctOptionId)?.text ?? ''
+  return (
+    <Link to="/wrong-note" className="home-recent__entry">
+      <span className="home-recent__badge home-recent__badge--expr">표현</span>
+      <span className="home-recent__main">
+        <span className="home-recent__word" lang="ko">
+          {quiz.promptKo}
+        </span>
+        {correct !== '' ? (
+          <>
+            <span className="home-recent__sep" aria-hidden>
+              ·
+            </span>
+            <span className="home-recent__meaning" lang="en">
+              {correct}
+            </span>
+          </>
+        ) : null}
+      </span>
+      <span className="home-recent__refs">{refLine}</span>
+    </Link>
   )
 }

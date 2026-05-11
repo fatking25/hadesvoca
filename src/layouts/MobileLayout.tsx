@@ -8,7 +8,6 @@ import { AppSettingsSheet } from '../components/layout/AppSettingsSheet'
 import { MobileStatsBar } from '../components/layout/MobileStatsBar'
 import { ProfileNickSheet } from '../components/layout/ProfileNickSheet'
 import { BottomTabBar } from '../components/navigation/BottomTabBar'
-import { downloadUserProgressBackup } from '../utils/storage'
 import './MobileLayout.css'
 
 type LaunchSettingsState = Readonly<{ appSettings?: AppSettingsView }>
@@ -66,45 +65,38 @@ export default function MobileLayout() {
       <AppSettingsSheet open={settingsOpen} onClose={closeSettings} initialView={settingsEntryView} />
 
       <header className="mobile-header">
+        <div className="mobile-header__brand" aria-label="앱 브랜드">
+          <span
+            className="mobile-header__logo"
+            role="img"
+            aria-label="하데스 보카 로고"
+          >
+            🦉
+          </span>
+          <span className="mobile-header__title">하데스 보카</span>
+        </div>
         <MobileStatsBar
           onProfilePress={() => {
             setSettingsOpen(false)
             setProfileOpen(true)
           }}
         />
-        <div className="mobile-header__brand-row">
-          <div className="mobile-header__logo" aria-hidden>
-            LOGO
-          </div>
-          <div className="mobile-header__title">하데스 보카</div>
-          <div className="mobile-header__actions">
-            <button
-              type="button"
-              className="mobile-header__quick-save"
-              aria-label="진행도 JSON 저장"
-              onClick={() => {
-                downloadUserProgressBackup()
-              }}
-            >
-              저장
-            </button>
-            <button
-              type="button"
-              className={
-                settingsOpen
-                  ? 'mobile-header__settings mobile-header__settings--active'
-                  : 'mobile-header__settings'
-              }
-              aria-expanded={settingsOpen}
-              aria-controls="app-settings-sheet"
-              onClick={() => {
-                openSettingsMenu()
-              }}
-            >
-              설정
-            </button>
-          </div>
-        </div>
+        <button
+          type="button"
+          className={
+            settingsOpen
+              ? 'mobile-header__settings mobile-header__settings--active'
+              : 'mobile-header__settings'
+          }
+          aria-expanded={settingsOpen}
+          aria-controls="app-settings-sheet"
+          aria-label="메뉴 · 설정 열기"
+          onClick={() => {
+            openSettingsMenu()
+          }}
+        >
+          메뉴
+        </button>
       </header>
 
       <div className="mobile-content">

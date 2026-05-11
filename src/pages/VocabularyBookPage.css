@@ -24,3 +24,46 @@
   line-height: var(--line-height-relaxed);
   text-align: center;
 }
+
+.vocab-list__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.vocab-list__word {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  color: var(--text-h, var(--color-text-primary, #0f172a));
+}
+
+.vocab-list__meaning {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary, #0f172a);
+}
+
+.vocab-list__example {
+  margin: 0;
+  font-size: var(--font-size-sm, 13px);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary, #5c6d64);
+}
+
+.vocab-list__example-ko {
+  margin: 0;
+  font-size: var(--font-size-sm, 13px);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted, #7d8c85);
+}
+
+.vocab-list__fallback,
+.vocab-list__loading {
+  margin: 0;
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-muted, #7d8c85);
+}

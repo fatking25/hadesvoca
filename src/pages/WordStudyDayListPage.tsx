@@ -29,8 +29,11 @@ const FALLBACK_DAY_ROWS: readonly Readonly<{ id: number; title: string }>[] = [
 
 export default function WordStudyDayListPage() {
   const [reloadNonce, setReloadNonce] = useState(0)
+  // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
+  // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 fallback UI 라
+  // 렌더 결과는 동일하다.
   const [packState, setPackState] = useState<RemoteContentState<StageWordsFile>>({
-    status: 'idle',
+    status: 'loading',
   })
 
   const refresh = useCallback(() => {
@@ -52,7 +55,6 @@ export default function WordStudyDayListPage() {
 
   useEffect(() => {
     let cancelled = false
-    setPackState({ status: 'loading' })
     fetchStageWordsByStageId(MVP_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })

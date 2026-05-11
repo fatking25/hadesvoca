@@ -93,7 +93,12 @@ function DayEntryCard(
 
 export default function ConversationStageListPage() {
   const { isDayComplete } = useConversationSession()
-  const [state, setState] = useState<RemoteContentState<ConversationStage>>({ status: 'idle' })
+  // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
+  // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 로딩 UI 라
+  // 렌더 결과는 동일하다.
+  const [state, setState] = useState<RemoteContentState<ConversationStage>>({
+    status: 'loading',
+  })
   const [reloadNonce, setReloadNonce] = useState(0)
 
   const persistedProgress = useMemo(() => {
@@ -120,7 +125,6 @@ export default function ConversationStageListPage() {
 
   useEffect(() => {
     let cancelled = false
-    setState({ status: 'loading' })
     getConversationStage(MVP_CONV_STAGE_ID)
       .then((data) => {
         if (!cancelled) setState({ status: 'success', data })
