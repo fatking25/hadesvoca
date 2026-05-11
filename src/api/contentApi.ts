@@ -5,6 +5,9 @@ import type { StageMetadataFile, StageWordsFile } from '../types/content'
 import type { ConversationStage } from '../types/conversation'
 
 const STAGE_METADATA_REL = 'content/stage-metadata.json'
+const WORD_QUESTION_TYPES = new Set(['word-to-meaning', 'meaning-to-word', 'fill-blank'])
+const CONTENT_OFFLINE_MESSAGE =
+  '콘텐츠를 불러오지 못했습니다. 오프라인 상태라면 한 번 온라인으로 접속해 콘텐츠를 캐시한 뒤 다시 시도해 주세요.'
 
 export class ContentFetchError extends Error {
   readonly url: string
@@ -41,10 +44,10 @@ async function fetchText(url: string): Promise<string> {
   try {
     res = await fetch(url)
   } catch (cause) {
-    throw new ContentFetchError('네트워크 오류로 콘텐츠를 불러오지 못했습니다.', url, cause)
+    throw new ContentFetchError(CONTENT_OFFLINE_MESSAGE, url, cause)
   }
   if (!res.ok) {
-    throw new ContentFetchError(`콘텐츠 요청 실패 (HTTP ${res.status})`, url)
+    throw new ContentFetchError(`${CONTENT_OFFLINE_MESSAGE} (HTTP ${res.status})`, url)
   }
   return res.text()
 }
@@ -75,6 +78,78 @@ function assertStageWords(data: unknown, url: string): StageWordsFile {
   const o = data as Record<string, unknown>
   if (o.schemaVersion !== '1' || typeof o.stageId !== 'number' || !Array.isArray(o.days)) {
     throw new ContentFetchError('단어 패키지: 예상 스키마와 맞지 않습니다.', url)
+  }
+  for (const day of o.days) {
+    if (typeof day !== 'object' || day === null) {
+      throw new ContentFetchError('단어 패키지: Day 항목이 올바르지 않습니다.', url)
+    }
+    const d = day as Record<string, unknown>
+    if (typeof d.dayId !== 'number' || typeof d.titleKo !== 'string') {
+      throw new ContentFetchError('단어 패키지: Day 기본 정보가 올바르지 않습니다.', url)
+    }
+    if (!Array.isArray(d.words)) {
+      throw new ContentFetchError('단어 패키지: Day 단어 목록이 올바르지 않습니다.', url)
+    }
+    for (const word of d.words) {
+      if (typeof word !== 'object' || word === null) {
+        throw new ContentFetchError('단어 패키지: 단어 항목이 올바르지 않습니다.', url)
+      }
+      const w = word as Record<string, unknown>
+      if (
+        typeof w.id !== 'string' ||
+        typeof w.word !== 'string' ||
+        typeof w.meaning !== 'string'
+      ) {
+        throw new ContentFetchError('단어 패키지: 단어 기본 정보가 올바르지 않습니다.', url)
+      }
+      if (!Array.isArray(w.questions)) {
+        throw new ContentFetchError('단어 패키지: 문제 목록이 올바르지 않습니다.', url)
+      }
+      for (const question of w.questions) {
+        if (typeof question !== 'object' || question === null) {
+          throw new ContentFetchError('단어 패키지: 문제 항목이 올바르지 않습니다.', url)
+        }
+        const qItem = question as Record<string, unknown>
+        if (
+          typeof qItem.id !== 'string' ||
+          typeof qItem.type !== 'string' ||
+          !WORD_QUESTION_TYPES.has(qItem.type) ||
+          typeof qItem.correctOptionId !== 'string'
+        ) {
+          throw new ContentFetchError('단어 패키지: 문제 기본 정보가 올바르지 않습니다.', url)
+        }
+        if (!Array.isArray(qItem.options) || qItem.options.length < 2) {
+          throw new ContentFetchError('단어 패키지: 문제 선택지가 부족합니다.', url)
+        }
+        const optionIds = new Set<string>()
+        for (const opt of qItem.options) {
+          if (typeof opt !== 'object' || opt === null) {
+            throw new ContentFetchError('단어 패키지: 선택지 항목이 올바르지 않습니다.', url)
+          }
+          const op = opt as Record<string, unknown>
+          if (typeof op.id !== 'string' || typeof op.text !== 'string') {
+            throw new ContentFetchError('단어 패키지: 선택지 기본 정보가 올바르지 않습니다.', url)
+          }
+          optionIds.add(op.id)
+        }
+        if (!optionIds.has(qItem.correctOptionId)) {
+          throw new ContentFetchError('단어 패키지: 정답 선택지를 찾을 수 없습니다.', url)
+        }
+        if (qItem.type === 'word-to-meaning' && typeof qItem.promptEn !== 'string') {
+          throw new ContentFetchError('단어 패키지: 영어 단어 문제 정보가 올바르지 않습니다.', url)
+        }
+        if (qItem.type === 'meaning-to-word' && typeof qItem.promptKo !== 'string') {
+          throw new ContentFetchError('단어 패키지: 뜻 고르기 문제 정보가 올바르지 않습니다.', url)
+        }
+        if (
+          qItem.type === 'fill-blank' &&
+          typeof qItem.templateEn !== 'string' &&
+          typeof qItem.blankSentence !== 'string'
+        ) {
+          throw new ContentFetchError('단어 패키지: 빈칸 문제 정보가 올바르지 않습니다.', url)
+        }
+      }
+    }
   }
   return data as StageWordsFile
 }

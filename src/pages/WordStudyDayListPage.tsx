@@ -10,7 +10,12 @@ import { LearningPathView, type LearningPathDay } from '../components/learning/L
 import type { StageWordsFile } from '../types/content'
 import { countCompletedWordDaysForStage } from '../utils/learnStats'
 import { lessonAvailabilityFromContentAndProgress } from '../utils/learningUnlock'
-import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../utils/storage'
+import {
+  getDueWordReviewStatuses,
+  HADES_USER_PROGRESS_EVENT,
+  loadUserProgress,
+  WORD_DAY_START_COIN_COST,
+} from '../utils/storage'
 
 /** Stage 1 · 기초 TOEIC 단어 (기획 5.2) — 콘텐츠 로드 전 플레이스홀더 */
 const STAGE_TITLE = 'Stage 1 · 기초 TOEIC 단어'
@@ -68,7 +73,15 @@ export default function WordStudyDayListPage() {
     }
   }, [])
 
-  const { completeDayIds, completedStageCount, pathDays, contentDayTotal } = useMemo(() => {
+  const {
+    coins,
+    completeDayIds,
+    completedStageCount,
+    pathDays,
+    contentDayTotal,
+    dueReviewCount,
+    currentOpenDayId,
+  } = useMemo(() => {
     void reloadNonce
     const p = loadUserProgress()
     const contentIds = new Set<number>()
@@ -84,9 +97,11 @@ export default function WordStudyDayListPage() {
 
     const completedForUnlock = new Set<number>()
     const visibleComplete = new Set<number>()
+    let maxCompletedDayId = 0
     for (const d of p.completedWordDays) {
       if (d.stageId !== MVP_STAGE_ID) continue
       visibleComplete.add(d.dayId)
+      if (d.dayId > maxCompletedDayId) maxCompletedDayId = d.dayId
       if (contentIds.has(d.dayId)) {
         completedForUnlock.add(d.dayId)
       }
@@ -132,15 +147,30 @@ export default function WordStudyDayListPage() {
         ? packState.data.days.length
         : FALLBACK_DAY_ROWS.length
 
+    /**
+     * 다음에 풀어야 할 Day = 'open' 이면서 아직 완료되지 않은 첫 번째 항목.
+     * 전부 완료/잠금/준비 중이면 강조할 대상이 없으므로 undefined.
+     */
+    const nextDay = orderedRows.find(
+      (row) => row.status === 'open' && !visibleComplete.has(row.id),
+    )
+
     return {
+      coins: p.coins,
       completeDayIds: visibleComplete,
       completedStageCount: countCompletedWordDaysForStage(p, MVP_STAGE_ID),
       pathDays: orderedRows,
       contentDayTotal: Math.max(0, totalDays),
+      dueReviewCount: getDueWordReviewStatuses(p, maxCompletedDayId).length,
+      currentOpenDayId: nextDay?.id,
     }
   }, [reloadNonce, packState])
 
-  const progressLine = `Stage ${MVP_STAGE_ID} 진행률 ${completedStageCount}/${Math.max(0, contentDayTotal)}`
+  const coinShort = coins < WORD_DAY_START_COIN_COST
+  const progressLine = `Stage ${MVP_STAGE_ID} 진행률 ${completedStageCount}/${Math.max(0, contentDayTotal)} · 보유 ${coins}코인 · 시작 비용 ${WORD_DAY_START_COIN_COST}코인`
+  const screenCaption = coinShort
+    ? `Day는 앞 순서부터 열립니다. 보유 코인 ${coins}개로는 일반 Day를 시작할 수 없습니다(필요 ${WORD_DAY_START_COIN_COST}개). 복습 진입에는 코인이 차감되지 않습니다.`
+    : 'Day는 앞 순서부터 열립니다. 일반 Day 시작 시마다 코인이 차감되며, 복습 진입에는 코인이 차감되지 않습니다.'
 
   return (
     <LearningPathView
@@ -148,12 +178,22 @@ export default function WordStudyDayListPage() {
       sectionLabel={STAGE_TITLE}
       unitTitle={UNIT_HEADLINE}
       progressLine={progressLine}
-      screenCaption={
-        'Day는 앞 순서부터 열립니다. 첫 레슨부터 완료해 나가세요 · 완료한 Day는 자유 복습'
-      }
+      screenCaption={screenCaption}
+      stageImportBanner={{
+        title: 'Stage 콘텐츠 가져오기',
+        description: '추후 Stage 2 이후 콘텐츠를 추가할 수 있게 준비 중입니다.',
+        buttonLabel: 'Stage 콘텐츠 가져오기',
+        statusLabel: '준비중',
+      }}
       days={pathDays}
       basePath="/word-study"
       completeDayIds={completeDayIds}
+      reviewBanner={{
+        dueCount: dueReviewCount,
+        reviewHref: '/word-study/review',
+      }}
+      currentOpenDayId={currentOpenDayId}
+      startGate={{ coins, cost: WORD_DAY_START_COIN_COST }}
     />
   )
 }

@@ -1,9 +1,12 @@
 /**
  * 단어 학습 결과 MVP: 세션 종료 후 `navigate(state)` 로 통계 표시 + `localStorage` 진행 저장
  */
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import type { WrongNoteAttemptRef } from '../types/user-progress'
+import type {
+  WordReviewWrongAttemptRef,
+  WrongNoteAttemptRef,
+} from '../types/user-progress'
 import type { WordStudyWrongItemSummary } from '../types/wordStudySession'
 import {
   isWordStudyQuizResultNavigateState,
@@ -13,25 +16,49 @@ import {
   loadUserProgress,
   markWordStudyPersistHandled,
   mergeUserProgressAfterWordStudyDay,
+  mergeUserProgressAfterWordReviewSession,
   saveUserProgress,
 } from '../utils/storage'
 import './WordStudyPage.css'
+
+type RewardOutcome = Readonly<{
+  firstCompletion: boolean
+  expGranted: number
+  coinsGranted: number
+  memorizedDelta: number
+  stageFirstCompletion: boolean
+  stageExpGranted: number
+  stageCoinsGranted: number
+}>
+
+type ReviewOutcome = Readonly<{
+  reviewedLemmaCount: number
+  correctLemmaCount: number
+  wrongLemmaCount: number
+  nextReviewDayId: number | null
+}>
 
 const MVP_STAGE_ID = 1
 
 export default function WordStudyResultPage() {
   const { dayId } = useParams<{ dayId: string }>()
   const { state } = useLocation()
-  const redoHref =
-    dayId !== undefined && dayId !== '' ? `/word-study/${dayId}` : '/word-study'
+  const scored = isWordStudyQuizResultNavigateState(state)
+  /**
+   * Review 모드는 보상/완료/`completedWordDays` 갱신 없이 복습 상태만 갱신한다.
+   */
+  const isReviewMode = scored && state.mode === 'word-review'
+  const redoHref = isReviewMode
+    ? '/word-study/review'
+    : dayId !== undefined && dayId !== ''
+      ? `/word-study/${dayId}`
+      : '/word-study'
 
   const dayNum = useMemo((): number | null => {
     if (dayId === undefined || dayId === '') return null
     const n = Number.parseInt(dayId, 10)
     return Number.isFinite(n) ? n : null
   }, [dayId])
-
-  const scored = isWordStudyQuizResultNavigateState(state)
 
   const emptyWrongItems: readonly WordStudyWrongItemSummary[] = []
 
@@ -52,38 +79,120 @@ export default function WordStudyResultPage() {
         ? Math.round((correctCount / answered) * 100)
         : 0
 
+  const [reward, setReward] = useState<RewardOutcome | null>(null)
+  const [reviewOutcome, setReviewOutcome] = useState<ReviewOutcome | null>(null)
+
   /** 퀴즈 완료 후 `persistNonce` 가 있을 때만 1회 저장(Strict Mode·재방문 오염 완화) */
   useEffect(() => {
-    if (!scored || dayNum === null) return
     if (!isWordStudyQuizResultNavigateState(state)) return
     const nonce = state.persistNonce
     if (typeof nonce !== 'string' || nonce.length === 0) return
-    if (!markWordStudyPersistHandled(nonce)) return
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      if (!markWordStudyPersistHandled(nonce)) return
 
-    const { wrongItems: items } = normalizeWordStudyResultState(state)
-    const now = new Date()
-    const wrongAttempts: WrongNoteAttemptRef[] = items.map((item) => ({
-      type: 'word',
-      id: item.questionId,
-      stageId: MVP_STAGE_ID,
-      dayId: dayNum,
-    }))
+      const { wrongItems: items } = normalizeWordStudyResultState(state)
+      const now = new Date()
+      const resultDayId = isReviewMode
+        ? typeof state.reviewCurrentWordDayId === 'number' &&
+          Number.isFinite(state.reviewCurrentWordDayId)
+          ? Math.max(0, Math.floor(state.reviewCurrentWordDayId))
+          : 0
+        : dayNum
+      if (resultDayId === null) return
+      const wrongAttempts: WrongNoteAttemptRef[] = items.map((item) => ({
+        type: 'word',
+        id: item.questionId,
+        stageId: MVP_STAGE_ID,
+        dayId: resultDayId,
+      }))
+      const wrongReviewAttempts: WordReviewWrongAttemptRef[] = items
+        .map((item): WordReviewWrongAttemptRef | null => {
+          if (typeof item.lemmaId !== 'string' || item.lemmaId.trim() === '') {
+            return null
+          }
+          return {
+            lemmaId: item.lemmaId,
+            stageId: MVP_STAGE_ID,
+            dayId: resultDayId,
+          }
+        })
+        .filter((item): item is WordReviewWrongAttemptRef => item !== null)
 
-    const prev = loadUserProgress()
-    const next = mergeUserProgressAfterWordStudyDay(prev, {
-      stageId: MVP_STAGE_ID,
-      dayId: dayNum,
-      wrongAttempts,
-      now,
+      const prev = loadUserProgress()
+      if (isReviewMode) {
+        const answeredLemmaIds = Array.isArray(state.answeredLemmaIds)
+          ? state.answeredLemmaIds.filter(
+              (id): id is string => typeof id === 'string' && id.trim() !== '',
+            )
+          : []
+        const merged = mergeUserProgressAfterWordReviewSession(prev, {
+          stageId: MVP_STAGE_ID,
+          currentWordDayId: resultDayId,
+          answeredLemmaIds,
+          wrongAttempts,
+          wrongReviewAttempts,
+          now,
+        })
+        saveUserProgress(merged.next)
+        if (cancelled) return
+        setReviewOutcome({
+          reviewedLemmaCount: merged.reviewedLemmaCount,
+          correctLemmaCount: merged.correctLemmaCount,
+          wrongLemmaCount: merged.wrongLemmaCount,
+          nextReviewDayId: merged.nextReviewDayId,
+        })
+        return
+      }
+
+      const dayWordsCount =
+        typeof state.dayWordsCount === 'number' &&
+        Number.isFinite(state.dayWordsCount)
+          ? state.dayWordsCount
+          : 0
+      const stageDayIds = Array.isArray(state.stageDayIds)
+        ? state.stageDayIds.filter(
+            (v): v is number => typeof v === 'number' && Number.isFinite(v),
+          )
+        : []
+      const merged = mergeUserProgressAfterWordStudyDay(prev, {
+        stageId: MVP_STAGE_ID,
+        dayId: resultDayId,
+        wrongAttempts,
+        wrongReviewAttempts,
+        dayWordsCount,
+        stageDayIds,
+        now,
+      })
+      saveUserProgress(merged.next)
+      if (cancelled) return
+      setReward({
+        firstCompletion: merged.firstCompletion,
+        expGranted: merged.expGranted,
+        coinsGranted: merged.coinsGranted,
+        memorizedDelta: merged.memorizedDelta,
+        stageFirstCompletion: merged.stageFirstCompletion,
+        stageExpGranted: merged.stageExpGranted,
+        stageCoinsGranted: merged.stageCoinsGranted,
+      })
     })
-    saveUserProgress(next)
-  }, [scored, dayNum, state])
+    return () => {
+      cancelled = true
+    }
+  }, [scored, dayNum, state, isReviewMode])
 
   return (
-    <main className="word-result">
-      <p className="word-result__done-badge">오늘 미션 완료 · 짧은 5분 학습 세트</p>
-      <h1 className="word-result__title">학습 결과</h1>
-      <p className="word-result__meta">Stage 1 · Day {dayId ?? '—'}</p>
+    <main className={`word-result${isReviewMode ? ' word-result--review' : ''}`}>
+      <p className="word-result__done-badge">
+        {isReviewMode ? '복습 세션 완료' : '오늘 미션 완료 · 짧은 5분 학습 세트'}
+      </p>
+      <h1 className="word-result__title">
+        {isReviewMode ? '복습 결과' : '학습 결과'}
+      </h1>
+      <p className="word-result__meta">
+        {isReviewMode ? '이번 Day 복습' : `Stage 1 · Day ${dayId ?? '—'}`}
+      </p>
 
       {scored ? (
         <>
@@ -110,6 +219,109 @@ export default function WordStudyResultPage() {
               정답률 <strong>{ratePct}%</strong>
             </p>
           </section>
+
+          {isReviewMode ? (
+            <section
+              className="ui-card ui-card--dashboard word-result__reward word-result__reward--review"
+              aria-label="복습 결과 안내"
+            >
+              <h2 className="ui-card__section-heading">복습 완료</h2>
+              {reviewOutcome !== null ? (
+                <>
+                  <p className="word-result__muted ui-card__body">
+                    복습 단어 {reviewOutcome.reviewedLemmaCount}개 중 정답 처리{' '}
+                    {reviewOutcome.correctLemmaCount}개, 오답 처리{' '}
+                    {reviewOutcome.wrongLemmaCount}개를 반영했습니다.
+                  </p>
+                  <p className="word-result__muted ui-card__body">
+                    {reviewOutcome.nextReviewDayId === null
+                      ? '다음 복습 대상으로 예약된 단어가 없습니다.'
+                      : `다음 복습은 Word Day ${reviewOutcome.nextReviewDayId}부터 대상이 됩니다.`}
+                  </p>
+                </>
+              ) : (
+                <p className="word-result__muted ui-card__body">
+                  복습 결과를 저장하는 중입니다.
+                </p>
+              )}
+              <p className="word-result__muted ui-card__body">
+                복습 세션에서는 코인이 차감되지 않으며, Day 완료 보상도 지급되지
+                않습니다.
+              </p>
+            </section>
+          ) : reward !== null ? (
+            reward.firstCompletion ? (
+              <section
+                className="ui-card ui-card--dashboard word-result__reward word-result__reward--first"
+                aria-label="이번에 받은 보상"
+              >
+                <h2 className="ui-card__section-heading">최초 완료 보상</h2>
+                <div className="word-result__reward-grid">
+                  <div className="word-result__reward-cell">
+                    <span className="word-result__reward-label">EXP</span>
+                    <span className="word-result__reward-value">
+                      +{reward.expGranted}
+                    </span>
+                  </div>
+                  <div className="word-result__reward-cell">
+                    <span className="word-result__reward-label">코인</span>
+                    <span className="word-result__reward-value">
+                      +{reward.coinsGranted}
+                    </span>
+                  </div>
+                  {reward.memorizedDelta > 0 ? (
+                    <div className="word-result__reward-cell">
+                      <span
+                        className="word-result__reward-label"
+                        title="이번 Day의 단어 수가 누적 학습 단어에 더해집니다"
+                      >
+                        학습 완료 단어
+                      </span>
+                      <span className="word-result__reward-value">
+                        +{reward.memorizedDelta}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              </section>
+            ) : (
+              <section
+                className="ui-card ui-card--dashboard word-result__reward word-result__reward--again"
+                aria-label="보상 안내"
+              >
+                <p className="word-result__muted ui-card__body">
+                  이미 완료한 Day라 보상은 지급되지 않았습니다. 진행 기록은
+                  업데이트되었어요.
+                </p>
+              </section>
+            )
+          ) : null}
+
+          {!isReviewMode && reward !== null && reward.stageFirstCompletion ? (
+            <section
+              className="ui-card ui-card--dashboard word-result__reward word-result__reward--stage"
+              aria-label="Stage 완료 보상"
+            >
+              <h2 className="ui-card__section-heading">Stage 최초 완료 보상</h2>
+              <p className="word-result__muted ui-card__body">
+                이 Stage의 모든 Day를 완료했습니다.
+              </p>
+              <div className="word-result__reward-grid">
+                <div className="word-result__reward-cell">
+                  <span className="word-result__reward-label">EXP</span>
+                  <span className="word-result__reward-value">
+                    +{reward.stageExpGranted}
+                  </span>
+                </div>
+                <div className="word-result__reward-cell">
+                  <span className="word-result__reward-label">코인</span>
+                  <span className="word-result__reward-value">
+                    +{reward.stageCoinsGranted}
+                  </span>
+                </div>
+              </div>
+            </section>
+          ) : null}
 
           <section
             className="ui-card ui-card--dashboard"
@@ -139,7 +351,9 @@ export default function WordStudyResultPage() {
               </ul>
             )}
             <p className="word-result__muted ui-card__body">
-              틀린 문항은 기기에 저장된 진행 데이터의 오답 목록에 반영됩니다. (이 기기에서만)
+              {isReviewMode
+                ? '이번 복습 세션의 오답은 오답노트와 단어별 복습 상태에 반영됩니다. (이 기기에서만)'
+                : '틀린 문항은 기기에 저장된 진행 데이터의 오답 목록에 반영됩니다. (이 기기에서만)'}
             </p>
           </section>
         </>
@@ -153,7 +367,7 @@ export default function WordStudyResultPage() {
 
       <nav className="word-result__actions" aria-label="결과 다음 동작">
         <Link className="ui-btn ui-btn--primary ui-btn--block" to={redoHref}>
-          다시 학습하기
+          {isReviewMode ? '복습 다시 진행' : '다시 학습하기'}
         </Link>
         <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/home">
           홈으로 돌아가기

@@ -1,5 +1,6 @@
 /**
- * 학습 경로 목록 화면: 유닛 배너 · 지그재그 노드 · 듀오형 시작 시트 (placeholder 데이터 그대로).
+ * 학습 경로 목록 화면: 유닛 배너 · 지그재그 노드 · 듀오형 시작 시트.
+ * 상위(`WordStudyDayListPage` 등)에서 콘텐츠/`UserProgress` 기반 상태를 계산해 props 로 주입한다.
  */
 
 import {
@@ -24,6 +25,36 @@ export type LearningPathDay = Readonly<{
 
 export type LearningPathVariant = 'conversation' | 'word'
 
+/**
+ * 복습 진입 배너(주로 단어 학습 경로에서 사용).
+ * `dueCount === 0` 이면 상위에서 prop 자체를 전달하지 않거나 0 으로 두면 배너가 숨겨진다.
+ */
+export type LearningPathReviewBanner = Readonly<{
+  dueCount: number
+  reviewHref: string
+}>
+
+/**
+ * Stage 콘텐츠 가져오기 자리(Phase 12-1-B).
+ * 실제 외부 JSON import 기능 없이, 준비중 UI 만 표시한다.
+ */
+export type LearningPathStageImportBanner = Readonly<{
+  title: string
+  description: string
+  buttonLabel: string
+  statusLabel: string
+}>
+
+/**
+ * 일반 Day 시작 비용 게이트(단어 학습 전용).
+ * `coins < cost` 일 때 시작 CTA 를 비활성화하고 안내 문구를 띄운다.
+ * 복습 배너는 이 게이트와 무관하게 동작한다.
+ */
+export type LearningPathStartGate = Readonly<{
+  coins: number
+  cost: number
+}>
+
 export type LearningPathViewProps = Readonly<{
   variant: LearningPathVariant
   sectionLabel: string
@@ -36,6 +67,14 @@ export type LearningPathViewProps = Readonly<{
   completeDayIds?: ReadonlySet<number>
   /** 예: Stage 1 진행률 3/7 — 콘텐츠 Day 수와 완료 수는 상위에서 계산 */
   progressLine?: string
+  /** Stage 2+ 콘텐츠 가져오기 준비중 자리. 실제 import 동작은 연결하지 않는다. */
+  stageImportBanner?: LearningPathStageImportBanner
+  /** 복습 대상이 있을 때 상단에 노출되는 배너. 없으면 표시되지 않는다. */
+  reviewBanner?: LearningPathReviewBanner
+  /** 진행 경로에서 다음에 풀어야 할 Day id. 강조 pill 표시에 사용. */
+  currentOpenDayId?: number
+  /** 일반 Day 시작 비용 게이트. 미전달이면 시작 CTA 는 항상 활성화된다(=구 회화 화면 호환). */
+  startGate?: LearningPathStartGate
 }>
 
 export function LearningPathView({
@@ -48,6 +87,10 @@ export function LearningPathView({
   guideAccessory,
   completeDayIds,
   progressLine,
+  stageImportBanner,
+  reviewBanner,
+  currentOpenDayId,
+  startGate,
 }: LearningPathViewProps) {
   const sheetTitleId = useId()
   const closeBtnRef = useRef<HTMLButtonElement | null>(null)
@@ -57,12 +100,18 @@ export function LearningPathView({
   const [focusDay, setFocusDay] = useState<LearningPathDay | null>(null)
   const sheetOpen = focusDay !== null
 
+  const sheetCoinShort =
+    focusDay !== null &&
+    focusDay.status === 'open' &&
+    startGate !== undefined &&
+    startGate.coins < startGate.cost
+
   useEffect(() => {
     if (!sheetOpen) return
     prevActiveEl.current = document.activeElement
     const id = window.requestAnimationFrame(() => {
-      if (focusDay?.status === 'open') {
-        ctaRef.current?.focus({ preventScroll: true })
+      if (focusDay?.status === 'open' && ctaRef.current !== null) {
+        ctaRef.current.focus({ preventScroll: true })
       } else {
         closeBtnRef.current?.focus({ preventScroll: true })
       }
@@ -91,7 +140,13 @@ export function LearningPathView({
             <p className="learning-path__section-label">{sectionLabel}</p>
             <h1 className="learning-path__unit-title">{unitTitle}</h1>
           </div>
-          <button type="button" className="learning-path__guide-slot" aria-label="가이드 placeholder">
+          <button
+            type="button"
+            className="learning-path__guide-slot"
+            aria-label="가이드 준비중"
+            disabled
+            title="가이드 준비중"
+          >
             {guideAccessory ?? <span aria-hidden className="learning-path__guide-icon" />}
           </button>
         </section>
@@ -102,6 +157,55 @@ export function LearningPathView({
           </p>
         ) : null}
         <p className="learning-path__screen-caption">{screenCaption}</p>
+
+        {stageImportBanner !== undefined ? (
+          <section
+            className="learning-path__stage-import-banner"
+            aria-label="Stage 콘텐츠 가져오기 준비중"
+          >
+            <div className="learning-path__stage-import-copy">
+              <p className="learning-path__stage-import-title">
+                {stageImportBanner.title}
+              </p>
+              <p className="learning-path__stage-import-sub">
+                {stageImportBanner.description}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="ui-btn ui-btn--ghost learning-path__stage-import-cta"
+              disabled
+            >
+              {stageImportBanner.buttonLabel}
+              <span className="learning-path__stage-import-status">
+                {stageImportBanner.statusLabel}
+              </span>
+            </button>
+          </section>
+        ) : null}
+
+        {reviewBanner !== undefined && reviewBanner.dueCount > 0 ? (
+          <section
+            className="learning-path__review-banner"
+            aria-label="복습 안내"
+          >
+            <div className="learning-path__review-banner-copy">
+              <p className="learning-path__review-banner-title">
+                복습할 단어 {reviewBanner.dueCount}개
+              </p>
+              <p className="learning-path__review-banner-sub">
+                현재 Word Day 기준 복습 대상이 모였어요. 복습 진입에는 코인이
+                차감되지 않습니다.
+              </p>
+            </div>
+            <Link
+              to={reviewBanner.reviewHref}
+              className="ui-btn ui-btn--primary learning-path__review-banner-cta"
+            >
+              복습하기
+            </Link>
+          </section>
+        ) : null}
 
         <div className="learning-path__path-wrap">
           <div className="learning-path__spine" aria-hidden />
@@ -162,6 +266,11 @@ export function LearningPathView({
                         <span className="learning-path__status-pill learning-path__status-pill--done">
                           완료
                         </span>
+                      ) : currentOpenDayId !== undefined &&
+                        currentOpenDayId === day.id ? (
+                        <span className="learning-path__status-pill learning-path__status-pill--ready-now">
+                          이번 Day
+                        </span>
                       ) : (
                         <span className="learning-path__status-pill learning-path__status-pill--ready">
                           진행 가능
@@ -213,18 +322,34 @@ export function LearningPathView({
                 Day {focusDay.prerequisiteDayId}을(를) 먼저 완료하면 열립니다.
               </p>
             : null}
+            {focusDay.status === 'open' && sheetCoinShort && startGate !== undefined ?
+              <p className="learning-path-float__hint learning-path-float__hint--gate">
+                보유 코인 {startGate.coins}개로는 이 Day를 시작할 수 없습니다(필요{' '}
+                {startGate.cost}개). 홈에서 오늘의 코인을 받아 주세요.
+              </p>
+            : null}
             <div className="learning-path-float__actions">
               {focusDay.status === 'open' ? (
-                <Link
-                  ref={ctaRef}
-                  className="ui-btn ui-btn--primary ui-btn--block learning-path-float__cta"
-                  to={`${basePath}/${focusDay.id}`}
-                  onClick={() => {
-                    setFocusDay(null)
-                  }}
-                >
-                  {completeDayIds?.has(focusDay.id) === true ? '복습하기' : '시작하기'}
-                </Link>
+                sheetCoinShort ? (
+                  <button
+                    type="button"
+                    className="ui-btn ui-btn--ghost ui-btn--block"
+                    disabled
+                  >
+                    코인 부족 · 시작할 수 없음
+                  </button>
+                ) : (
+                  <Link
+                    ref={ctaRef}
+                    className="ui-btn ui-btn--primary ui-btn--block learning-path-float__cta"
+                    to={`${basePath}/${focusDay.id}`}
+                    onClick={() => {
+                      setFocusDay(null)
+                    }}
+                  >
+                    {completeDayIds?.has(focusDay.id) === true ? '복습하기' : '시작하기'}
+                  </Link>
+                )
               ) : focusDay.status === 'locked' ? (
                 <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
                   순차 학습 후 이용할 수 있습니다

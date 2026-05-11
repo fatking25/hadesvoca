@@ -8,7 +8,7 @@ import {
   isContentFetchError,
   type RemoteContentState,
 } from '../../api/contentApi'
-import type { ConversationDayResultLocationState } from '../../context/ConversationSessionContext'
+import type { ConversationDayResultLocationState } from '../../context/conversationSessionCore'
 import type {
   ConversationDay,
   ConversationDialogueLine,
@@ -422,7 +422,7 @@ export default function ConversationDayDetailPage() {
               </p>
             ) : (
               <p className="conv-vn__scene-desc conv-vn__scene-desc--muted">
-                장면 설명 없음 · JSON 의 sceneDescriptionKo 또는 descriptionKo 를 채워 주세요.
+                장면 설명이 준비중입니다.
               </p>
             )}
 

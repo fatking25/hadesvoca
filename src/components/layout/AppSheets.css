@@ -330,6 +330,19 @@
   background: var(--color-bg-muted);
 }
 
+.shell-settings-menu-row:disabled,
+.shell-settings-menu-row--disabled {
+  cursor: default;
+  opacity: 0.76;
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+}
+
+.shell-settings-menu-row:disabled:active,
+.shell-settings-menu-row--disabled:active {
+  transform: none;
+}
+
 .shell-settings-menu-row__icon {
   display: grid;
   flex-shrink: 0;
@@ -348,6 +361,17 @@
   font-size: var(--font-size-sm);
   font-weight: 800;
   color: var(--color-text-muted);
+}
+
+.shell-settings-menu-row__status {
+  margin-inline-start: auto;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  background: var(--color-bg-elevated);
 }
 
 .shell-settings-submenu {
@@ -500,4 +524,62 @@
 .shell-settings-stack--profile .shell-profile-sheet {
   margin-top: min(10dvh, var(--space-8));
   margin-inline: auto;
+}
+
+/* ---------- 게스트 초기화(Phase 12-0-C) ---------- */
+.shell-settings-menu-row--danger {
+  color: #b45309;
+}
+
+.shell-settings-menu-row--danger:hover {
+  background: rgb(180 83 9 / 0.08);
+}
+
+.shell-settings-menu-row__icon--danger {
+  color: #b45309;
+  background: rgb(180 83 9 / 0.12);
+  border-color: rgb(180 83 9 / 0.3);
+}
+
+.shell-settings-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.shell-settings-confirm-cta--danger {
+  background: #b45309;
+  border-color: #b45309;
+  color: #ffffff;
+}
+
+.shell-settings-confirm-cta--danger:hover,
+.shell-settings-confirm-cta--danger:focus-visible {
+  background: #92400e;
+  border-color: #92400e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shell-settings-menu-row--danger {
+    color: #fbbf24;
+  }
+  .shell-settings-menu-row--danger:hover {
+    background: rgb(251 191 36 / 0.12);
+  }
+  .shell-settings-menu-row__icon--danger {
+    color: #fbbf24;
+    background: rgb(251 191 36 / 0.15);
+    border-color: rgb(251 191 36 / 0.35);
+  }
+  .shell-settings-confirm-cta--danger {
+    background: #b45309;
+    border-color: #b45309;
+    color: #ffffff;
+  }
+  .shell-settings-confirm-cta--danger:hover,
+  .shell-settings-confirm-cta--danger:focus-visible {
+    background: #d97706;
+    border-color: #d97706;
+  }
 }

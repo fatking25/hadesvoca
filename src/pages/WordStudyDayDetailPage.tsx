@@ -11,7 +11,9 @@ import {
 import {
   WORD_CONTENT_BLANK_TOKEN,
   type StageWordsDaySection,
+  type StageWordsFile,
   type WordContentEntry,
+  type WordContentOption,
   type WordContentQuestion,
 } from '../types/content'
 import type {
@@ -20,10 +22,13 @@ import type {
 } from '../types/wordStudySession'
 import { isSequentialDayUnlocked } from '../utils/learningUnlock'
 import {
+  getDueWordReviewStatuses,
   isWordDayCompleted,
   loadUserProgress,
+  persistStartWordDayWithCoinCost,
   persistRemoveSavedWord,
   persistUpsertSavedWord,
+  WORD_DAY_START_COIN_COST,
 } from '../utils/storage'
 import './WordStudyPage.css'
 
@@ -34,14 +39,75 @@ type QuizItem = {
   readonly question: WordContentQuestion
 }
 
+type WordDayCoinGateState = Readonly<
+  | { status: 'checking'; stageId: number; dayId: number }
+  | { status: 'ready'; stageId: number; dayId: number }
+  | { status: 'blocked'; stageId: number; dayId: number; coins: number; cost: number }
+>
+
+type WordDayAttemptKeyRef = Readonly<{
+  stageId: number
+  dayId: number
+  key: string
+}>
+
+function hasRenderableOptions(question: WordContentQuestion): boolean {
+  if (!Array.isArray(question.options) || question.options.length === 0) return false
+  return question.options.some((option) => option.id === question.correctOptionId)
+}
+
 function buildQuizItems(day: StageWordsDaySection): QuizItem[] {
   const items: QuizItem[] = []
   for (const word of day.words) {
     for (const question of word.questions) {
+      if (!hasRenderableOptions(question)) continue
       items.push({ word, question })
     }
   }
   return items
+}
+
+/**
+ * 복습 세션용 quizItems 구성기(Phase 11-7).
+ *
+ * 정책:
+ * - Stage 전체 콘텐츠 pack 에서 `dueLemmaIds` 에 해당하는 단어만 찾는다.
+ * - 단어 1개당 등록된 questions 를 모두 출제한다(`buildQuizItems` 구조 재사용).
+ * - 콘텐츠에서 찾지 못한 lemmaId 는 조용히 제외한다(앱이 죽지 않게).
+ * - 옵션 셔플은 일반 학습과 동일하게 렌더 시점에 적용된다.
+ */
+function buildReviewQuizItems(
+  pack: StageWordsFile,
+  dueLemmaIds: readonly string[],
+): QuizItem[] {
+  if (dueLemmaIds.length === 0) return []
+  const wordByLemmaId = new Map<string, WordContentEntry>()
+  for (const day of pack.days) {
+    for (const w of day.words) {
+      wordByLemmaId.set(w.id, w)
+    }
+  }
+  const items: QuizItem[] = []
+  for (const lemmaId of dueLemmaIds) {
+    const word = wordByLemmaId.get(lemmaId)
+    if (word === undefined) continue
+    for (const question of word.questions) {
+      if (!hasRenderableOptions(question)) continue
+      items.push({ word, question })
+    }
+  }
+  return items
+}
+
+function shuffleOptionsOnce(options: readonly WordContentOption[]): readonly WordContentOption[] {
+  const shuffled = [...options]
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const tmp = shuffled[i]!
+    shuffled[i] = shuffled[j]!
+    shuffled[j] = tmp
+  }
+  return shuffled
 }
 
 function questionTypeLabel(q: WordContentQuestion): string {
@@ -60,6 +126,7 @@ function snapshotForWrongPrompt(item: QuizItem): string {
 function toWrongSummary(item: QuizItem): WordStudyWrongItemSummary {
   return {
     questionId: item.question.id,
+    lemmaId: item.word.id,
     wordHeadwordEn: item.word.word,
     meaningKo: item.word.meaning,
     questionTypeLabel: questionTypeLabel(item.question),
@@ -156,13 +223,26 @@ function parseDayIdParam(raw: string | undefined): number | null {
   return Number.isFinite(n) ? n : null
 }
 
+function generateWordDayAttemptKey(): string {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID()
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
+type ReviewSessionState = Readonly<{
+  dueLemmaIds: readonly string[]
+  currentWordDayId: number
+}>
+
 export default function WordStudyDayDetailPage() {
   const { dayId: dayIdParam } = useParams<{ dayId: string }>()
   const navigate = useNavigate()
-  const dayNum = parseDayIdParam(dayIdParam)
+  const isReviewMode = dayIdParam === 'review'
+  const dayNum = isReviewMode ? null : parseDayIdParam(dayIdParam)
 
   const [packState, setPackState] = useState<RemoteContentState<Awaited<ReturnType<typeof fetchStageWordsByStageId>>>>({
-    status: 'idle',
+    status: 'loading',
   })
 
   const [questionIndex, setQuestionIndex] = useState(0)
@@ -172,10 +252,18 @@ export default function WordStudyDayDetailPage() {
   const [wrongCount, setWrongCount] = useState(0)
   /** 결과 화면으로 넘길 오답 목록 (`navigate` 시 최신 목록 확보용) */
   const wrongItemsRef = useRef<WordStudyWrongItemSummary[]>([])
+  const wordDayAttemptRef = useRef<WordDayAttemptKeyRef | null>(null)
+  const [coinGate, setCoinGate] = useState<WordDayCoinGateState>(() => ({
+    status: 'checking',
+    stageId: MVP_STAGE_ID,
+    dayId: dayNum ?? 0,
+  }))
+  const [reviewSession, setReviewSession] = useState<ReviewSessionState | null>(
+    null,
+  )
 
   useEffect(() => {
     let cancelled = false
-    setPackState({ status: 'loading' })
     fetchStageWordsByStageId(MVP_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
@@ -196,23 +284,93 @@ export default function WordStudyDayDetailPage() {
   }, [packState, dayNum])
 
   useEffect(() => {
+    if (isReviewMode) return
     if (packState.status !== 'success' || dayNum === null || daySection === null) return
-    const sortedIds = [...packState.data.days]
-      .map((d) => d.dayId)
-      .filter((id) => Number.isFinite(id))
-      .sort((a, b) => a - b)
-    const p = loadUserProgress()
-    const completed = new Set<number>()
-    for (const d of p.completedWordDays) {
-      if (d.stageId === MVP_STAGE_ID) completed.add(d.dayId)
-    }
-    const replay = isWordDayCompleted(p, MVP_STAGE_ID, dayNum)
-    if (!replay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
-      navigate('/word-study', { replace: true })
-    }
-  }, [packState, dayNum, daySection, navigate])
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      const sortedIds = [...packState.data.days]
+        .map((d) => d.dayId)
+        .filter((id) => Number.isFinite(id))
+        .sort((a, b) => a - b)
+      const p = loadUserProgress()
+      const completed = new Set<number>()
+      for (const d of p.completedWordDays) {
+        if (d.stageId === MVP_STAGE_ID) completed.add(d.dayId)
+      }
+      const replay = isWordDayCompleted(p, MVP_STAGE_ID, dayNum)
+      if (!replay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
+        navigate('/word-study', { replace: true })
+        return
+      }
 
-  const quizItems = useMemo(() => (daySection ? buildQuizItems(daySection) : []), [daySection])
+      const existingAttempt = wordDayAttemptRef.current
+      const attempt =
+        existingAttempt !== null &&
+        existingAttempt.stageId === MVP_STAGE_ID &&
+        existingAttempt.dayId === dayNum
+          ? existingAttempt
+          : {
+              stageId: MVP_STAGE_ID,
+              dayId: dayNum,
+              key: generateWordDayAttemptKey(),
+            }
+      wordDayAttemptRef.current = attempt
+
+      const costRes = persistStartWordDayWithCoinCost(
+        MVP_STAGE_ID,
+        dayNum,
+        attempt.key,
+      )
+      if (cancelled) return
+      if (costRes.started) {
+        setCoinGate({ status: 'ready', stageId: MVP_STAGE_ID, dayId: dayNum })
+      } else {
+        setCoinGate({
+          status: 'blocked',
+          stageId: MVP_STAGE_ID,
+          dayId: dayNum,
+          coins: costRes.coins,
+          cost: costRes.cost,
+        })
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [isReviewMode, packState, dayNum, daySection, navigate])
+
+  useEffect(() => {
+    if (!isReviewMode) return
+    if (reviewSession !== null) return
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      const p = loadUserProgress()
+      const currentWordDayId = p.completedWordDays.reduce(
+        (max, c) =>
+          c.stageId === MVP_STAGE_ID && c.dayId > max ? c.dayId : max,
+        0,
+      )
+      const dueLemmaIds = getDueWordReviewStatuses(p, currentWordDayId).map(
+        (s) => s.lemmaId,
+      )
+      setReviewSession({ dueLemmaIds, currentWordDayId })
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [isReviewMode, reviewSession])
+
+  const quizItems = useMemo(() => {
+    if (isReviewMode) {
+      if (packState.status !== 'success' || reviewSession === null) {
+        return [] as QuizItem[]
+      }
+      return buildReviewQuizItems(packState.data, reviewSession.dueLemmaIds)
+    }
+    return daySection ? buildQuizItems(daySection) : []
+  }, [isReviewMode, packState, reviewSession, daySection])
 
   const bookmarkLemmaId = useMemo((): string | null => {
     if (packState.status !== 'success' || dayNum === null) return null
@@ -224,12 +382,19 @@ export default function WordStudyDayDetailPage() {
   const [wordInVocab, setWordInVocab] = useState(false)
 
   useEffect(() => {
-    if (bookmarkLemmaId === null) {
-      setWordInVocab(false)
-      return
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      if (bookmarkLemmaId === null) {
+        setWordInVocab(false)
+        return
+      }
+      const p = loadUserProgress()
+      setWordInVocab(p.savedWords.some((w) => w.lemmaId === bookmarkLemmaId))
+    })
+    return () => {
+      cancelled = true
     }
-    const p = loadUserProgress()
-    setWordInVocab(p.savedWords.some((w) => w.lemmaId === bookmarkLemmaId))
   }, [bookmarkLemmaId])
 
   const resetQuestionLocalState = useCallback(() => {
@@ -238,23 +403,43 @@ export default function WordStudyDayDetailPage() {
   }, [])
 
   useEffect(() => {
-    resetQuestionLocalState()
-    setQuestionIndex(0)
-    setCorrectCount(0)
-    setWrongCount(0)
-    wrongItemsRef.current = []
-  }, [dayNum, daySection, resetQuestionLocalState])
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      resetQuestionLocalState()
+      setQuestionIndex(0)
+      setCorrectCount(0)
+      setWrongCount(0)
+      wrongItemsRef.current = []
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [dayNum, daySection, reviewSession, resetQuestionLocalState])
 
   const current = quizItems[questionIndex]
   const total = quizItems.length
   const isLast = questionIndex >= total - 1
+  const displayOptions = useMemo(
+    () => (current === undefined ? [] : shuffleOptionsOnce(current.question.options)),
+    [current],
+  )
 
-  const resultHref = dayIdParam !== undefined && dayIdParam !== '' ? `/word-study/${dayIdParam}/result` : '/word-study'
+  const resultHref = isReviewMode
+    ? '/word-study/review/result'
+    : dayIdParam !== undefined && dayIdParam !== ''
+      ? `/word-study/${dayIdParam}/result`
+      : '/word-study'
 
-  const dayLabel = dayNum !== null ? `Stage ${MVP_STAGE_ID} · Day ${dayNum}` : 'Stage ? · Day ?'
-  const headline =
-    daySection?.titleKo ??
-    (dayNum === null ? '알 수 없는 Day' : '이 Day 콘텐츠를 찾지 못했습니다')
+  const dayLabel = isReviewMode
+    ? '단어 학습 · 복습'
+    : dayNum !== null
+      ? `Stage ${MVP_STAGE_ID} · Day ${dayNum}`
+      : 'Stage ? · Day ?'
+  const headline = isReviewMode
+    ? '이번 Day 복습'
+    : (daySection?.titleKo ??
+      (dayNum === null ? '알 수 없는 Day' : '이 Day 콘텐츠를 찾지 못했습니다'))
 
   const handlePrimaryAction = () => {
     if (current === undefined) return
@@ -276,12 +461,26 @@ export default function WordStudyDayDetailPage() {
         typeof crypto !== 'undefined' && 'randomUUID' in crypto
           ? crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+      const stageDayIds: readonly number[] = isReviewMode
+        ? []
+        : packState.status === 'success'
+          ? packState.data.days
+              .map((d) => d.dayId)
+              .filter((id): id is number => Number.isFinite(id))
+          : []
       const navState: WordStudyQuizResultNavigateState = {
         correctCount,
         wrongCount,
+        answeredLemmaIds: quizItems.map((item) => item.word.id),
         totalQuestions: total,
         wrongItems: [...wrongItemsRef.current],
         persistNonce,
+        dayWordsCount: isReviewMode ? 0 : (daySection?.words.length ?? 0),
+        stageDayIds,
+        mode: isReviewMode ? 'word-review' : 'word-day',
+        reviewCurrentWordDayId: isReviewMode
+          ? reviewSession?.currentWordDayId
+          : undefined,
       }
       navigate(resultHref, { state: navState })
       return
@@ -291,7 +490,7 @@ export default function WordStudyDayDetailPage() {
     resetQuestionLocalState()
   }
 
-  if (dayNum === null) {
+  if (!isReviewMode && dayNum === null) {
     return (
       <main className="word-study">
         <p className="word-study__muted">Day 번호가 올바르지 않습니다.</p>
@@ -325,7 +524,37 @@ export default function WordStudyDayDetailPage() {
     )
   }
 
-  if (daySection === null || quizItems.length === 0) {
+  if (isReviewMode) {
+    if (reviewSession === null) {
+      return (
+        <main className="word-study word-study--review">
+          <p className="word-study__eyebrow">{dayLabel}</p>
+          <h1 className="word-study__title">{headline}</h1>
+          <p className="word-study__muted">복습 대상을 불러오는 중입니다…</p>
+        </main>
+      )
+    }
+    if (quizItems.length === 0) {
+      return (
+        <main className="word-study word-study--review">
+          <p className="word-study__eyebrow">{dayLabel}</p>
+          <h1 className="word-study__title">{headline}</h1>
+          <p className="word-study__muted">
+            현재 Word Day {reviewSession.currentWordDayId} 기준 복습할 단어가
+            없습니다.
+          </p>
+          <p className="word-study__muted">
+            복습 진입에는 코인이 차감되지 않습니다.
+          </p>
+          <Link to="/word-study" className="word-study__result-link">
+            Day 목록으로
+          </Link>
+        </main>
+      )
+    }
+  }
+
+  if (!isReviewMode && (daySection === null || quizItems.length === 0)) {
     return (
       <main className="word-study">
         <p className="word-study__eyebrow">{dayLabel}</p>
@@ -334,6 +563,54 @@ export default function WordStudyDayDetailPage() {
         <Link to="/word-study" className="word-study__result-link">
           Day 목록으로
         </Link>
+      </main>
+    )
+  }
+
+  const currentCoinGate =
+    coinGate.stageId === MVP_STAGE_ID && coinGate.dayId === (dayNum ?? 0)
+      ? coinGate
+      : ({
+          status: 'checking',
+          stageId: MVP_STAGE_ID,
+          dayId: dayNum ?? 0,
+        } as const)
+
+  if (!isReviewMode && currentCoinGate.status === 'checking') {
+    return (
+      <main className="word-study">
+        <p className="word-study__eyebrow">{dayLabel}</p>
+        <h1 className="word-study__title">{headline}</h1>
+        <p className="word-study__muted">
+          시작 비용 {WORD_DAY_START_COIN_COST}코인을 확인하는 중입니다.
+        </p>
+      </main>
+    )
+  }
+
+  if (!isReviewMode && currentCoinGate.status === 'blocked') {
+    return (
+      <main className="word-study">
+        <p className="word-study__eyebrow">{dayLabel}</p>
+        <h1 className="word-study__title">{headline}</h1>
+        <section className="ui-card ui-card--dashboard word-study__coin-gate">
+          <h2 className="ui-card__section-heading">코인이 부족합니다</h2>
+          <p className="ui-card__body word-study__coin-gate-copy">
+            이 Day를 시작하려면 {currentCoinGate.cost}코인이 필요합니다. 현재 보유
+            코인은 {currentCoinGate.coins}코인입니다.
+          </p>
+          <p className="ui-card__body word-study__coin-gate-copy">
+            홈에서 오늘의 코인을 받은 뒤 다시 시작해 주세요.
+          </p>
+          <div className="word-study__coin-gate-actions">
+            <Link to="/home" className="ui-btn ui-btn--primary ui-btn--block">
+              홈에서 코인 받기
+            </Link>
+            <Link to="/word-study" className="ui-btn ui-btn--ghost ui-btn--block">
+              Day 목록으로
+            </Link>
+          </div>
+        </section>
       </main>
     )
   }
@@ -369,7 +646,12 @@ export default function WordStudyDayDetailPage() {
         <p className="word-study__progress">{progressLabel}</p>
       </div>
 
-      {daySection.descriptionKo !== undefined ? (
+      {isReviewMode ? (
+        <p className="word-study__muted">
+          현재 Word Day {reviewSession?.currentWordDayId ?? 0} 기준 복습 세션입니다.
+          코인은 차감되지 않고, 완료 보상도 지급되지 않습니다.
+        </p>
+      ) : daySection?.descriptionKo !== undefined ? (
         <p className="word-study__muted">{daySection.descriptionKo}</p>
       ) : null}
 
@@ -419,7 +701,7 @@ export default function WordStudyDayDetailPage() {
           <span className="word-study__choice-hint">{choiceInstruction(q)}</span>
         </h2>
         <div className="word-study__choices" role="group" aria-label="객관식 선택지">
-          {q.options.map((opt) => (
+          {displayOptions.map((opt) => (
             <button
               key={opt.id}
               type="button"

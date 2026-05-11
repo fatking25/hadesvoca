@@ -1,13 +1,13 @@
 {
   "schemaVersion": "1",
   "stageId": 1,
-  "stageTitleKo": "Stage 1 · 실전 회화 (mock)",
-  "stageDescriptionKo": "짧은 장면 · 텍스트 중심 비주얼노벨 흐름 점검용 MVP 데이터입니다.",
+  "stageTitleKo": "Stage 1 · 실전 회화",
+  "stageDescriptionKo": "짧은 장면들로 구성된 텍스트 중심 비주얼노벨 흐름입니다.",
   "days": [
     {
       "dayId": 1,
       "titleKo": "챈나와 식사 약속",
-      "descriptionKo": "메시지로 저녁 약속 잡기 · mock",
+      "descriptionKo": "메시지로 저녁 약속 잡기",
       "sceneDescriptionKo": "금요일 오후, 조용한 카페. 친구 챈나에게 저녁 약속 메시지를 보내려는 순간이다.",
       "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
       "narrations": [
@@ -106,7 +106,7 @@
     {
       "dayId": 2,
       "titleKo": "식당 예약하기",
-      "descriptionKo": "전화로 테이블 예약 · mock",
+      "descriptionKo": "전화로 테이블 예약",
       "sceneDescriptionKo": "금요일 저녁 자리를 잡기 위해, 익숙한 이탈리안 레스토랑에 전화를 건다.",
       "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
       "narrations": [
@@ -212,7 +212,7 @@
     {
       "dayId": 3,
       "titleKo": "메뉴 주문하기",
-      "descriptionKo": "웨이터와 주문하기 · mock",
+      "descriptionKo": "웨이터와 주문하기",
       "sceneDescriptionKo": "예약한 테이블에 앉았다. 메뉴판을 넘기며 웨이터가 다가오는 걸 기다린다.",
       "cutsceneImagePath": "/content/conversations/assets/placeholder-day3-cutscene.svg",
       "narrations": [
@@ -305,6 +305,423 @@
             { "id": "d", "text": "Cancel the restaurant." }
           ],
           "correctOptionId": "a"
+        }
+      ]
+    },
+    {
+      "dayId": 4,
+      "titleKo": "길 안내 묻기",
+      "descriptionKo": "메시지로 길 안내받기",
+      "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향한다. 길이 헷갈려 메시지로 물어보기로 한다.",
+      "cutsceneImagePath": "/content/conversations/assets/placeholder-day4-cutscene.svg",
+      "narrations": [
+        {
+          "id": "s1-d4-n1",
+          "textKo": "식당에서 나와 다음 약속 장소로 향한다. 길이 헷갈리지만 챈나에게 물어보면 된다.",
+          "textEn": "You're heading to your next stop but the route is a bit unclear. A quick message to Channa should do."
+        },
+        {
+          "id": "s1-d4-n2",
+          "textKo": "지하철로 가는 게 빠른지부터 묻자.",
+          "textEn": "Start by asking whether the subway is the faster option."
+        }
+      ],
+      "dialogue": [
+        {
+          "id": "s1-d4-d1",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "챈나, 그 서점까지 어떻게 가? 지하철이 빨라?",
+          "textEn": "Hey Channa, how do I get to the bookstore? Is the subway faster?"
+        },
+        {
+          "id": "s1-d4-d2",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "응, 2호선 타고 한 정거장이면 돼.",
+          "textEn": "Yeah, just one stop on Line 2."
+        },
+        {
+          "id": "s1-d4-d3",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "어느 출구로 나가야 해?",
+          "textEn": "Which exit should I take?"
+        },
+        {
+          "id": "s1-d4-d4",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "3번 출구로 나와서 왼쪽으로 5분만 걸으면 돼.",
+          "textEn": "Take exit 3 and walk left for about five minutes."
+        },
+        {
+          "id": "s1-d4-d5",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "알았어, 고마워. 도착하면 연락할게.",
+          "textEn": "Got it, thanks. I'll text you when I'm there."
+        }
+      ],
+      "keyExpressions": [
+        {
+          "id": "s1-d4-k1",
+          "expressionEn": "How do I get to the bookstore?",
+          "expressionKo": "서점까지 어떻게 가?",
+          "tipKo": "길 안내를 시작할 때 가장 흔한 패턴입니다."
+        },
+        {
+          "id": "s1-d4-k2",
+          "expressionEn": "Which exit should I take?",
+          "expressionKo": "어느 출구로 나가야 해?",
+          "tipKo": "지하철 출구를 물을 때 자연스럽게 씁니다."
+        },
+        {
+          "id": "s1-d4-k3",
+          "expressionEn": "I'll text you when I'm there.",
+          "expressionKo": "도착하면 연락할게.",
+          "tipKo": "도착 후 알려 주겠다고 약속할 때 자주 씁니다."
+        }
+      ],
+      "quiz": [
+        {
+          "type": "multiple-choice",
+          "id": "s1-d4-q1",
+          "promptKo": "친구에게 목적지까지 길을 물을 때 가장 자연스러운 표현은?",
+          "promptEn": "Which line asks a friend how to get somewhere?",
+          "explanationKo": "`How do I get to ~?` 패턴은 길·교통편을 묻는 가장 일반적인 표현이라 친구·낯선 사람 모두에게 통합니다.",
+          "options": [
+            { "id": "a", "text": "Where are you living these days?" },
+            { "id": "b", "text": "How do I get to the bookstore?" },
+            { "id": "c", "text": "Why is the road so long?" },
+            { "id": "d", "text": "Do you speak English well?" }
+          ],
+          "correctOptionId": "b"
+        },
+        {
+          "type": "multiple-choice",
+          "id": "s1-d4-q2",
+          "promptKo": "지하철 출구를 묻는 자연스러운 표현은?",
+          "promptEn": "Pick a natural way to ask which subway exit to use.",
+          "explanationKo": "`Which exit should I take?`는 지하철·역사 안내에서 가장 자주 쓰이는 패턴입니다.",
+          "options": [
+            { "id": "a", "text": "Open the door right now." },
+            { "id": "b", "text": "Take me there yourself." },
+            { "id": "c", "text": "Which exit should I take?" },
+            { "id": "d", "text": "Is the train sleeping today?" }
+          ],
+          "correctOptionId": "c"
+        }
+      ]
+    },
+    {
+      "dayId": 5,
+      "titleKo": "카페에서 안부 잡담",
+      "descriptionKo": "오랜만의 안부 묻기",
+      "sceneDescriptionKo": "토요일 오전, 자주 가는 동네 카페에서 챈나와 다시 만난다. 따뜻한 커피를 사이에 두고 가볍게 안부를 묻는다.",
+      "cutsceneImagePath": "/content/conversations/assets/placeholder-day5-cutscene.svg",
+      "narrations": [
+        {
+          "id": "s1-d5-n1",
+          "textKo": "오랜만에 둘이 마주 앉았다. 가벼운 인사부터 꺼내면 된다.",
+          "textEn": "It's been a while since you sat down together. Start with a soft greeting."
+        },
+        {
+          "id": "s1-d5-n2",
+          "textKo": "근황을 묻고, 자연스럽게 주말 계획으로 화제를 옮긴다.",
+          "textEn": "Catch up on recent news, then drift toward weekend plans."
+        }
+      ],
+      "dialogue": [
+        {
+          "id": "s1-d5-d1",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "오랜만이야. 요즘 어떻게 지냈어?",
+          "textEn": "It's been a while. How have you been?"
+        },
+        {
+          "id": "s1-d5-d2",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "그럭저럭. 회사 일이 많아서 정신 없었어.",
+          "textEn": "Pretty busy with work, honestly. Time's been flying."
+        },
+        {
+          "id": "s1-d5-d3",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "고생이 많네. 이번 주말엔 뭐 해?",
+          "textEn": "That sounds rough. What are you up to this weekend?"
+        },
+        {
+          "id": "s1-d5-d4",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "별 거 없어. 영화나 한 편 볼까 했어.",
+          "textEn": "Nothing much. Maybe catch a movie."
+        },
+        {
+          "id": "s1-d5-d5",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "그럼 같이 가자. 표는 내가 예매할게.",
+          "textEn": "Let's go together then. I'll grab the tickets."
+        }
+      ],
+      "keyExpressions": [
+        {
+          "id": "s1-d5-k1",
+          "expressionEn": "How have you been?",
+          "expressionKo": "요즘 어떻게 지냈어?",
+          "tipKo": "오랜만에 만난 사람에게 가장 자연스러운 안부 인사입니다."
+        },
+        {
+          "id": "s1-d5-k2",
+          "expressionEn": "What are you up to this weekend?",
+          "expressionKo": "이번 주말에 뭐 해?",
+          "tipKo": "be up to ~ 는 '~할 예정이다' 라는 캐주얼한 표현입니다."
+        },
+        {
+          "id": "s1-d5-k3",
+          "expressionEn": "Let's go together then.",
+          "expressionKo": "그럼 같이 가자.",
+          "tipKo": "Let's ~ 로 자연스럽게 함께 하자고 제안합니다."
+        }
+      ],
+      "quiz": [
+        {
+          "type": "multiple-choice",
+          "id": "s1-d5-q1",
+          "promptKo": "오랜만에 만난 친구에게 안부를 묻는 자연스러운 표현은?",
+          "promptEn": "Which line is the most natural greeting after a long time?",
+          "explanationKo": "`How have you been?`은 한동안 못 본 사이에 가장 흔히 쓰이는 안부 인사입니다.",
+          "options": [
+            { "id": "a", "text": "Did you finish dinner already?" },
+            { "id": "b", "text": "Are you lost again?" },
+            { "id": "c", "text": "How have you been?" },
+            { "id": "d", "text": "Where is the manager right now?" }
+          ],
+          "correctOptionId": "c"
+        },
+        {
+          "type": "multiple-choice",
+          "id": "s1-d5-q2",
+          "promptKo": "상대의 주말 계획을 묻는 자연스러운 표현은?",
+          "promptEn": "Pick the most natural way to ask about weekend plans.",
+          "explanationKo": "`What are you up to ~?` 는 '~에 뭐 해?' 라는 캐주얼한 일정 묻기 패턴입니다.",
+          "options": [
+            { "id": "a", "text": "What are you up to this weekend?" },
+            { "id": "b", "text": "Why is Monday so angry?" },
+            { "id": "c", "text": "Do you own the weekend?" },
+            { "id": "d", "text": "Is the calendar tired now?" }
+          ],
+          "correctOptionId": "a"
+        }
+      ]
+    },
+    {
+      "dayId": 6,
+      "titleKo": "약속 일정 변경",
+      "descriptionKo": "메시지로 일정 미루기",
+      "sceneDescriptionKo": "일요일 저녁, 다음 주 약속을 앞두고 챈나에게서 일정 변경 메시지가 도착한다.",
+      "cutsceneImagePath": "/content/conversations/assets/placeholder-day6-cutscene.svg",
+      "narrations": [
+        {
+          "id": "s1-d6-n1",
+          "textKo": "다음 주 화요일에 챈나와 점심 약속이 있다. 그런데 메시지 하나가 왔다.",
+          "textEn": "You had a Tuesday lunch with Channa next week. A message just popped up."
+        },
+        {
+          "id": "s1-d6-n2",
+          "textKo": "차분히 사정을 듣고 다른 날을 제안하면 된다.",
+          "textEn": "Hear her out and suggest another day."
+        }
+      ],
+      "dialogue": [
+        {
+          "id": "s1-d6-d1",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "미안한데, 화요일 약속 미룰 수 있을까?",
+          "textEn": "Sorry, can we reschedule Tuesday?"
+        },
+        {
+          "id": "s1-d6-d2",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "괜찮아. 무슨 일 있어?",
+          "textEn": "No problem. Is everything okay?"
+        },
+        {
+          "id": "s1-d6-d3",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "회사에서 갑자기 일이 생겼어.",
+          "textEn": "Something came up at work, unfortunately."
+        },
+        {
+          "id": "s1-d6-d4",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "이해해. 목요일은 어때?",
+          "textEn": "I get it. Would Thursday work for you?"
+        },
+        {
+          "id": "s1-d6-d5",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "목요일 좋아. 정말 고마워!",
+          "textEn": "Thursday works. Thanks so much!"
+        }
+      ],
+      "keyExpressions": [
+        {
+          "id": "s1-d6-k1",
+          "expressionEn": "Can we reschedule?",
+          "expressionKo": "약속 미룰 수 있을까?",
+          "tipKo": "약속 변경을 부드럽게 부탁할 때 씁니다."
+        },
+        {
+          "id": "s1-d6-k2",
+          "expressionEn": "Something came up.",
+          "expressionKo": "갑자기 일이 생겼어.",
+          "tipKo": "구체적 사유를 말하기 어려울 때 자주 씁니다."
+        },
+        {
+          "id": "s1-d6-k3",
+          "expressionEn": "Would Thursday work for you?",
+          "expressionKo": "목요일 괜찮아?",
+          "tipKo": "대안 날짜를 정중히 제안하는 표현입니다."
+        }
+      ],
+      "quiz": [
+        {
+          "type": "multiple-choice",
+          "id": "s1-d6-q1",
+          "promptKo": "친구에게 약속을 부드럽게 미루자고 할 때 자연스러운 표현은?",
+          "promptEn": "Which line politely asks to reschedule a plan?",
+          "explanationKo": "`Can we reschedule?` 는 약속·미팅 일정을 부드럽게 옮기자고 부탁하는 표준 표현입니다.",
+          "options": [
+            { "id": "a", "text": "Forget our plan forever." },
+            { "id": "b", "text": "Lunch is canceled by law." },
+            { "id": "c", "text": "I will hide from you." },
+            { "id": "d", "text": "Can we reschedule?" }
+          ],
+          "correctOptionId": "d"
+        },
+        {
+          "type": "multiple-choice",
+          "id": "s1-d6-q2",
+          "promptKo": "상대에게 다른 요일을 정중히 제안할 때 자연스러운 표현은?",
+          "promptEn": "Which option politely suggests an alternative day?",
+          "explanationKo": "`Would Thursday work for you?` 처럼 `Would ~ work for you?` 패턴은 대안 일정을 부드럽게 묻습니다.",
+          "options": [
+            { "id": "a", "text": "Pick a day or else." },
+            { "id": "b", "text": "Would Thursday work for you?" },
+            { "id": "c", "text": "Time is just a lie." },
+            { "id": "d", "text": "Bring me a calendar now." }
+          ],
+          "correctOptionId": "b"
+        }
+      ]
+    },
+    {
+      "dayId": 7,
+      "titleKo": "Stage 1 회고",
+      "descriptionKo": "한 주의 표현 정리",
+      "sceneDescriptionKo": "일요일 밤, 하루를 마무리하며 이번 주에 익힌 표현을 머릿속으로 정리해 본다.",
+      "cutsceneImagePath": "/content/conversations/assets/placeholder-day7-cutscene.svg",
+      "narrations": [
+        {
+          "id": "s1-d7-n1",
+          "textKo": "약속을 잡고, 예약하고, 메뉴를 주문하고, 길을 묻고, 안부를 나눴다. 한 주가 빠르게 지나갔다.",
+          "textEn": "You set up a dinner, booked a table, ordered food, asked for directions, and caught up with a friend. Quite a week."
+        },
+        {
+          "id": "s1-d7-n2",
+          "textKo": "오늘은 새 표현 대신, 한 주에 자주 쓴 마무리 인사 3개를 정리해 본다.",
+          "textEn": "Tonight, instead of new lines, recap three closing phrases that came up all week."
+        }
+      ],
+      "dialogue": [
+        {
+          "id": "s1-d7-d1",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "다음에 또 만나자고 자연스럽게 말하고 싶었지.",
+          "textEn": "I wanted to wrap things up with something like 'see you again soon.'"
+        },
+        {
+          "id": "s1-d7-d2",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "헤어질 때 가벼운 인사가 늘 필요했어.",
+          "textEn": "A light closing line came in handy every single time."
+        },
+        {
+          "id": "s1-d7-d3",
+          "speakerId": "channa",
+          "speakerLabelKo": "챈나",
+          "textKo": "이번 주 즐거웠어. 또 보자!",
+          "textEn": "Great week. Let's do it again soon!"
+        },
+        {
+          "id": "s1-d7-d4",
+          "speakerId": "learner",
+          "speakerLabelKo": "나",
+          "textKo": "또 보자. 곧 연락할게.",
+          "textEn": "See you soon. I'll text you."
+        }
+      ],
+      "keyExpressions": [
+        {
+          "id": "s1-d7-k1",
+          "expressionEn": "Let's catch up soon.",
+          "expressionKo": "조만간 또 보자.",
+          "tipKo": "회사·친구 모두에게 자연스럽게 쓰는 인사입니다."
+        },
+        {
+          "id": "s1-d7-k2",
+          "expressionEn": "Talk to you soon.",
+          "expressionKo": "또 연락할게.",
+          "tipKo": "메시지·통화 마무리에 자주 등장합니다."
+        },
+        {
+          "id": "s1-d7-k3",
+          "expressionEn": "Looking forward to it.",
+          "expressionKo": "기대돼.",
+          "tipKo": "다음 약속에 대한 긍정 반응으로 자주 씁니다."
+        }
+      ],
+      "quiz": [
+        {
+          "type": "multiple-choice",
+          "id": "s1-d7-q1",
+          "promptKo": "헤어질 때 '다음에 또 보자' 를 자연스럽게 말하는 표현은?",
+          "promptEn": "Which line naturally says 'let's meet again soon'?",
+          "explanationKo": "`Let's catch up soon.` 은 친구·동료 모두에게 가볍게 다음 만남을 기약할 때 쓰는 마무리 표현입니다.",
+          "options": [
+            { "id": "a", "text": "Forget you ever met me." },
+            { "id": "b", "text": "Let's catch up soon." },
+            { "id": "c", "text": "End this conversation now." },
+            { "id": "d", "text": "Goodbye and never call." }
+          ],
+          "correctOptionId": "b"
+        },
+        {
+          "type": "multiple-choice",
+          "id": "s1-d7-q2",
+          "promptKo": "다음 약속에 긍정적으로 답할 때 자연스러운 표현은?",
+          "promptEn": "Pick the friendliest reply showing you look forward to next time.",
+          "explanationKo": "`Looking forward to it.` 은 다음 일정·만남을 기대한다고 말하는 가장 일반적인 표현입니다.",
+          "options": [
+            { "id": "a", "text": "I doubt this will ever happen." },
+            { "id": "b", "text": "Please cancel everything today." },
+            { "id": "c", "text": "Stop talking to me again." },
+            { "id": "d", "text": "Looking forward to it." }
+          ],
+          "correctOptionId": "d"
         }
       ]
     }

@@ -43,9 +43,16 @@ export function ProfileNickSheet({ open, onClose }: ProfileNickSheetProps) {
 
   useEffect(() => {
     if (!open) return
-    const next = loadUserProgress()
-    setP(next)
-    setDraft(next.nickname)
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      const next = loadUserProgress()
+      setP(next)
+      setDraft(next.nickname)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [open])
 
   useEffect(() => {
@@ -159,9 +166,13 @@ export function ProfileNickSheet({ open, onClose }: ProfileNickSheetProps) {
               <span className="shell-profile-tile__val">{compactCount(convDays)}</span>
               <span className="shell-profile-tile__lbl">회화</span>
             </div>
-            <div className="shell-profile-tile" aria-label={`누적 암기 ${memo}`}>
+            <div
+              className="shell-profile-tile"
+              aria-label={`누적 학습 단어 ${memo}개 (Day 완료 기준)`}
+              title="누적 학습 단어 (Day 완료 기준)"
+            >
               <span className="shell-profile-tile__val">{compactCount(memo)}</span>
-              <span className="shell-profile-tile__lbl">암기</span>
+              <span className="shell-profile-tile__lbl">학습</span>
             </div>
             <div className="shell-profile-tile" aria-label={`코인 ${p.coins}`}>
               <span className="shell-profile-tile__val">{coins}</span>

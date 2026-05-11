@@ -1,5 +1,5 @@
 /**
- * (현재 라우터 미사용 placeholder) 실전회화 경로 UI 검증용 · Stage 목록은 ConversationStageListPage 사용
+ * (현재 라우터 미사용) 실전회화 경로 이전 화면 · Stage 목록은 ConversationStageListPage 사용
  */
 import { LearningPathView } from '../components/learning/LearningPathView'
 
@@ -22,7 +22,7 @@ export default function ConversationDayListPage() {
       variant="conversation"
       sectionLabel={STAGE_TITLE}
       unitTitle={UNIT_HEADLINE}
-      screenCaption="노드를 탭하면 시작 카드가 열립니다 · Stage 1 Day 플로우 · mock"
+      screenCaption="노드를 탭하면 시작 카드가 열립니다."
       days={DAYS}
       basePath="/conversation"
     />

@@ -2,12 +2,12 @@
   "schemaVersion": "1",
   "stageId": 1,
   "stageTitleKo": "Stage 1 · 기초 TOEIC 단어",
-  "stageDescriptionKo": "하루 한 묶음만 풀어도 되는 짧은 mock 세트입니다.",
+  "stageDescriptionKo": "하루 한 묶음만 풀어도 되는 짧은 입문 세트입니다.",
   "days": [
     {
       "dayId": 1,
       "titleKo": "사무·회사 기본 단어",
-      "descriptionKo": "일정·마감·동료 표현 (3단어 × 3유형 · mock)",
+      "descriptionKo": "일정·마감·동료 표현 (3단어 × 3유형)",
       "words": [
         {
           "id": "s1-d1-w01",
@@ -32,7 +32,7 @@
             {
               "id": "s1-d1-w01-q-m2w",
               "type": "meaning-to-word",
-              "promptKo": "일정을 잡다 (동사에 가까운 영어 단어)",
+              "promptKo": "일정을 잡다 (동사)",
               "options": [
                 { "id": "a", "text": "schedule" },
                 { "id": "b", "text": "deadline" },
@@ -152,7 +152,7 @@
     {
       "dayId": 2,
       "titleKo": "일정·회의 단어",
-      "descriptionKo": "연기·안건·참석 (mock)",
+      "descriptionKo": "연기·안건·참석",
       "words": [
         {
           "id": "s1-d2-w01",
@@ -297,7 +297,7 @@
     {
       "dayId": 3,
       "titleKo": "이메일·문서 단어",
-      "descriptionKo": "첨부·확인·전달 (mock)",
+      "descriptionKo": "첨부·확인·전달",
       "words": [
         {
           "id": "s1-d3-w01",
@@ -368,7 +368,7 @@
             {
               "id": "s1-d3-w02-q-m2w",
               "type": "meaning-to-word",
-              "promptKo": "사실 여부를 다시 받다 (동사)",
+              "promptKo": "사실 여부를 다시 확인해 주다 (동사)",
               "options": [
                 { "id": "a", "text": "confirm" },
                 { "id": "b", "text": "guess" },
@@ -442,7 +442,7 @@
     {
       "dayId": 4,
       "titleKo": "채용·인사 단어",
-      "descriptionKo": "채용·지원·면접 (mock)",
+      "descriptionKo": "채용·지원·면접",
       "words": [
         {
           "id": "s1-d4-w01",
@@ -559,7 +559,7 @@
             {
               "id": "s1-d4-w03-q-m2w",
               "type": "meaning-to-word",
-              "promptKo": "채용 심사 대면",
+              "promptKo": "지원자를 만나 평가하는 자리",
               "options": [
                 { "id": "a", "text": "interview" },
                 { "id": "b", "text": "invoice" },
@@ -587,7 +587,7 @@
     {
       "dayId": 5,
       "titleKo": "쇼핑·결제 단어",
-      "descriptionKo": "환불·영수증·할인 (mock)",
+      "descriptionKo": "환불·영수증·할인",
       "words": [
         {
           "id": "s1-d5-w01",
@@ -641,7 +641,7 @@
           "meaning": "영수증",
           "exampleSentence": "Keep your receipt for returns.",
           "exampleMeaning": "반품을 위해 영수증을 간직하세요.",
-          "explanation": "발음은 /리싯/에 가깝습니다.",
+          "explanation": "p가 묵음이라 /리시트/처럼 발음됩니다.",
           "questions": [
             {
               "id": "s1-d5-w02-q-w2m",
@@ -716,7 +716,7 @@
             {
               "id": "s1-d5-w03-q-fb",
               "type": "fill-blank",
-              "templateEn": "Employees get an extra employee {{blank}}.",
+              "templateEn": "Employees get an extra {{blank}} during the year-end sale.",
               "options": [
                 { "id": "a", "text": "discount" },
                 { "id": "b", "text": "discussion" },
@@ -732,7 +732,7 @@
     {
       "dayId": 6,
       "titleKo": "여행·숙박 단어",
-      "descriptionKo": "예약·취소·수하물 (mock)",
+      "descriptionKo": "예약·취소·수하물",
       "words": [
         {
           "id": "s1-d6-w01",
@@ -877,7 +877,7 @@
     {
       "dayId": 7,
       "titleKo": "Stage 1 복습",
-      "descriptionKo": "짧은 복습 세트 (mock)",
+      "descriptionKo": "Stage 1 마무리 짧은 복습 세트",
       "words": [
         {
           "id": "s1-d7-w01",

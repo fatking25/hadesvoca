@@ -234,7 +234,7 @@ export function countCompletedWordDaysToday(
 }
 
 /**
- * 완료 Day당 대략 이수 어휘 수(mock 콘텐츠 3단어×유형 패턴 전제 표시 추정값).
+ * 완료 Day당 대략 이수 어휘 수(현재 Stage 1 콘텐츠 기준 표시 추정값).
  */
 const MVP_WORDS_PER_COMPLETED_WORD_DAY = 3
 

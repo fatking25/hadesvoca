@@ -3,7 +3,7 @@
  * - "최근 틀린 단어·표현" 섹션은 `wrongNotes`에서 미해결 항목 최근 3건을 골라
  *   `contentJoin` 헬퍼로 본문을 join해 표시한다. 본문은 표시 시점에만 fetch.
  * - 본문은 사용자 저장 데이터에 넣지 않고 콘텐츠 JSON에서만 읽는다.
- * - `wrongNotes` 가 비어 있으면 섹션 자체를 숨겨 mock 표기를 남기지 않는다.
+ * - `wrongNotes` 가 비어 있으면 섹션 자체를 숨겨 빈 상태 문구를 남기지 않는다.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -17,7 +17,13 @@ import {
   loadStageWordsCached,
 } from '../utils/contentJoin'
 import { getTodayStudySessionCount } from '../utils/learnStats'
-import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../utils/storage'
+import {
+  canGrantDailyCoin,
+  getDueWordReviewStatuses,
+  HADES_USER_PROGRESS_EVENT,
+  loadUserProgress,
+  persistGrantDailyCoinIfDue,
+} from '../utils/storage'
 import { deriveUserGradeLabel } from '../utils/userGrade'
 import './HomePage.css'
 
@@ -25,6 +31,12 @@ type WordPacks = Readonly<Record<number, StageWordsFile | null>>
 type ConvPacks = Readonly<Record<number, ConversationStage | null>>
 
 const HOME_RECENT_WRONG_MAX = 3
+/**
+ * MVP 단계는 Stage 1 만 콘텐츠가 배포되어 있다.
+ * 복습 기준 Word Day(`currentWordDayId`)는 이 Stage 의 완료 Day 만 본다
+ * (다른 화면들과 동일한 기준 유지: `WordStudyDayListPage`, review 모드 `WordStudyDayDetailPage`).
+ */
+const MVP_STAGE_ID = 1 as const
 
 function stageIdKey(ids: readonly number[]): string {
   return [...new Set(ids)].sort((a, b) => a - b).join(',')
@@ -92,6 +104,35 @@ export default function HomePage() {
       : recent.type === 'word'
         ? `이어서 단어 Day ${recent.dayId} 학습하기`
         : `이어서 회화 Day ${recent.dayId} 진행하기`
+
+  const canGrantToday = useMemo(() => canGrantDailyCoin(progress), [progress])
+  const dailyAmount = Math.max(0, Math.floor(progress.dailyCoinAmount))
+  const [justGrantedAmount, setJustGrantedAmount] = useState<number | null>(null)
+
+  const onClaimDailyCoin = useCallback(() => {
+    const res = persistGrantDailyCoinIfDue()
+    if (res.granted) {
+      setJustGrantedAmount(res.amount)
+    } else {
+      setJustGrantedAmount(null)
+    }
+    refresh()
+  }, [refresh])
+
+  const currentWordDayId = useMemo(
+    () =>
+      progress.completedWordDays.reduce(
+        (max, c) =>
+          c.stageId === MVP_STAGE_ID && c.dayId > max ? c.dayId : max,
+        0,
+      ),
+    [progress.completedWordDays],
+  )
+  const hasAnyWordReviewStatus = progress.wordReviewStatuses.length > 0
+  const dueReviewCount = useMemo(
+    () => getDueWordReviewStatuses(progress, currentWordDayId).length,
+    [progress, currentWordDayId],
+  )
 
   const recentWrong = useMemo<readonly WrongNoteRef[]>(
     () =>
@@ -204,14 +245,22 @@ export default function HomePage() {
               <span className="home-duo-banner__stat-value">{streakDaysStored}일</span>
             </li>
             <li className="home-duo-banner__stat">
-              <span className="home-duo-banner__stat-label">오늘 단어</span>
-              <span className="home-duo-banner__stat-value">
+              <span className="home-duo-banner__stat-label">오늘 학습</span>
+              <span
+                className="home-duo-banner__stat-value"
+                aria-label={`오늘 학습 ${todaySessionCount}개 / 목표 ${dailyGoal}개`}
+              >
                 {todaySessionCount}/{dailyGoal}
               </span>
             </li>
             <li className="home-duo-banner__stat">
-              <span className="home-duo-banner__stat-label">누적 암기</span>
-              <span className="home-duo-banner__stat-value">{totalMemo}개</span>
+              <span className="home-duo-banner__stat-label">누적 학습 단어</span>
+              <span
+                className="home-duo-banner__stat-value"
+                aria-label={`누적 학습 단어 ${totalMemo}개 (Day 완료 기준)`}
+              >
+                {totalMemo}개
+              </span>
             </li>
           </ul>
           <p className="home-duo-banner__grade">
@@ -223,6 +272,39 @@ export default function HomePage() {
           경로 보기
         </Link>
       </section>
+
+      {canGrantToday && dailyAmount > 0 ? (
+        <section
+          className="home-daily-grant ui-card ui-card--dashboard"
+          aria-label="오늘의 코인"
+        >
+          <div className="home-daily-grant__head">
+            <span className="home-daily-grant__eyebrow">오늘의 코인</span>
+            <span className="home-daily-grant__amount" aria-hidden>
+              +{dailyAmount}
+            </span>
+          </div>
+          <p className="home-daily-grant__hint ui-card__body">
+            오늘 하루 한 번 받을 수 있는 무료 코인이 도착했습니다.
+          </p>
+          <button
+            type="button"
+            className="ui-btn ui-btn--primary ui-btn--block home-daily-grant__btn"
+            onClick={onClaimDailyCoin}
+          >
+            +{dailyAmount} 코인 받기
+          </button>
+        </section>
+      ) : justGrantedAmount !== null ? (
+        <section
+          className="home-daily-grant home-daily-grant--claimed ui-card ui-card--dashboard"
+          aria-live="polite"
+        >
+          <p className="home-daily-grant__claimed ui-card__body">
+            오늘의 코인 +{justGrantedAmount}을 받았습니다.
+          </p>
+        </section>
+      ) : null}
 
       <section
         className="home-continue ui-card ui-card--dashboard home-dashboard-card home-dashboard-card--continue"
@@ -244,6 +326,35 @@ export default function HomePage() {
             : '같은 Day로 바로 이동합니다. 목록은 하단 메뉴에서도 열 수 있어요.'}
         </p>
       </section>
+
+      {hasAnyWordReviewStatus ? (
+        <section
+          className="home-review ui-card ui-card--dashboard home-dashboard-card"
+          aria-labelledby="home-review-title"
+        >
+          <p className="home-review__eyebrow">단어 복습</p>
+          <h2 id="home-review-title" className="ui-card__section-heading home-review__title">
+            이번 Day 복습
+          </h2>
+          <p className="home-review__line ui-card__body">
+            {dueReviewCount > 0
+              ? `복습할 단어 ${dueReviewCount}개가 있어요.`
+              : '복습할 단어가 없습니다.'}
+          </p>
+          {dueReviewCount > 0 ? (
+            <Link
+              to="/word-study/review"
+              className="ui-btn ui-btn--primary ui-btn--block home-review__cta"
+            >
+              복습하기
+            </Link>
+          ) : (
+            <p className="home-review__hint ui-card__body">
+              새 Word Day를 진행하면 복습할 단어가 다시 누적됩니다.
+            </p>
+          )}
+        </section>
+      ) : null}
 
       {recentWrong.length > 0 ? (
         <section

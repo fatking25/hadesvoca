@@ -1,10 +1,17 @@
 /**
- * 설정 — 하단 슬라이드 시트 · 메뉴 / 도움말 / 저작권 하위 화면.
+ * 설정 — 하단 슬라이드 시트 · 메뉴 / 도움말 / 저작권 / 초기화 하위 화면.
+ *
+ * 초기화(Phase 12-0-C):
+ * - 서버 로그아웃이 아니다. localStorage 의 `UserProgress` 단일 키만 삭제하는 게스트 초기화다.
+ * - `MobileLayout` 의 외부 진입(`location.state.appSettings`)으로는 `'reset'` 이 들어오지
+ *   못하도록 진입 화이트리스트가 `menu / help / copyright` 로 좁혀져 있다.
  */
 import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent } from 'react'
 import { createPortal } from 'react-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
+  clearUserProgress,
   downloadUserProgressBackup,
   importUserProgressFromJsonText,
   persistUserProgressManualTouch,
@@ -12,7 +19,7 @@ import {
 
 import './AppSheets.css'
 
-export type AppSettingsView = 'menu' | 'help' | 'copyright'
+export type AppSettingsView = 'menu' | 'help' | 'copyright' | 'reset'
 
 export type AppSettingsSheetProps = Readonly<{
   open: boolean
@@ -26,6 +33,7 @@ export function AppSettingsSheet({
   initialView = 'menu',
 }: AppSettingsSheetProps) {
   const uid = useId()
+  const navigate = useNavigate()
   const fileRef = useRef<HTMLInputElement | null>(null)
   const [view, setView] = useState<AppSettingsView>('menu')
   const [stickyHint, setStickyHint] = useState<string | null>(null)
@@ -33,9 +41,16 @@ export function AppSettingsSheet({
 
   useEffect(() => {
     if (!open) return
-    setView(initialView)
-    setStickyHint(null)
-    setBodyHint(null)
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      setView(initialView)
+      setStickyHint(null)
+      setBodyHint(null)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [open, initialView])
 
   useEffect(() => {
@@ -72,6 +87,19 @@ export function AppSettingsSheet({
     const ok = persistUserProgressManualTouch()
     setStickyHint(ok ? '기기에 진행도를 반영했습니다.' : '저장에 실패했습니다. 브라우저 설정을 확인해 주세요.')
   }, [])
+
+  const onConfirmReset = useCallback((): void => {
+    setBodyHint(null)
+    setStickyHint(null)
+    const ok = clearUserProgress()
+    if (!ok) {
+      setBodyHint('초기화에 실패했습니다. 브라우저 저장소 설정을 확인해 주세요.')
+      return
+    }
+    onClose()
+    setView('menu')
+    navigate('/onboarding', { replace: true })
+  }, [navigate, onClose])
 
   const onFileChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0]
@@ -136,6 +164,17 @@ export function AppSettingsSheet({
       </button>
       <button
         type="button"
+        className="shell-settings-menu-row shell-settings-menu-row--disabled"
+        disabled
+      >
+        <span className="shell-settings-menu-row__icon" aria-hidden>
+          ☁️
+        </span>
+        로그인 · 클라우드 동기화 준비중
+        <span className="shell-settings-menu-row__status">준비중</span>
+      </button>
+      <button
+        type="button"
         className="shell-settings-menu-row"
         onClick={() => {
           setBodyHint(null)
@@ -162,6 +201,24 @@ export function AppSettingsSheet({
           ©
         </span>
         저작권 · 고지
+        <span className="shell-settings-menu-row__chevron">›</span>
+      </button>
+      <button
+        type="button"
+        className="shell-settings-menu-row shell-settings-menu-row--danger"
+        onClick={() => {
+          setBodyHint(null)
+          setStickyHint(null)
+          setView('reset')
+        }}
+      >
+        <span
+          className="shell-settings-menu-row__icon shell-settings-menu-row__icon--danger"
+          aria-hidden
+        >
+          ↺
+        </span>
+        처음부터 다시 시작
         <span className="shell-settings-menu-row__chevron">›</span>
       </button>
       <input
@@ -237,6 +294,49 @@ export function AppSettingsSheet({
     </div>
   )
 
+  const reset = (
+    <div className="shell-settings-submenu">
+      <button
+        type="button"
+        className="shell-settings-back"
+        onClick={() => {
+          setView('menu')
+          setBodyHint(null)
+        }}
+      >
+        ← 메뉴
+      </button>
+      <h3 className="shell-copyright__subhead">처음부터 다시 시작</h3>
+      <p className="shell-copyright__body">
+        현재 학습 기록, 단어장, 오답노트가 이 브라우저에서 삭제됩니다.
+      </p>
+      <p className="shell-copyright__body">
+        백업이 필요하면 먼저{' '}
+        <strong>“진행 데이터 저장하기”</strong> 를 진행해 주세요.
+      </p>
+      <p className="shell-copyright__body">처음부터 다시 시작할까요?</p>
+      <div className="shell-settings-confirm-actions">
+        <button
+          type="button"
+          className="ui-btn ui-btn--ghost"
+          onClick={() => {
+            setView('menu')
+            setBodyHint(null)
+          }}
+        >
+          취소
+        </button>
+        <button
+          type="button"
+          className="ui-btn ui-btn--primary shell-settings-confirm-cta--danger"
+          onClick={onConfirmReset}
+        >
+          다시 시작
+        </button>
+      </div>
+    </div>
+  )
+
   let headline = '설정'
   let subtitle = '메뉴에서 항목을 선택하세요'
   if (view === 'help') {
@@ -246,6 +346,10 @@ export function AppSettingsSheet({
   if (view === 'copyright') {
     headline = '저작권 · 고지'
     subtitle = ''
+  }
+  if (view === 'reset') {
+    headline = '처음부터 다시 시작'
+    subtitle = '이 브라우저의 학습 기록을 모두 삭제합니다'
   }
 
   return createPortal(
@@ -275,6 +379,7 @@ export function AppSettingsSheet({
           {view === 'menu' ? menu : null}
           {view === 'help' ? help : null}
           {view === 'copyright' ? copyright : null}
+          {view === 'reset' ? reset : null}
           {bodyHint !== null ? (
             <p
               role="status"
@@ -289,7 +394,7 @@ export function AppSettingsSheet({
         <p className="shell-settings-sheet__sticky-hint" aria-label="앱 진행 버전">
           {stickyHint !== null ?
             stickyHint
-          : '보카 사용자 진행 스키마 version 3 · 좌측 상단 이름을 탭하면 프로필 수정'}
+          : '진행 기록은 이 기기에 저장됩니다. 상단 닉네임을 탭하면 프로필을 수정할 수 있습니다.'}
         </p>
       </div>
     </div>,

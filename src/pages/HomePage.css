@@ -260,6 +260,61 @@
   margin: 0;
 }
 
+/* ----- 오늘의 코인(일일 지급) 카드 · canGrantDailyCoin === true 일 때만 표시 ----- */
+.home-daily-grant {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-color: var(--color-accent-primary-border);
+  background: linear-gradient(
+    180deg,
+    var(--color-accent-primary-soft) 0%,
+    var(--color-bg-elevated) 100%
+  );
+}
+
+.home-daily-grant__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.home-daily-grant__eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-brand);
+  color: var(--color-accent-primary);
+}
+
+.home-daily-grant__amount {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-accent-primary);
+}
+
+.home-daily-grant__hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.home-daily-grant__btn {
+  align-self: stretch;
+}
+
+.home-daily-grant--claimed {
+  border-style: dashed;
+  background: var(--color-bg-elevated);
+}
+
+.home-daily-grant__claimed {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 /* ----- 최근 틀린 단어·표현 · 미해결 상위 3건 미리보기 ----- */
 .home-recent {
   display: flex;

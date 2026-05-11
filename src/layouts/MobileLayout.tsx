@@ -39,13 +39,20 @@ export default function MobileLayout() {
     ) {
       return
     }
-    setProfileOpen(false)
-    setSettingsEntryView(panel)
-    setSettingsOpen(true)
-    navigate(`${location.pathname}${location.search}${location.hash}`, {
-      replace: true,
-      state: {},
+    let cancelled = false
+    void Promise.resolve().then(() => {
+      if (cancelled) return
+      setProfileOpen(false)
+      setSettingsEntryView(panel)
+      setSettingsOpen(true)
+      navigate(`${location.pathname}${location.search}${location.hash}`, {
+        replace: true,
+        state: {},
+      })
     })
+    return () => {
+      cancelled = true
+    }
   }, [location, navigate])
 
   const closeSettings = useCallback((): void => {

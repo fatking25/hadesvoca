@@ -1,5 +1,5 @@
 /**
- * 앱 최초 진입 화면: 브랜딩, 학습 진입·이어하기(placeholder 경로).
+ * 앱 최초 진입 화면: 브랜딩, 학습 진입, 저작 고지 진입.
  * 저작 고지 상세는 학습 홈 진입 후 설정 패널(저작권·고지)에서 봅니다.
  */
 import { Link, useNavigate } from 'react-router-dom'
@@ -14,7 +14,7 @@ export default function StartPage() {
         className="ui-card ui-card--placeholder app-placeholder-visual app-placeholder-visual--hero start-page__hero-visual"
         role="presentation"
       >
-        이미지 placeholder
+        TOEIC 단어 · 실전회화
       </div>
       <h1 className="start-page__title">하데스 보카</h1>
       <p className="start-page__tagline">
@@ -35,7 +35,6 @@ export default function StartPage() {
           type="button"
           className="ui-btn ui-btn--secondary ui-btn--block start-page__cta"
           onClick={() => {
-            /* Phase 5: lastVisitedPage 기반 라우팅 예정 · 현재는 홈 진입 동일 */
             navigate('/home')
           }}
         >

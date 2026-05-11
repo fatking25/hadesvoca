@@ -3,7 +3,7 @@
  */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { useConversationSession } from '../../context/ConversationSessionContext'
+import { useConversationSession } from '../../context/conversationSessionCore'
 import {
   getConversationStage,
   isContentFetchError,

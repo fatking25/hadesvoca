@@ -116,6 +116,23 @@
   margin-top: var(--space-3);
 }
 
+.word-study__coin-gate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-style: dashed;
+}
+
+.word-study__coin-gate-copy {
+  margin: 0;
+}
+
+.word-study__coin-gate-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .word-study__choices {
   display: grid;
   gap: var(--space-3);
@@ -430,6 +447,60 @@
 
 .word-result__empty-wrong {
   margin-top: var(--space-2);
+}
+
+.word-result__reward {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.word-result__reward--first {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.word-result__reward--again {
+  border-style: dashed;
+}
+
+.word-result__reward--stage {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 100%
+  );
+}
+
+.word-result__reward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--space-3);
+}
+
+.word-result__reward-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-md, 12px);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.word-result__reward-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.word-result__reward-value {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--text-h);
+  line-height: var(--line-height-tight);
 }
 
 .word-result__wrong-list {

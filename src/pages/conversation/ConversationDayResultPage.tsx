@@ -6,7 +6,7 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 import {
   useConversationSession,
   type ConversationDayResultLocationState,
-} from '../../context/ConversationSessionContext'
+} from '../../context/conversationSessionCore'
 import {
   loadUserProgress,
   markConversationPersistHandled,
