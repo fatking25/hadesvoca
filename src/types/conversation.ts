@@ -33,19 +33,45 @@ export interface ConversationQuizOption {
   readonly text: string
 }
 
-export type ConversationQuizType = 'multiple-choice'
+export type ConversationQuizType =
+  | 'multiple-choice'
+  | 'next-line-choice'
+  | 'pattern-fill-blank'
 
-export interface ConversationQuiz {
+interface ConversationQuizBase {
   readonly type: ConversationQuizType
   readonly id: string
   readonly promptKo: string
   readonly promptEn?: string
+  /** keyExpressions[].id 와 연결(표현 저장/오답 복습 문맥용). */
+  readonly expressionId?: string
   /** 정답 확인 후 표시(선택). JSON에는 표시 문구만 둠 */
   readonly explanationKo?: string
   readonly explanationEn?: string
   readonly options: readonly ConversationQuizOption[]
   readonly correctOptionId: string
 }
+
+export interface ConversationQuizMultipleChoice extends ConversationQuizBase {
+  readonly type: 'multiple-choice'
+}
+
+export interface ConversationQuizNextLineChoice extends ConversationQuizBase {
+  readonly type: 'next-line-choice'
+  readonly partnerLineEn: string
+  readonly partnerLineKo?: string
+  readonly partnerSpeakerLabelKo?: string
+}
+
+export interface ConversationQuizPatternFillBlank extends ConversationQuizBase {
+  readonly type: 'pattern-fill-blank'
+  readonly templateEn: string
+}
+
+export type ConversationQuiz =
+  | ConversationQuizMultipleChoice
+  | ConversationQuizNextLineChoice
+  | ConversationQuizPatternFillBlank
 
 /** 하루치 회화 콘텐츠 */
 export interface ConversationDay {

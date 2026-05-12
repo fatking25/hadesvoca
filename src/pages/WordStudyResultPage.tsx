@@ -3,6 +3,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
+import { MVP_WORD_STAGE_ID } from '../constants/content'
 import type {
   WordReviewWrongAttemptRef,
   WrongNoteAttemptRef,
@@ -37,8 +38,6 @@ type ReviewOutcome = Readonly<{
   wrongLemmaCount: number
   nextReviewDayId: number | null
 }>
-
-const MVP_STAGE_ID = 1
 
 export default function WordStudyResultPage() {
   const { dayId } = useParams<{ dayId: string }>()
@@ -104,7 +103,7 @@ export default function WordStudyResultPage() {
       const wrongAttempts: WrongNoteAttemptRef[] = items.map((item) => ({
         type: 'word',
         id: item.questionId,
-        stageId: MVP_STAGE_ID,
+        stageId: MVP_WORD_STAGE_ID,
         dayId: resultDayId,
       }))
       const wrongReviewAttempts: WordReviewWrongAttemptRef[] = items
@@ -114,7 +113,7 @@ export default function WordStudyResultPage() {
           }
           return {
             lemmaId: item.lemmaId,
-            stageId: MVP_STAGE_ID,
+            stageId: MVP_WORD_STAGE_ID,
             dayId: resultDayId,
           }
         })
@@ -128,7 +127,7 @@ export default function WordStudyResultPage() {
             )
           : []
         const merged = mergeUserProgressAfterWordReviewSession(prev, {
-          stageId: MVP_STAGE_ID,
+          stageId: MVP_WORD_STAGE_ID,
           currentWordDayId: resultDayId,
           answeredLemmaIds,
           wrongAttempts,
@@ -157,7 +156,7 @@ export default function WordStudyResultPage() {
           )
         : []
       const merged = mergeUserProgressAfterWordStudyDay(prev, {
-        stageId: MVP_STAGE_ID,
+        stageId: MVP_WORD_STAGE_ID,
         dayId: resultDayId,
         wrongAttempts,
         wrongReviewAttempts,
@@ -191,7 +190,7 @@ export default function WordStudyResultPage() {
         {isReviewMode ? '복습 결과' : '학습 결과'}
       </h1>
       <p className="word-result__meta">
-        {isReviewMode ? '이번 Day 복습' : `Stage 1 · Day ${dayId ?? '—'}`}
+        {isReviewMode ? '이번 Day 복습' : `Stage ${MVP_WORD_STAGE_ID} · Day ${dayId ?? '—'}`}
       </p>
 
       {scored ? (
@@ -245,8 +244,7 @@ export default function WordStudyResultPage() {
                 </p>
               )}
               <p className="word-result__muted ui-card__body">
-                복습 세션에서는 코인이 차감되지 않으며, Day 완료 보상도 지급되지
-                않습니다.
+                복습 결과가 다음 학습에 반영되었습니다.
               </p>
             </section>
           ) : reward !== null ? (

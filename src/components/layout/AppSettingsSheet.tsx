@@ -164,17 +164,6 @@ export function AppSettingsSheet({
       </button>
       <button
         type="button"
-        className="shell-settings-menu-row shell-settings-menu-row--disabled"
-        disabled
-      >
-        <span className="shell-settings-menu-row__icon" aria-hidden>
-          ☁️
-        </span>
-        로그인 · 클라우드 동기화 준비중
-        <span className="shell-settings-menu-row__status">준비중</span>
-      </button>
-      <button
-        type="button"
         className="shell-settings-menu-row"
         onClick={() => {
           setBodyHint(null)
@@ -246,17 +235,25 @@ export function AppSettingsSheet({
       </button>
       <ul className="shell-help-list">
         <li>
-          <strong>단어 학습:</strong> Stage·Day를 풀고 결과에서 진행이 저장됩니다. 즐겨찾기는 참조만
-          저장됩니다.
+          <strong>단어 학습:</strong> Day를 풀고 결과 화면까지 가면 진행이 저장됩니다.
+        </li>
+        <li>
+          <strong>Day 열림:</strong> Day는 앞 순서부터 차례대로 열립니다. 완료한 Day는 다시 복습할 수 있습니다.
+        </li>
+        <li>
+          <strong>코인:</strong> 일반 Day 시작 시 코인 5개가 차감됩니다. 코인이 부족하면 새 Day를 시작할 수 없습니다.
+        </li>
+        <li>
+          <strong>복습:</strong> 복습 Day는 코인이 차감되지 않고, 완료 보상도 지급되지 않습니다.
         </li>
         <li>
           <strong>실전 회화:</strong> 퀴즈까지 마치면 Day 완료로 기록됩니다.
         </li>
         <li>
-          <strong>단어장:</strong> 단어·표현 본문은 콘텐츠 파일에서 불러오고, 기기에는 ID만 둡니다.
+          <strong>단어장:</strong> 저장한 단어와 표현을 다시 확인할 수 있습니다.
         </li>
         <li>
-          <strong>오답노트:</strong> 서버 전송 없이 기기 안에서만 참조합니다.
+          <strong>오답노트:</strong> 틀린 문항을 모아 다시 확인할 수 있습니다.
         </li>
         <li>
           <strong>PWA:</strong> 홈 화면에 추가하면 브라우저 없이 앱처럼 쓸 수 있습니다.

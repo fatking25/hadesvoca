@@ -26,8 +26,8 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   margin: 0;
   padding: 0;
   border: 2px solid color-mix(in srgb, var(--accent) 42%, transparent);
@@ -65,6 +65,62 @@
   font-weight: 800;
   line-height: 1;
   translate: 0 -1px;
+}
+
+.word-study__bookmark-toast {
+  position: absolute;
+  top: calc(var(--space-4) + 42px);
+  right: var(--space-4);
+  z-index: 2;
+  margin: 0;
+  max-width: min(220px, calc(100% - var(--space-8)));
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: var(--line-height-snug);
+  color: var(--color-text-on-accent);
+  background: var(--color-accent-primary);
+  box-shadow: var(--shadow-md);
+  animation: word-study-bookmark-toast-in 1400ms var(--easing-standard) both;
+}
+
+.word-study__bookmark-toast::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 18px;
+  width: 10px;
+  height: 10px;
+  border-left: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+.word-study__bookmark-toast--removed {
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
+}
+
+@keyframes word-study-bookmark-toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  12%,
+  82% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.99);
+  }
 }
 
 .word-study__title-block {
@@ -577,4 +633,3 @@
   flex-direction: column;
   gap: var(--space-3);
 }
-

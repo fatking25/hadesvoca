@@ -8,6 +8,7 @@ import {
   isContentFetchError,
   type RemoteContentState,
 } from '../api/contentApi'
+import { MVP_WORD_STAGE_ID } from '../constants/content'
 import {
   WORD_CONTENT_BLANK_TOKEN,
   type StageWordsDaySection,
@@ -28,11 +29,8 @@ import {
   persistStartWordDayWithCoinCost,
   persistRemoveSavedWord,
   persistUpsertSavedWord,
-  WORD_DAY_START_COIN_COST,
 } from '../utils/storage'
 import './WordStudyPage.css'
-
-const MVP_STAGE_ID = 1
 
 type QuizItem = {
   readonly word: WordContentEntry
@@ -235,6 +233,12 @@ type ReviewSessionState = Readonly<{
   currentWordDayId: number
 }>
 
+type BookmarkFeedback = Readonly<{
+  message: string
+  tone: 'saved' | 'removed'
+  nonce: number
+}>
+
 export default function WordStudyDayDetailPage() {
   const { dayId: dayIdParam } = useParams<{ dayId: string }>()
   const navigate = useNavigate()
@@ -255,7 +259,7 @@ export default function WordStudyDayDetailPage() {
   const wordDayAttemptRef = useRef<WordDayAttemptKeyRef | null>(null)
   const [coinGate, setCoinGate] = useState<WordDayCoinGateState>(() => ({
     status: 'checking',
-    stageId: MVP_STAGE_ID,
+    stageId: MVP_WORD_STAGE_ID,
     dayId: dayNum ?? 0,
   }))
   const [reviewSession, setReviewSession] = useState<ReviewSessionState | null>(
@@ -264,7 +268,7 @@ export default function WordStudyDayDetailPage() {
 
   useEffect(() => {
     let cancelled = false
-    fetchStageWordsByStageId(MVP_STAGE_ID)
+    fetchStageWordsByStageId(MVP_WORD_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
       })
@@ -296,9 +300,9 @@ export default function WordStudyDayDetailPage() {
       const p = loadUserProgress()
       const completed = new Set<number>()
       for (const d of p.completedWordDays) {
-        if (d.stageId === MVP_STAGE_ID) completed.add(d.dayId)
+        if (d.stageId === MVP_WORD_STAGE_ID) completed.add(d.dayId)
       }
-      const replay = isWordDayCompleted(p, MVP_STAGE_ID, dayNum)
+      const replay = isWordDayCompleted(p, MVP_WORD_STAGE_ID, dayNum)
       if (!replay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
         navigate('/word-study', { replace: true })
         return
@@ -307,28 +311,28 @@ export default function WordStudyDayDetailPage() {
       const existingAttempt = wordDayAttemptRef.current
       const attempt =
         existingAttempt !== null &&
-        existingAttempt.stageId === MVP_STAGE_ID &&
+        existingAttempt.stageId === MVP_WORD_STAGE_ID &&
         existingAttempt.dayId === dayNum
           ? existingAttempt
           : {
-              stageId: MVP_STAGE_ID,
+              stageId: MVP_WORD_STAGE_ID,
               dayId: dayNum,
               key: generateWordDayAttemptKey(),
             }
       wordDayAttemptRef.current = attempt
 
       const costRes = persistStartWordDayWithCoinCost(
-        MVP_STAGE_ID,
+        MVP_WORD_STAGE_ID,
         dayNum,
         attempt.key,
       )
       if (cancelled) return
       if (costRes.started) {
-        setCoinGate({ status: 'ready', stageId: MVP_STAGE_ID, dayId: dayNum })
+        setCoinGate({ status: 'ready', stageId: MVP_WORD_STAGE_ID, dayId: dayNum })
       } else {
         setCoinGate({
           status: 'blocked',
-          stageId: MVP_STAGE_ID,
+          stageId: MVP_WORD_STAGE_ID,
           dayId: dayNum,
           coins: costRes.coins,
           cost: costRes.cost,
@@ -349,7 +353,7 @@ export default function WordStudyDayDetailPage() {
       const p = loadUserProgress()
       const currentWordDayId = p.completedWordDays.reduce(
         (max, c) =>
-          c.stageId === MVP_STAGE_ID && c.dayId > max ? c.dayId : max,
+          c.stageId === MVP_WORD_STAGE_ID && c.dayId > max ? c.dayId : max,
         0,
       )
       const dueLemmaIds = getDueWordReviewStatuses(p, currentWordDayId).map(
@@ -380,6 +384,8 @@ export default function WordStudyDayDetailPage() {
   }, [packState.status, dayNum, quizItems, questionIndex])
 
   const [wordInVocab, setWordInVocab] = useState(false)
+  const [bookmarkFeedback, setBookmarkFeedback] =
+    useState<BookmarkFeedback | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -396,6 +402,16 @@ export default function WordStudyDayDetailPage() {
       cancelled = true
     }
   }, [bookmarkLemmaId])
+
+  useEffect(() => {
+    if (bookmarkFeedback === null) return
+    const id = window.setTimeout(() => {
+      setBookmarkFeedback((current) =>
+        current?.nonce === bookmarkFeedback.nonce ? null : current,
+      )
+    }, 1400)
+    return () => window.clearTimeout(id)
+  }, [bookmarkFeedback])
 
   const resetQuestionLocalState = useCallback(() => {
     setSelectedOptionId(null)
@@ -434,7 +450,7 @@ export default function WordStudyDayDetailPage() {
   const dayLabel = isReviewMode
     ? '단어 학습 · 복습'
     : dayNum !== null
-      ? `Stage ${MVP_STAGE_ID} · Day ${dayNum}`
+      ? `Stage ${MVP_WORD_STAGE_ID} · Day ${dayNum}`
       : 'Stage ? · Day ?'
   const headline = isReviewMode
     ? '이번 Day 복습'
@@ -543,9 +559,6 @@ export default function WordStudyDayDetailPage() {
             현재 Word Day {reviewSession.currentWordDayId} 기준 복습할 단어가
             없습니다.
           </p>
-          <p className="word-study__muted">
-            복습 진입에는 코인이 차감되지 않습니다.
-          </p>
           <Link to="/word-study" className="word-study__result-link">
             Day 목록으로
           </Link>
@@ -568,11 +581,11 @@ export default function WordStudyDayDetailPage() {
   }
 
   const currentCoinGate =
-    coinGate.stageId === MVP_STAGE_ID && coinGate.dayId === (dayNum ?? 0)
+    coinGate.stageId === MVP_WORD_STAGE_ID && coinGate.dayId === (dayNum ?? 0)
       ? coinGate
       : ({
           status: 'checking',
-          stageId: MVP_STAGE_ID,
+          stageId: MVP_WORD_STAGE_ID,
           dayId: dayNum ?? 0,
         } as const)
 
@@ -581,9 +594,7 @@ export default function WordStudyDayDetailPage() {
       <main className="word-study">
         <p className="word-study__eyebrow">{dayLabel}</p>
         <h1 className="word-study__title">{headline}</h1>
-        <p className="word-study__muted">
-          시작 비용 {WORD_DAY_START_COIN_COST}코인을 확인하는 중입니다.
-        </p>
+        <p className="word-study__muted">학습 준비 중입니다.</p>
       </main>
     )
   }
@@ -649,7 +660,6 @@ export default function WordStudyDayDetailPage() {
       {isReviewMode ? (
         <p className="word-study__muted">
           현재 Word Day {reviewSession?.currentWordDayId ?? 0} 기준 복습 세션입니다.
-          코인은 차감되지 않고, 완료 보상도 지급되지 않습니다.
         </p>
       ) : daySection?.descriptionKo !== undefined ? (
         <p className="word-study__muted">{daySection.descriptionKo}</p>
@@ -681,9 +691,19 @@ export default function WordStudyDayDetailPage() {
               if (wordInVocab) {
                 persistRemoveSavedWord(bookmarkLemmaId)
                 setWordInVocab(false)
+                setBookmarkFeedback({
+                  message: '단어장에서 삭제했어요',
+                  tone: 'removed',
+                  nonce: Date.now(),
+                })
               } else {
-                persistUpsertSavedWord(bookmarkLemmaId, MVP_STAGE_ID, dayNum)
+                persistUpsertSavedWord(bookmarkLemmaId, MVP_WORD_STAGE_ID, dayNum)
                 setWordInVocab(true)
+                setBookmarkFeedback({
+                  message: '단어장에 추가했어요',
+                  tone: 'saved',
+                  nonce: Date.now(),
+                })
               }
             }}
           >
@@ -691,6 +711,15 @@ export default function WordStudyDayDetailPage() {
               {wordInVocab ? '★' : '☆'}
             </span>
           </button>
+          {bookmarkFeedback !== null ? (
+            <p
+              className={`word-study__bookmark-toast word-study__bookmark-toast--${bookmarkFeedback.tone}`}
+              role="status"
+              aria-live="polite"
+            >
+              {bookmarkFeedback.message}
+            </p>
+          ) : null}
         </div>
         <div className="ui-card__body word-study__stem">{renderQuestionStem(word, q, revealed, correctAnswerText)}</div>
       </section>

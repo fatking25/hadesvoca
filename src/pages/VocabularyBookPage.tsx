@@ -10,6 +10,8 @@ import {
   findWordEntry,
   loadConversationStageCached,
   loadStageWordsCached,
+  parseStageIdKey,
+  stageIdKey,
 } from '../utils/contentJoin'
 import {
   loadUserProgress,
@@ -18,25 +20,15 @@ import {
 } from '../utils/storage'
 import './VocabularyBookPage.css'
 
-type VocabTab = 'words' | 'expressions' | 'favorites'
+type VocabTab = 'words' | 'expressions'
 
 const TABS: ReadonlyArray<{ id: VocabTab; label: string }> = [
   { id: 'words', label: '저장한 단어' },
   { id: 'expressions', label: '저장한 표현' },
-  { id: 'favorites', label: '즐겨찾기' },
 ]
 
 type WordPacks = Readonly<Record<number, StageWordsFile | null>>
 type ConvPacks = Readonly<Record<number, ConversationStage | null>>
-
-function stageIdKey(ids: readonly number[]): string {
-  return [...new Set(ids)].sort((a, b) => a - b).join(',')
-}
-
-function parseStageIdKey(key: string): readonly number[] {
-  if (key === '') return []
-  return key.split(',').map((s) => Number(s))
-}
 
 export default function VocabularyBookPage() {
   const [activeTab, setActiveTab] = useState<VocabTab>('words')
@@ -262,10 +254,6 @@ export default function VocabularyBookPage() {
           })}
         </ul>
       )
-  } else {
-    panel = (
-      <p className="ui-card__body vocab-empty">즐겨찾기는 이후 단계에서 연결합니다.</p>
-    )
   }
 
   return (
@@ -297,9 +285,7 @@ export default function VocabularyBookPage() {
         aria-label={
           activeTab === 'words'
             ? '저장한 단어'
-            : activeTab === 'expressions'
-              ? '저장한 표현'
-              : '즐겨찾기'
+            : '저장한 표현'
         }
       >
         {panel}

@@ -128,6 +128,10 @@
   opacity: 0.8;
 }
 
+.learning-path--word .learning-path__spine {
+  display: none;
+}
+
 .learning-path__steps {
   position: relative;
   z-index: 1;

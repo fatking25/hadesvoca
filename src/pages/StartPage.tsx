@@ -1,12 +1,14 @@
 /**
  * 앱 최초 진입 화면: 브랜딩, 학습 진입, 저작 고지 진입.
- * 저작 고지 상세는 학습 홈 진입 후 설정 패널(저작권·고지)에서 봅니다.
+ * 첫 방문자도 온보딩 전 팬메이드 고지를 확인할 수 있게 이 화면 안에서 고지를 펼칩니다.
  */
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './StartPage.css'
 
 export default function StartPage() {
   const navigate = useNavigate()
+  const [noticeOpen, setNoticeOpen] = useState(false)
 
   return (
     <main className="start-page">
@@ -29,30 +31,33 @@ export default function StartPage() {
             navigate('/home')
           }}
         >
-          학습 시작
-        </button>
-        <button
-          type="button"
-          className="ui-btn ui-btn--secondary ui-btn--block start-page__cta"
-          onClick={() => {
-            navigate('/home')
-          }}
-        >
-          이어서 학습하기
+          학습 시작하기
         </button>
       </div>
 
-      <p className="start-page__copyright-hint">
-        상세 고지와 권리 안내는{' '}
-        <Link
+      <section className="start-page__copyright-hint" aria-label="팬메이드 고지">
+        <button
+          type="button"
           className="start-page__copyright-link"
-          to="/home"
-          state={{ appSettings: 'copyright' }}
+          aria-expanded={noticeOpen}
+          onClick={() => {
+            setNoticeOpen((open) => !open)
+          }}
         >
-          설정의 저작권 · 고지
-        </Link>
-        에서 확인할 수 있습니다.
-      </p>
+          팬메이드 고지 보기
+        </button>
+        {noticeOpen ? (
+          <div className="start-page__notice-body">
+            <p>
+              본 앱은 팬메이드 학습용 프로젝트이며, SOOP 및 하데스 공식 콘텐츠와
+              무관합니다.
+            </p>
+            <p>
+              정식 공개 전 실존 인물/그룹명/이미지 사용 범위를 다시 검토합니다.
+            </p>
+          </div>
+        ) : null}
+      </section>
     </main>
   )
 }

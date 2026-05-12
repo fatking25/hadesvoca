@@ -3,10 +3,15 @@
  */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  FALLBACK_CONVERSATION_CUTSCENE_PATH,
+  MVP_CONVERSATION_STAGE_ID,
+} from '../../constants/content'
 import { useConversationSession } from '../../context/conversationSessionCore'
 import {
   getConversationStage,
   isContentFetchError,
+  resolvePublicUrl,
   type RemoteContentState,
 } from '../../api/contentApi'
 import { countCompletedConversationDaysForStage } from '../../utils/learnStats'
@@ -19,25 +24,13 @@ import {
 import type { ConversationDay, ConversationStage } from '../../types/conversation'
 import './ConversationStageListPage.css'
 
-const MVP_CONV_STAGE_ID = 1
-
-/** `public/` 정적 에셋 URL — Vite BASE_URL 반영 */
-function publicAssetUrl(pathFromSiteRoot: string): string {
-  const trimmed = pathFromSiteRoot.replace(/^\/+/, '')
-  const baseRaw = import.meta.env.BASE_URL
-  const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
-  return `${base}${trimmed}`
-}
-
-const FALLBACK_THUMB = '/content/conversations/assets/placeholder-day1-cutscene.svg'
-
 function DayEntryCard(
   props: Readonly<{ day: ConversationDay; complete: boolean; locked: boolean }>,
 ) {
   const { day, complete, locked } = props
   const thumbSrc = day.cutsceneImagePath?.trim()
-    ? publicAssetUrl(day.cutsceneImagePath)
-    : publicAssetUrl(FALLBACK_THUMB)
+    ? resolvePublicUrl(day.cutsceneImagePath)
+    : resolvePublicUrl(FALLBACK_CONVERSATION_CUTSCENE_PATH)
   const href = `/conversation/${day.dayId}`
 
   return (
@@ -125,7 +118,7 @@ export default function ConversationStageListPage() {
 
   useEffect(() => {
     let cancelled = false
-    getConversationStage(MVP_CONV_STAGE_ID)
+    getConversationStage(MVP_CONVERSATION_STAGE_ID)
       .then((data) => {
         if (!cancelled) setState({ status: 'success', data })
       })
@@ -164,7 +157,7 @@ export default function ConversationStageListPage() {
     const sortedIds = days.map((d) => d.dayId)
     const completedPersisted = new Set<number>()
     for (const r of persistedProgress.completedConversationDays) {
-      if (r.stageId === MVP_CONV_STAGE_ID) {
+      if (r.stageId === MVP_CONVERSATION_STAGE_ID) {
         completedPersisted.add(r.dayId)
       }
     }
@@ -176,7 +169,7 @@ export default function ConversationStageListPage() {
           {days.map((d) => {
             const persistedDone = isConversationDayCompletedPersisted(
               persistedProgress,
-              MVP_CONV_STAGE_ID,
+              MVP_CONVERSATION_STAGE_ID,
               d.dayId,
             )
             const sessionDone = isDayComplete(d.dayId)
@@ -191,11 +184,11 @@ export default function ConversationStageListPage() {
       )
   }
 
-  const stageEyebrow = `Stage ${MVP_CONV_STAGE_ID} · 실전 회화`
+  const stageEyebrow = `Stage ${MVP_CONVERSATION_STAGE_ID} · 실전 회화`
   const stageTitle =
     state.status === 'success' && state.data.stageTitleKo !== undefined && state.data.stageTitleKo.trim() !== ''
       ? state.data.stageTitleKo
-      : `Stage ${MVP_CONV_STAGE_ID}`
+      : `Stage ${MVP_CONVERSATION_STAGE_ID}`
   const stageDesc =
     state.status === 'success' && state.data.stageDescriptionKo !== undefined
       ? state.data.stageDescriptionKo
@@ -207,9 +200,9 @@ export default function ConversationStageListPage() {
         const total = Math.max(0, state.data.days.length)
         const done = countCompletedConversationDaysForStage(
           persistedProgress,
-          MVP_CONV_STAGE_ID,
+          MVP_CONVERSATION_STAGE_ID,
         )
-        return `Stage ${MVP_CONV_STAGE_ID} 진행률 ${done}/${total}`
+        return `Stage ${MVP_CONVERSATION_STAGE_ID} 진행률 ${done}/${total}`
       })()
     : null
 

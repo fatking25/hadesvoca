@@ -13,17 +13,18 @@ import {
   getWordQuestionPrompt,
   loadConversationStageCached,
   loadStageWordsCached,
+  parseStageIdKey,
+  stageIdKey,
 } from '../utils/contentJoin'
 import { loadUserProgress } from '../utils/storage'
 import './WrongNotePage.css'
 
-type WrongTab = 'all' | 'word' | 'expression' | 'resolved'
+type WrongTab = 'all' | 'word' | 'expression'
 
 const TABS: ReadonlyArray<{ id: WrongTab; label: string }> = [
   { id: 'all', label: '전체' },
   { id: 'word', label: '단어' },
   { id: 'expression', label: '표현' },
-  { id: 'resolved', label: '해결됨' },
 ]
 
 type WordPacks = Readonly<Record<number, StageWordsFile | null>>
@@ -31,15 +32,6 @@ type ConvPacks = Readonly<Record<number, ConversationStage | null>>
 
 function typeLabel(t: WrongNoteType): string {
   return t === 'word' ? '단어' : '표현'
-}
-
-function stageIdKey(ids: readonly number[]): string {
-  return [...new Set(ids)].sort((a, b) => a - b).join(',')
-}
-
-function parseStageIdKey(key: string): readonly number[] {
-  if (key === '') return []
-  return key.split(',').map((s) => Number(s))
 }
 
 function WordWrongBody({
@@ -150,7 +142,6 @@ export default function WrongNotePage() {
 
   const filtered = useMemo((): WrongNoteRef[] => {
     if (activeTab === 'all') return [...sorted]
-    if (activeTab === 'resolved') return sorted.filter((w) => w.resolved === true)
     const t = activeTab as WrongNoteType
     return sorted.filter((w) => w.type === t)
   }, [sorted, activeTab])
@@ -310,7 +301,7 @@ export default function WrongNotePage() {
               ))}
             </ul>
             <p className="wrong-footnote ui-card__body">
-              문제 본문·선택지·정답은 콘텐츠 JSON에서 매번 불러와 표시하며, 저장 데이터에는 참조 id와 통계만 남습니다.
+              틀린 문항은 이 기기에서 다시 확인할 수 있도록 정리됩니다.
             </p>
           </>
         )}

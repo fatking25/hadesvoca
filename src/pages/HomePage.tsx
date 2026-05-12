@@ -7,6 +7,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { MVP_WORD_STAGE_ID } from '../constants/content'
 import type { StageWordsFile } from '../types/content'
 import type { ConversationStage } from '../types/conversation'
 import type { WrongNoteRef } from '../types/user-progress'
@@ -15,6 +16,8 @@ import {
   findWordQuestionWithEntry,
   loadConversationStageCached,
   loadStageWordsCached,
+  parseStageIdKey,
+  stageIdKey,
 } from '../utils/contentJoin'
 import { getTodayStudySessionCount } from '../utils/learnStats'
 import {
@@ -36,17 +39,6 @@ const HOME_RECENT_WRONG_MAX = 3
  * 복습 기준 Word Day(`currentWordDayId`)는 이 Stage 의 완료 Day 만 본다
  * (다른 화면들과 동일한 기준 유지: `WordStudyDayListPage`, review 모드 `WordStudyDayDetailPage`).
  */
-const MVP_STAGE_ID = 1 as const
-
-function stageIdKey(ids: readonly number[]): string {
-  return [...new Set(ids)].sort((a, b) => a - b).join(',')
-}
-
-function parseStageIdKey(key: string): readonly number[] {
-  if (key === '') return []
-  return key.split(',').map((s) => Number(s))
-}
-
 export default function HomePage() {
   const [reloadNonce, setReloadNonce] = useState(0)
 
@@ -123,7 +115,7 @@ export default function HomePage() {
     () =>
       progress.completedWordDays.reduce(
         (max, c) =>
-          c.stageId === MVP_STAGE_ID && c.dayId > max ? c.dayId : max,
+          c.stageId === MVP_WORD_STAGE_ID && c.dayId > max ? c.dayId : max,
         0,
       ),
     [progress.completedWordDays],
@@ -269,7 +261,7 @@ export default function HomePage() {
           <p className="home-duo-banner__line">단어와 회화를 조금씩 나눠서 해도 좋아요.</p>
         </div>
         <Link to="/word-study" className="ui-btn ui-btn--secondary home-duo-banner__cta">
-          경로 보기
+          학습 경로 보기
         </Link>
       </section>
 
@@ -389,9 +381,6 @@ export default function HomePage() {
       <nav className="home-menu" aria-label="학습 메뉴">
         <div className="home-menu__section-head">
           <h2 className="home-menu__heading">메인 메뉴</h2>
-          <span className="home-menu__section-hint" aria-hidden>
-            탭으로 이동
-          </span>
         </div>
         <Link
           to="/word-study"

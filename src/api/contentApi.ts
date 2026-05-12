@@ -5,6 +5,7 @@ import type { StageMetadataFile, StageWordsFile } from '../types/content'
 import type { ConversationStage } from '../types/conversation'
 
 const STAGE_METADATA_REL = 'content/stage-metadata.json'
+const CONTENT_SCHEMA_VERSION = '1'
 const WORD_QUESTION_TYPES = new Set(['word-to-meaning', 'meaning-to-word', 'fill-blank'])
 const CONTENT_OFFLINE_MESSAGE =
   '콘텐츠를 불러오지 못했습니다. 오프라인 상태라면 한 번 온라인으로 접속해 콘텐츠를 캐시한 뒤 다시 시도해 주세요.'
@@ -34,9 +35,11 @@ export function isContentFetchError(e: unknown): e is ContentFetchError {
   return e instanceof ContentFetchError
 }
 
-function resolvePublicUrl(pathFromSiteRoot: string): string {
+export function resolvePublicUrl(pathFromSiteRoot: string): string {
   const trimmed = pathFromSiteRoot.replace(/^\/+/, '')
-  return `${import.meta.env.BASE_URL}${trimmed}`
+  const baseRaw = import.meta.env.BASE_URL
+  const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
+  return `${base}${trimmed}`
 }
 
 async function fetchText(url: string): Promise<string> {
@@ -65,7 +68,7 @@ function assertStageMetadata(data: unknown, url: string): StageMetadataFile {
     throw new ContentFetchError('stage-metadata: 유효하지 않은 데이터입니다.', url)
   }
   const o = data as Record<string, unknown>
-  if (o.schemaVersion !== '1' || !Array.isArray(o.stages)) {
+  if (o.schemaVersion !== CONTENT_SCHEMA_VERSION || !Array.isArray(o.stages)) {
     throw new ContentFetchError('stage-metadata: 예상 스키마와 맞지 않습니다.', url)
   }
   return data as StageMetadataFile
@@ -76,7 +79,11 @@ function assertStageWords(data: unknown, url: string): StageWordsFile {
     throw new ContentFetchError('단어 패키지: 유효하지 않은 데이터입니다.', url)
   }
   const o = data as Record<string, unknown>
-  if (o.schemaVersion !== '1' || typeof o.stageId !== 'number' || !Array.isArray(o.days)) {
+  if (
+    o.schemaVersion !== CONTENT_SCHEMA_VERSION ||
+    typeof o.stageId !== 'number' ||
+    !Array.isArray(o.days)
+  ) {
     throw new ContentFetchError('단어 패키지: 예상 스키마와 맞지 않습니다.', url)
   }
   for (const day of o.days) {
@@ -159,7 +166,7 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
     throw new ContentFetchError('실전 회화 스테이지: 유효하지 않은 데이터입니다.', url)
   }
   const o = data as Record<string, unknown>
-  if (o.schemaVersion !== '1' || typeof o.stageId !== 'number') {
+  if (o.schemaVersion !== CONTENT_SCHEMA_VERSION || typeof o.stageId !== 'number') {
     throw new ContentFetchError('실전 회화 스테이지: 예상 스키마와 맞지 않습니다.', url)
   }
   if (!Array.isArray(o.days)) {
@@ -186,7 +193,11 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
         throw new ContentFetchError('실전 회화 스테이지: quiz 항목 형식 오류입니다.', url)
       }
       const qItem = quiz as Record<string, unknown>
-      if (qItem.type !== 'multiple-choice') {
+      if (
+        qItem.type !== 'multiple-choice' &&
+        qItem.type !== 'next-line-choice' &&
+        qItem.type !== 'pattern-fill-blank'
+      ) {
         throw new ContentFetchError(
           '실전 회화 스테이지: 퀴즈 type은 현재 multiple-choice 만 지원합니다.',
           url,
@@ -201,6 +212,24 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
       }
       if (!Array.isArray(qItem.options) || qItem.options.length === 0) {
         throw new ContentFetchError('실전 회화 스테이지: quiz options 가 비었습니다.', url)
+      }
+      if (
+        qItem.expressionId !== undefined &&
+        typeof qItem.expressionId !== 'string'
+      ) {
+        throw new ContentFetchError('?ㅼ쟾 ?뚰솕 ?ㅽ뀒?댁?: quiz expressionId ?뺤떇 ?ㅻ쪟?낅땲??', url)
+      }
+      if (
+        qItem.type === 'next-line-choice' &&
+        typeof qItem.partnerLineEn !== 'string'
+      ) {
+        throw new ContentFetchError('?ㅼ쟾 ?뚰솕 ?ㅽ뀒?댁?: next-line-choice partnerLineEn ?뺤떇 ?ㅻ쪟?낅땲??', url)
+      }
+      if (
+        qItem.type === 'pattern-fill-blank' &&
+        typeof qItem.templateEn !== 'string'
+      ) {
+        throw new ContentFetchError('?ㅼ쟾 ?뚰솕 ?ㅽ뀒?댁?: pattern-fill-blank templateEn ?뺤떇 ?ㅻ쪟?낅땲??', url)
       }
       const optionIds = new Set<string>()
       for (const opt of qItem.options) {

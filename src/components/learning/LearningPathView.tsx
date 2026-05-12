@@ -194,8 +194,7 @@ export function LearningPathView({
                 복습할 단어 {reviewBanner.dueCount}개
               </p>
               <p className="learning-path__review-banner-sub">
-                현재 Word Day 기준 복습 대상이 모였어요. 복습 진입에는 코인이
-                차감되지 않습니다.
+                지금 복습하면 더 오래 기억할 수 있어요.
               </p>
             </div>
             <Link
@@ -324,8 +323,7 @@ export function LearningPathView({
             : null}
             {focusDay.status === 'open' && sheetCoinShort && startGate !== undefined ?
               <p className="learning-path-float__hint learning-path-float__hint--gate">
-                보유 코인 {startGate.coins}개로는 이 Day를 시작할 수 없습니다(필요{' '}
-                {startGate.cost}개). 홈에서 오늘의 코인을 받아 주세요.
+                보유 코인 {startGate.coins}개로는 시작할 수 없습니다. 홈에서 오늘의 코인을 받아 주세요.
               </p>
             : null}
             <div className="learning-path-float__actions">

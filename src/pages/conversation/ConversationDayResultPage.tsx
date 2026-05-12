@@ -3,6 +3,7 @@
  */
 import { useEffect } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
+import { MVP_CONVERSATION_STAGE_ID } from '../../constants/content'
 import {
   useConversationSession,
   type ConversationDayResultLocationState,
@@ -14,8 +15,6 @@ import {
   saveUserProgress,
 } from '../../utils/storage'
 import '../ConversationDayDetailPage.css'
-
-const MVP_CONV_STAGE_ID = 1
 
 function parseDayId(raw: string | undefined): number | null {
   if (raw === undefined || raw === '') return null
@@ -53,7 +52,7 @@ export default function ConversationDayResultPage() {
 
     const prev = loadUserProgress()
     const next = mergeUserProgressAfterConversationDay(prev, {
-      stageId: MVP_CONV_STAGE_ID,
+      stageId: MVP_CONVERSATION_STAGE_ID,
       dayId: dayIdNum,
       expressionWrongQuizIds: quizIds,
       now,
@@ -66,6 +65,9 @@ export default function ConversationDayResultPage() {
   const quizTotal = hasFlowScores ? flowState.quizTotal : 0
   const quizCorrect = hasFlowScores ? flowState.quizCorrect : 0
   const showScoreLine = hasFlowScores && quizTotal > 0
+  const resultTitle = hasFlowScores
+    ? `Day ${dayIdNum ?? '—'} 완료`
+    : '결과를 불러올 수 없어요'
 
   const nextDayId = hasFlowScores ? flowState.nextDayId : null
   const continueHref =
@@ -91,9 +93,11 @@ export default function ConversationDayResultPage() {
   return (
     <main className="conv-detail">
       <div className="conv-detail__title-block">
-        <p className="conv-detail__eyebrow">실전 회화 · Stage {MVP_CONV_STAGE_ID}</p>
-        <p className="conv-detail__result-kicker">Day Complete</p>
-        <h1 className="conv-detail__title conv-detail__result-title-done">Day {dayIdNum} 완료</h1>
+        <p className="conv-detail__eyebrow">실전 회화 · Stage {MVP_CONVERSATION_STAGE_ID}</p>
+        {hasFlowScores ? (
+          <p className="conv-detail__result-kicker">학습 완료</p>
+        ) : null}
+        <h1 className="conv-detail__title conv-detail__result-title-done">{resultTitle}</h1>
         {showScoreLine ? (
           <p className="conv-detail__result-score-line" aria-live="polite">
             <span className="conv-detail__result-score-num">

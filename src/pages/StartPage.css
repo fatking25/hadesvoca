@@ -67,8 +67,13 @@
 }
 
 .start-page__copyright-link {
+  appearance: none;
+  padding: 0;
+  border: 0;
   font-weight: 700;
   color: var(--accent);
+  background: transparent;
+  cursor: pointer;
   text-decoration: none;
 }
 
@@ -76,3 +81,12 @@
   text-decoration: underline;
 }
 
+.start-page__notice-body {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.start-page__notice-body p {
+  margin: 0;
+}

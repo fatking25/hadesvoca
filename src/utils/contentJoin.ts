@@ -24,6 +24,15 @@ import type {
 const wordStageCache = new Map<number, Promise<StageWordsFile>>()
 const conversationStageCache = new Map<number, Promise<ConversationStage>>()
 
+export function stageIdKey(ids: readonly number[]): string {
+  return [...new Set(ids)].sort((a, b) => a - b).join(',')
+}
+
+export function parseStageIdKey(key: string): readonly number[] {
+  if (key === '') return []
+  return key.split(',').map((s) => Number(s))
+}
+
 /** stage 단어 패키지를 캐시 우선으로 로드한다. 실패 Promise는 캐시에서 제거된다. */
 export function loadStageWordsCached(stageId: number): Promise<StageWordsFile> {
   const cached = wordStageCache.get(stageId)

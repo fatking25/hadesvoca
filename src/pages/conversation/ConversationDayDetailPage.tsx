@@ -6,8 +6,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   getConversationStage,
   isContentFetchError,
+  resolvePublicUrl,
   type RemoteContentState,
 } from '../../api/contentApi'
+import {
+  FALLBACK_CONVERSATION_CUTSCENE_PATH,
+  MVP_CONVERSATION_STAGE_ID,
+} from '../../constants/content'
 import type { ConversationDayResultLocationState } from '../../context/conversationSessionCore'
 import type {
   ConversationDay,
@@ -24,8 +29,6 @@ import {
 } from '../../utils/storage'
 import '../ConversationDayDetailPage.css'
 
-const MVP_CONV_STAGE_ID = 1
-
 type FlowStep = 'cutscene' | 'narration' | 'dialogue' | 'expressions' | 'quiz'
 
 const FLOW_STEPS: readonly FlowStep[] = [
@@ -35,15 +38,6 @@ const FLOW_STEPS: readonly FlowStep[] = [
   'expressions',
   'quiz',
 ] as const
-
-function publicAssetUrl(pathFromSiteRoot: string): string {
-  const trimmed = pathFromSiteRoot.replace(/^\/+/, '')
-  const baseRaw = import.meta.env.BASE_URL
-  const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
-  return `${base}${trimmed}`
-}
-
-const FALLBACK_THUMB = '/content/conversations/assets/placeholder-day1-cutscene.svg'
 
 function stepIndex(step: FlowStep): number {
   return FLOW_STEPS.indexOf(step)
@@ -110,6 +104,15 @@ export default function ConversationDayDetailPage() {
   const wrongQuizIdsRef = useRef<string[]>([])
   /** 단어장(표현) 저장 버튼 반영용 — `loadUserProgress` 재읽기 트리거 */
   const [exprVocabTick, setExprVocabTick] = useState(0)
+  const savedExpressionKeys = useMemo(() => {
+    void exprVocabTick
+    const progress = loadUserProgress()
+    return new Set(
+      progress.savedExpressions.map(
+        (s) => `${s.expressionId}:${s.stageId}:${s.dayId}`,
+      ),
+    )
+  }, [exprVocabTick])
 
   // 렌더 중에도 호출할 수 있도록 state 리셋만 분리한다(ref 는 건드리지 않음).
   // react-hooks/refs 룰: 렌더 중에는 ref.current 접근 금지.
@@ -128,7 +131,7 @@ export default function ConversationDayDetailPage() {
 
   useEffect(() => {
     let cancelled = false
-    getConversationStage(MVP_CONV_STAGE_ID)
+    getConversationStage(MVP_CONVERSATION_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
       })
@@ -155,11 +158,11 @@ export default function ConversationDayDetailPage() {
     const p = loadUserProgress()
     const completed = new Set<number>()
     for (const r of p.completedConversationDays) {
-      if (r.stageId === MVP_CONV_STAGE_ID) {
+      if (r.stageId === MVP_CONVERSATION_STAGE_ID) {
         completed.add(r.dayId)
       }
     }
-    const alreadyDone = isConversationDayCompletedPersisted(p, MVP_CONV_STAGE_ID, dayIdNum)
+    const alreadyDone = isConversationDayCompletedPersisted(p, MVP_CONVERSATION_STAGE_ID, dayIdNum)
     const allowed =
       alreadyDone || isSequentialDayUnlocked(sortedIds, completed, dayIdNum)
     if (!allowed) {
@@ -250,8 +253,8 @@ export default function ConversationDayDetailPage() {
   }, [currentStep, day, navigate, dayIdParam, nextDayForResult])
 
   const cutsceneSrc = day?.cutsceneImagePath?.trim()
-    ? publicAssetUrl(day.cutsceneImagePath)
-    : publicAssetUrl(FALLBACK_THUMB)
+    ? resolvePublicUrl(day.cutsceneImagePath)
+    : resolvePublicUrl(FALLBACK_CONVERSATION_CUTSCENE_PATH)
 
   const advanceFromCutscene = () => {
     setCurrentStep('narration')
@@ -376,7 +379,7 @@ export default function ConversationDayDetailPage() {
     )
   }
 
-  const dayLabel = `Stage ${MVP_CONV_STAGE_ID} · Day ${day.dayId}`
+  const dayLabel = `Stage ${MVP_CONVERSATION_STAGE_ID} · Day ${day.dayId}`
 
   const primaryDisabled =
     currentStep === 'quiz' &&
@@ -474,7 +477,7 @@ export default function ConversationDayDetailPage() {
                 {dialogueIndex + 1} / {d.dialogue.length}
               </span>
             </h2>
-            <p className="conv-dialogue-vn__hint">비주얼노벨 텍스트 흐름 · 다음으로 한 줄씩 이어집니다.</p>
+            <p className="conv-dialogue-vn__hint">다음 버튼을 누르면 대화가 한 줄씩 이어집니다.</p>
             <div className="conv-dialogue-vn__list" role="feed" aria-label="대화 스크립트">
               {revealed.map((line, i) => {
                 const isLatest = i === revealed.length - 1
@@ -516,13 +519,9 @@ export default function ConversationDayDetailPage() {
             <div className="conv-expr-wrap__list" role="list">
               {d.keyExpressions.map((ex) => {
                 const tip = ex.tipKo?.trim()
-                void exprVocabTick
-                const exprSaved = loadUserProgress().savedExpressions.some(
-                    (s) =>
-                      s.expressionId === ex.id &&
-                      s.stageId === MVP_CONV_STAGE_ID &&
-                      s.dayId === d.dayId,
-                  )
+                const exprSaved = savedExpressionKeys.has(
+                  `${ex.id}:${MVP_CONVERSATION_STAGE_ID}:${d.dayId}`,
+                )
                 return (
                   <article
                     key={ex.id}
@@ -530,13 +529,13 @@ export default function ConversationDayDetailPage() {
                     role="listitem"
                   >
                     <div className="conv-expr-card__block">
-                      <p className="conv-expr-card__micro">expression</p>
+                      <p className="conv-expr-card__micro">표현</p>
                       <p className="conv-expr-card__expression" lang="en">
                         {ex.expressionEn}
                       </p>
                     </div>
                     <div className="conv-expr-card__block">
-                      <p className="conv-expr-card__micro">meaning</p>
+                      <p className="conv-expr-card__micro">뜻</p>
                       <p className="conv-expr-card__meaning" lang="ko">
                         {ex.expressionKo}
                       </p>
@@ -544,7 +543,7 @@ export default function ConversationDayDetailPage() {
                     {tip !== undefined && tip.length > 0 ? (
                       <div className="conv-expr-card__tip-box">
                         <p className="conv-expr-card__micro conv-expr-card__micro--tip-label">
-                          usageTip
+                          사용 팁
                         </p>
                         <p className="conv-expr-card__tip" lang="ko">
                           {tip}
@@ -560,13 +559,13 @@ export default function ConversationDayDetailPage() {
                         if (exprSaved) {
                           persistRemoveSavedExpression(
                             ex.id,
-                            MVP_CONV_STAGE_ID,
+                            MVP_CONVERSATION_STAGE_ID,
                             d.dayId,
                           )
                         } else {
                           persistUpsertSavedExpression(
                             ex.id,
-                            MVP_CONV_STAGE_ID,
+                            MVP_CONVERSATION_STAGE_ID,
                             d.dayId,
                           )
                         }
@@ -592,16 +591,32 @@ export default function ConversationDayDetailPage() {
     switch (q.type) {
       case 'multiple-choice':
         return renderQuizMultipleChoice(d, q)
+      case 'next-line-choice':
+        return renderQuizMultipleChoice(d, q)
+      case 'pattern-fill-blank':
+        return renderQuizMultipleChoice(d, q)
     }
   }
 
   function renderQuizMultipleChoice(
     d: ConversationDay,
-    q: Extract<ConversationQuiz, { type: 'multiple-choice' }>,
+    q: ConversationQuiz,
   ): ReactNode {
     const selectedId = quizSelected
     const correct =
       selectedId !== null && selectedId === q.correctOptionId
+    const quizTitle =
+      q.type === 'next-line-choice'
+        ? '내 대답 고르기'
+        : q.type === 'pattern-fill-blank'
+          ? '표현 빈칸 채우기'
+          : '표현 퀴즈'
+    const quizBadge =
+      q.type === 'next-line-choice'
+        ? '대화 응답'
+        : q.type === 'pattern-fill-blank'
+          ? '패턴 연습'
+          : '객관식'
     const explainKoRaw = q.explanationKo?.trim()
     const explainEnRaw = q.explanationEn?.trim()
     const explainKo =
@@ -631,6 +646,29 @@ export default function ConversationDayDetailPage() {
         <p className="conv-detail__quiz-meta">
           문제 {quizIndex + 1} / {d.quiz.length}
         </p>
+        {q.type !== 'multiple-choice' ? (
+          <p className="conv-detail__quiz-meta">{quizTitle} · {quizBadge}</p>
+        ) : null}
+        {q.type === 'next-line-choice' ? (
+          <div className="conv-detail__quiz-context">
+            <p className="conv-detail__quiz-context-label">
+              {q.partnerSpeakerLabelKo ?? '상대'}
+            </p>
+            <p className="conv-detail__quiz-context-en" lang="en">
+              {q.partnerLineEn}
+            </p>
+            {q.partnerLineKo !== undefined && q.partnerLineKo.trim() !== '' ? (
+              <p className="conv-detail__quiz-context-ko" lang="ko">
+                {q.partnerLineKo}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {q.type === 'pattern-fill-blank' ? (
+          <p className="conv-detail__quiz-pattern" lang="en">
+            {q.templateEn.replaceAll('{{blank}}', '____')}
+          </p>
+        ) : null}
         <p className="conv-detail__quiz-prompt" lang="ko">
           {q.promptKo}
         </p>
@@ -781,8 +819,8 @@ export default function ConversationDayDetailPage() {
         </div>
         <p className="conv-detail__session-note">
           {isVnStep
-            ? `${stepNotice} · 모바일 VN 레이아웃`
-            : `${stepNotice} · ${day.descriptionKo ?? '텍스트 중심 MVP'}`}
+            ? `${stepNotice} · 장면 학습`
+            : `${stepNotice}${day.descriptionKo !== undefined ? ` · ${day.descriptionKo}` : ''}`}
         </p>
       </div>
 

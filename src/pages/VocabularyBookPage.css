@@ -25,6 +25,49 @@
   text-align: center;
 }
 
+.vocab-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vocab-list__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-muted);
+}
+
+.vocab-list__meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.vocab-list__badge {
+  align-self: flex-start;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-2xs, 11px);
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-elevated);
+}
+
+.vocab-list__badge--expr {
+  color: var(--color-accent-primary);
+  border-color: var(--color-accent-primary-border);
+  background: var(--color-accent-primary-soft);
+}
+
 .vocab-list__body {
   display: flex;
   flex-direction: column;
@@ -66,4 +109,28 @@
   margin: 0;
   font-size: var(--font-size-sm, 13px);
   color: var(--color-text-muted, #7d8c85);
+}
+
+.vocab-list__refs {
+  font-size: var(--font-size-2xs, 11px);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-muted, #7d8c85);
+  overflow-wrap: anywhere;
+}
+
+.vocab-list__del.ui-btn {
+  align-self: stretch;
+  min-height: 44px;
+}
+
+@media (min-width: 420px) {
+  .vocab-list__row {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .vocab-list__del.ui-btn {
+    align-self: flex-start;
+  }
 }

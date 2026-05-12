@@ -2,11 +2,13 @@
  * 단어 학습 Stage·Day 목록: 콘텐츠 순서대로 순차 해금(Duolingo 스타일) · 완료 표시는 localStorage
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   fetchStageWordsByStageId,
   type RemoteContentState,
 } from '../api/contentApi'
 import { LearningPathView, type LearningPathDay } from '../components/learning/LearningPathView'
+import { MVP_WORD_STAGE_ID } from '../constants/content'
 import type { StageWordsFile } from '../types/content'
 import { countCompletedWordDaysForStage } from '../utils/learnStats'
 import { lessonAvailabilityFromContentAndProgress } from '../utils/learningUnlock'
@@ -20,8 +22,6 @@ import {
 /** Stage 1 · 기초 TOEIC 단어 (기획 5.2) — 콘텐츠 로드 전 플레이스홀더 */
 const STAGE_TITLE = 'Stage 1 · 기초 TOEIC 단어'
 const UNIT_HEADLINE = '핵심 단어를 한 세트씩 마스터하기'
-const MVP_STAGE_ID = 1
-
 const FALLBACK_DAY_ROWS: readonly Readonly<{ id: number; title: string }>[] = [
   { id: 1, title: '사무·회사 기본 단어' },
   { id: 2, title: '일정·회의 단어' },
@@ -34,6 +34,7 @@ const FALLBACK_DAY_ROWS: readonly Readonly<{ id: number; title: string }>[] = [
 
 export default function WordStudyDayListPage() {
   const [reloadNonce, setReloadNonce] = useState(0)
+  const [contentRetryNonce, setContentRetryNonce] = useState(0)
   // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
   // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 fallback UI 라
   // 렌더 결과는 동일하다.
@@ -43,6 +44,11 @@ export default function WordStudyDayListPage() {
 
   const refresh = useCallback(() => {
     setReloadNonce((n) => n + 1)
+  }, [])
+
+  const retryContentLoad = useCallback(() => {
+    setPackState({ status: 'loading' })
+    setContentRetryNonce((n) => n + 1)
   }, [])
 
   useEffect(() => {
@@ -60,7 +66,7 @@ export default function WordStudyDayListPage() {
 
   useEffect(() => {
     let cancelled = false
-    fetchStageWordsByStageId(MVP_STAGE_ID)
+    fetchStageWordsByStageId(MVP_WORD_STAGE_ID)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
       })
@@ -71,7 +77,7 @@ export default function WordStudyDayListPage() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [contentRetryNonce])
 
   const {
     coins,
@@ -99,7 +105,7 @@ export default function WordStudyDayListPage() {
     const visibleComplete = new Set<number>()
     let maxCompletedDayId = 0
     for (const d of p.completedWordDays) {
-      if (d.stageId !== MVP_STAGE_ID) continue
+      if (d.stageId !== MVP_WORD_STAGE_ID) continue
       visibleComplete.add(d.dayId)
       if (d.dayId > maxCompletedDayId) maxCompletedDayId = d.dayId
       if (contentIds.has(d.dayId)) {
@@ -158,7 +164,7 @@ export default function WordStudyDayListPage() {
     return {
       coins: p.coins,
       completeDayIds: visibleComplete,
-      completedStageCount: countCompletedWordDaysForStage(p, MVP_STAGE_ID),
+      completedStageCount: countCompletedWordDaysForStage(p, MVP_WORD_STAGE_ID),
       pathDays: orderedRows,
       contentDayTotal: Math.max(0, totalDays),
       dueReviewCount: getDueWordReviewStatuses(p, maxCompletedDayId).length,
@@ -167,10 +173,37 @@ export default function WordStudyDayListPage() {
   }, [reloadNonce, packState])
 
   const coinShort = coins < WORD_DAY_START_COIN_COST
-  const progressLine = `Stage ${MVP_STAGE_ID} 진행률 ${completedStageCount}/${Math.max(0, contentDayTotal)} · 보유 ${coins}코인 · 시작 비용 ${WORD_DAY_START_COIN_COST}코인`
+  const progressLine = `Stage ${MVP_WORD_STAGE_ID} 진행률 ${completedStageCount}/${Math.max(0, contentDayTotal)} · 보유 ${coins}코인`
   const screenCaption = coinShort
-    ? `Day는 앞 순서부터 열립니다. 보유 코인 ${coins}개로는 일반 Day를 시작할 수 없습니다(필요 ${WORD_DAY_START_COIN_COST}개). 복습 진입에는 코인이 차감되지 않습니다.`
-    : 'Day는 앞 순서부터 열립니다. 일반 Day 시작 시마다 코인이 차감되며, 복습 진입에는 코인이 차감되지 않습니다.'
+    ? `보유 코인 ${coins}개로는 새 Day를 시작할 수 없습니다.`
+    : '노드를 탭하면 시작 카드가 열립니다.'
+
+  if (packState.status === 'error') {
+    return (
+      <main className="learning-path learning-path--word">
+        <section className="ui-card ui-card--dashboard">
+          <h1 className="ui-card__section-heading">
+            단어 콘텐츠를 불러오지 못했어요
+          </h1>
+          <p className="ui-card__body">
+            앱을 새로고침하거나 잠시 후 다시 시도해 주세요.
+          </p>
+          <div className="word-study__coin-gate-actions">
+            <button
+              type="button"
+              className="ui-btn ui-btn--primary ui-btn--block"
+              onClick={retryContentLoad}
+            >
+              다시 시도
+            </button>
+            <Link className="ui-btn ui-btn--ghost ui-btn--block" to="/home">
+              홈으로 이동
+            </Link>
+          </div>
+        </section>
+      </main>
+    )
+  }
 
   return (
     <LearningPathView
@@ -179,12 +212,6 @@ export default function WordStudyDayListPage() {
       unitTitle={UNIT_HEADLINE}
       progressLine={progressLine}
       screenCaption={screenCaption}
-      stageImportBanner={{
-        title: 'Stage 콘텐츠 가져오기',
-        description: '추후 Stage 2 이후 콘텐츠를 추가할 수 있게 준비 중입니다.',
-        buttonLabel: 'Stage 콘텐츠 가져오기',
-        statusLabel: '준비중',
-      }}
       days={pathDays}
       basePath="/word-study"
       completeDayIds={completeDayIds}

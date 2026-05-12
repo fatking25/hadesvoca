@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { ConversationSessionProvider } from '../context/ConversationSessionContext'
 import MobileLayout from '../layouts/MobileLayout'
 import ConversationDayDetailPage from '../pages/conversation/ConversationDayDetailPage'
@@ -34,10 +34,27 @@ export default function AppRouter() {
             <Route path="/conversation/:dayId" element={<ConversationDayDetailPage />} />
             <Route path="/vocabulary-book" element={<VocabularyBookPage />} />
             <Route path="/wrong-note" element={<WrongNotePage />} />
+            <Route path="*" element={<NotFoundView />} />
           </Route>
         </Route>
       </Routes>
       </ConversationSessionProvider>
     </BrowserRouter>
+  )
+}
+
+function NotFoundView() {
+  return (
+    <main className="word-study">
+      <section className="ui-card ui-card--dashboard">
+        <h1 className="ui-card__section-heading">페이지를 찾을 수 없어요</h1>
+        <p className="ui-card__body">
+          주소가 잘못되었거나 아직 준비되지 않은 화면입니다.
+        </p>
+        <Link className="ui-btn ui-btn--primary ui-btn--block" to="/home">
+          홈으로 돌아가기
+        </Link>
+      </section>
+    </main>
   )
 }

@@ -70,3 +70,59 @@
     "quiz": [{ "type": "multiple-choice", "id": "s1-d1-q1", "promptKo": "...", "options": [], "correctOptionId": "a" }]
   }]
 }
+
+
+추가 개정: 실전회화 응답형/표현 패턴형 퀴즈
+================================================
+
+ConversationQuiz.type 지원 값
+  - "multiple-choice"
+    기본 객관식 표현/상황 문제.
+
+  - "next-line-choice"
+    상대 대사를 먼저 보여주고, 사용자가 이어질 내 대답을 선택하는 문제.
+    추가 필드:
+      partnerLineEn              | string | 상대 대사(영어)
+      partnerLineKo              | string | 선택
+      partnerSpeakerLabelKo      | string | 선택
+
+  - "pattern-fill-blank"
+    단어 하나가 아니라 회화에서 자주 쓰는 표현 덩어리/패턴을 빈칸으로 고르는 문제.
+    추가 필드:
+      templateEn | string | 빈칸 표시용 영어 문장. "{{blank}}" 토큰 사용 권장.
+
+공통 선택 필드
+  expressionId | string | 선택. keyExpressions[].id 와 연결한다.
+
+expressionId 사용 원칙
+  - 표현 저장은 계속 keyExpressions[].id 기준으로 저장한다.
+  - 퀴즈 오답은 계속 quiz[].id 기준으로 저장한다.
+  - expressionId 는 "이 퀴즈가 어떤 핵심 표현을 연습하는지"를 연결하는 보조 정보다.
+  - localStorage key, UserProgress schemaVersion, savedExpressions 구조는 변경하지 않는다.
+
+예시
+{
+  "type": "next-line-choice",
+  "id": "s1-d1-q3-next-line",
+  "expressionId": "s1-d1-k3",
+  "partnerSpeakerLabelKo": "Channa",
+  "partnerLineEn": "What time works for you?",
+  "partnerLineKo": "몇 시가 좋아?",
+  "promptKo": "상대가 시간을 물었을 때 자연스러운 내 대답을 고르세요.",
+  "options": [
+    { "id": "a", "text": "How about that Italian place near the station? Say, seven?" }
+  ],
+  "correctOptionId": "a"
+}
+
+{
+  "type": "pattern-fill-blank",
+  "id": "s1-d1-q4-pattern",
+  "expressionId": "s1-d1-k1",
+  "templateEn": "Are you {{blank}} for dinner this Friday?",
+  "promptKo": "친구에게 금요일 저녁 시간이 있는지 묻는 표현을 완성하세요.",
+  "options": [
+    { "id": "a", "text": "free" }
+  ],
+  "correctOptionId": "a"
+}
