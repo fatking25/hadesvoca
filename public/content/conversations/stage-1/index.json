@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "stageId": 1,
+  "stageTitleKo": "Stage 1 · 실전 회화",
+  "stageDescriptionKo": "짧은 장면들로 구성된 텍스트 중심 비주얼노벨 흐름입니다.",
+  "dayFiles": [
+    "day-01.json",
+    "day-02.json",
+    "day-03.json",
+    "day-04.json",
+    "day-05.json",
+    "day-06.json",
+    "day-07.json"
+  ]
+}

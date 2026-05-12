@@ -4,6 +4,15 @@
 
 export type ConversationContentSchemaVersion = '1'
 
+/** `/content/conversations/stage-{n}/index.json` 루트 */
+export interface ConversationStageIndex {
+  readonly schemaVersion: ConversationContentSchemaVersion
+  readonly stageId: number
+  readonly stageTitleKo?: string
+  readonly stageDescriptionKo?: string
+  readonly dayFiles: readonly string[]
+}
+
 /** 나레이션(상황 설명 등) 블록 */
 export interface ConversationNarration {
   readonly id: string

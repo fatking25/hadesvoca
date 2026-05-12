@@ -477,7 +477,6 @@ export default function ConversationDayDetailPage() {
                 {dialogueIndex + 1} / {d.dialogue.length}
               </span>
             </h2>
-            <p className="conv-dialogue-vn__hint">다음 버튼을 누르면 대화가 한 줄씩 이어집니다.</p>
             <div className="conv-dialogue-vn__list" role="feed" aria-label="대화 스크립트">
               {revealed.map((line, i) => {
                 const isLatest = i === revealed.length - 1
@@ -514,7 +513,6 @@ export default function ConversationDayDetailPage() {
               <h2 id="conv-phrases-label" className="ui-card__section-heading conv-expr-wrap__heading">
                 핵심 표현
               </h2>
-              <p className="conv-expr-wrap__hint">대화에서 꺼낼 수 있는 패턴을 카드로 정리했습니다.</p>
             </div>
             <div className="conv-expr-wrap__list" role="list">
               {d.keyExpressions.map((ex) => {

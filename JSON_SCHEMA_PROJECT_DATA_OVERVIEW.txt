@@ -17,6 +17,8 @@
   1) 앱 시작
      → localStorage에서 UserProgress 로드(파실 시 기본값)
   2) 필요 시 public/content 에서 단어 Stage·회화 Stage 등 JSON fetch
+     - 단어: public/content/words/stage-{n}.json
+     - 회화: public/content/conversations/stage-{n}/index.json + day-xx.json
   3) 학습·퀴즈·저장 버튼 동작 시 UserProgress 필드만 갱신 후 localStorage 저장
   4) 사용자가 설정·헤더 [저장] 등으로 진행 파일을 받으면 UserProgress 구조(JSON) 파일만 포함
 
@@ -39,3 +41,10 @@
   파싱·저장·export/import·정규화: src/utils/storage.ts
   단어 콘텐츠 타입: src/types/content.ts
   회화 콘텐츠 타입: src/types/conversation.ts
+
+
+□ 실전회화 콘텐츠 구조 참고
+
+  - 앱 로더 계약은 getConversationStage(stageId): Promise<ConversationStage>를 유지한다.
+  - 파일은 Stage 폴더 구조로 나뉘지만, 앱 내부에서는 여전히 days 배열이 조립된 ConversationStage를 사용한다.
+  - public/content/stage-metadata.json은 현재 conversation content path를 직접 들고 있지 않다.

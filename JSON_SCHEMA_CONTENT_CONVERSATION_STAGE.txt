@@ -1,12 +1,69 @@
-하데스 보카 — 실전 회화 Stage 콘텐츠 JSON 명세 (public/content/conversations/stage-{n}.json)
-===========================================================================================
+하데스 보카 — 실전 회화 Stage 콘텐츠 JSON 명세
+================================================
+
+□ 현재 파일 구조
+
+  기존 단일 파일 방식(Phase 14 이전)
+    public/content/conversations/stage-1.json
+
+  현재 Stage 폴더 방식(Phase 14 이후)
+    public/content/conversations/stage-1/index.json
+    public/content/conversations/stage-1/day-01.json
+    public/content/conversations/stage-1/day-02.json
+    public/content/conversations/stage-1/day-03.json
+    public/content/conversations/stage-1/day-04.json
+    public/content/conversations/stage-1/day-05.json
+    public/content/conversations/stage-1/day-06.json
+    public/content/conversations/stage-1/day-07.json
+
 
 □ 역할
-  - 회화 학습 장면·대사·퀴즈가 들 있는 정적 데이터.
+  - 회화 학습 장면·대사·퀴즈가 들어 있는 정적 데이터.
+  - index.json은 Stage 메타 정보와 Day 파일 목록을 가진다.
+  - day-xx.json은 기존 ConversationDay 객체 하나만 가진다.
+  - 앱 내부 최종 반환 형태는 여전히 ConversationStage이다.
+  - getConversationStage(stageId): Promise<ConversationStage> 계약을 유지한다.
+  - 화면 컴포넌트는 기존처럼 stage.days를 사용한다.
   - 완료 여부·표현 저장은 UserProgress.completedConversationDays / savedExpressions에만 참조로 기록된다.
+  - Day 콘텐츠 본문은 사용자 저장 데이터에 저장하지 않고 참조 ID만 저장한다.
 
 
-□ 루트 (ConversationStage)
+□ index.json (ConversationStageIndex)
+
+  필드명              | 타입     | 설명
+  -------------------|----------|------------------------------------------
+  schemaVersion      | string   | 예 "1"
+  stageId            | number   | 회화 스테이지 ID
+  stageTitleKo       | string   | 선택
+  stageDescriptionKo | string   | 선택
+  dayFiles           | string[] | 이 Stage를 구성하는 Day 파일명 목록
+
+  dayFiles 원칙
+  - 실제 파일명을 직접 나열한다.
+  - dayFiles 순서가 앱에서 조립되는 days 순서가 된다.
+  - Day 파일명은 day-01.json처럼 두 자리 형식을 권장한다.
+  - index.json에는 days 배열을 넣지 않는다.
+  - index.json에는 Day 본문 데이터를 넣지 않는다.
+
+  예시
+  {
+    "schemaVersion": "1",
+    "stageId": 1,
+    "stageTitleKo": "Stage 1 · 실전 회화",
+    "stageDescriptionKo": "짧은 장면들로 구성된 텍스트 중심 비주얼노벨 흐름입니다.",
+    "dayFiles": [
+      "day-01.json",
+      "day-02.json",
+      "day-03.json",
+      "day-04.json",
+      "day-05.json",
+      "day-06.json",
+      "day-07.json"
+    ]
+  }
+
+
+□ 앱 내부 조립 결과 (ConversationStage)
 
   필드명              | 타입   | 설명
   -------------------|--------|------------------------------------------
@@ -17,7 +74,9 @@
   days               | 배열   | ConversationDay[]
 
 
-□ Day (ConversationDay)
+□ Day 파일 (ConversationDay)
+
+  각 day-xx.json은 ConversationDay 객체 하나만 담는다.
 
   필드명             | 타입   | 설명
   ------------------|--------|----------------------------------------
@@ -29,7 +88,7 @@
   narrations        | 배열   | narration 블록
   dialogue          | 배열   | 대사 한 줄 단위 (**필드명 복수가 아님**, JSON 키는 dialogue)
   keyExpressions    | 배열   | 핵심 표현
-  quiz              | 배열   | 객관식 퀴즈 (**필드명 quiz**, 복수 아님)
+  quiz              | 배열   | 퀴즈 (**필드명 quiz**, 복수 아님)
 
 
 □ Narration (ConversationNarration)
@@ -46,83 +105,104 @@
 
 
 □ Quiz (ConversationQuiz)
-  type: "multiple-choice"
-  id, promptKo, promptEn(선택), explanationKo(선택), explanationEn(선택)
-  options[{id,text}], correctOptionId
+
+  공통 필드
+    id, type, promptKo, promptEn(선택), expressionId(선택)
+    explanationKo(선택), explanationEn(선택)
+    options[{id,text}], correctOptionId
+
+  type 지원 값
+    - "multiple-choice"
+      기본 객관식 표현/상황 문제.
+
+    - "next-line-choice"
+      상대 대사를 먼저 보여주고, 사용자가 이어질 내 대답을 선택하는 문제.
+      추가 필드:
+        partnerLineEn              | string | 상대 대사(영어)
+        partnerLineKo              | string | 선택
+        partnerSpeakerLabelKo      | string | 선택
+
+    - "pattern-fill-blank"
+      회화에서 자주 쓰는 표현 덩어리/패턴을 빈칸으로 고르는 문제.
+      추가 필드:
+        templateEn | string | 빈칸 표시용 영어 문장. "{{blank}}" 토큰 사용 권장.
+
+  expressionId 사용 원칙
+    - 표현 저장은 계속 keyExpressions[].id 기준으로 저장한다.
+    - 퀴즈 오답은 계속 quiz[].id 기준으로 저장한다.
+    - expressionId는 "이 퀴즈가 어떤 핵심 표현을 연습하는지"를 연결하는 보조 정보다.
+    - localStorage key, UserProgress schemaVersion, savedExpressions 구조는 변경하지 않는다.
 
 
 □ 참조 ID
-  • stageId, dayId     : 완료 Day·오답노트에서 사용
-  • expressionId       : keyExpressions[].id
-  • 퀴즈 id              : quiz[].id (오답 기록 시 expression 퀴즈로 연결)
+  - stageId, dayId : 완료 Day·오답노트에서 사용
+  - expressionId   : keyExpressions[].id
+  - quiz[].id      : 오답 기록 시 expression 퀴즈로 연결
 
 
-□ 짧은 예시
+□ 컷씬 에셋 주의사항
+  - 실제 컷씬 에셋은 public/content/conversations/assets/ 아래에 둔다.
+  - Day별 컷씬 경로는 각 Day JSON의 cutsceneImagePath에서 관리한다.
+  - Day 목록 화면과 Day 상세 화면은 day.cutsceneImagePath를 참조한다.
+  - cutsceneImagePath는 Day JSON 내부에 보존해야 한다.
+  - cutsceneImagePath가 없거나 빈 문자열일 때만 FALLBACK_CONVERSATION_CUTSCENE_PATH가 사용된다.
+  - 경로는 있는데 파일이 없을 경우 현재 자동 fallback은 없다.
+  - 현재 <img onError> 이미지 로드 실패 fallback 처리는 없다.
+  - Phase 14에서는 기존 placeholder 경로를 유지한다.
+  - 현재 Day 4~7은 Day 1 placeholder를 재사용 중이지만 Phase 14에서는 수정하지 않는다.
+  - Day 1~7 고유 컷씬 이미지 7장 제작 및 경로 교체는 다음 에셋 Phase에서 별도로 진행한다.
+  - 필요하면 다음 UI 안정화 Phase에서 <img onError> fallback 처리를 별도 검토한다.
 
-{
-  "schemaVersion": "1",
-  "stageId": 1,
-  "days": [{
-    "dayId": 1,
-    "narrations": [{ "id": "s1-d1-n1", "textKo": "..." }],
-    "dialogue": [{ "id": "s1-d1-d1", "textEn": "...", "textKo": "..." }],
-    "keyExpressions": [{ "id": "s1-d1-k1", "expressionEn": "...", "expressionKo": "..." }],
-    "quiz": [{ "type": "multiple-choice", "id": "s1-d1-q1", "promptKo": "...", "options": [], "correctOptionId": "a" }]
-  }]
-}
+
+□ stage-metadata 관련
+  - public/content/stage-metadata.json은 현재 conversation 파일 경로를 직접 들고 있지 않다.
+  - 현재는 단어용 wordContentPath와 dayIds 중심으로 관리된다.
+  - Phase 14에서는 conversation content path를 stage-metadata로 옮기지 않는다.
+  - 실전회화 로딩 경로는 getConversationStage(stageId)의 관례 기반 경로를 사용한다.
+  - 장기적으로 conversation 경로를 metadata에서 관리하려면 별도 Phase에서 설계한다.
 
 
-추가 개정: 실전회화 응답형/표현 패턴형 퀴즈
-================================================
+□ Stage 2 추가 예
 
-ConversationQuiz.type 지원 값
-  - "multiple-choice"
-    기본 객관식 표현/상황 문제.
+  public/content/conversations/
+    stage-2/
+      index.json
+      day-08.json
+      day-09.json
+      day-10.json
+      day-11.json
+      day-12.json
+      day-13.json
+      day-14.json
 
-  - "next-line-choice"
-    상대 대사를 먼저 보여주고, 사용자가 이어질 내 대답을 선택하는 문제.
-    추가 필드:
-      partnerLineEn              | string | 상대 대사(영어)
-      partnerLineKo              | string | 선택
-      partnerSpeakerLabelKo      | string | 선택
+  index.json 예시
+  {
+    "schemaVersion": "1",
+    "stageId": 2,
+    "stageTitleKo": "Stage 2 · 실전 회화",
+    "stageDescriptionKo": "...",
+    "dayFiles": [
+      "day-08.json",
+      "day-09.json",
+      "day-10.json",
+      "day-11.json",
+      "day-12.json",
+      "day-13.json",
+      "day-14.json"
+    ]
+  }
 
-  - "pattern-fill-blank"
-    단어 하나가 아니라 회화에서 자주 쓰는 표현 덩어리/패턴을 빈칸으로 고르는 문제.
-    추가 필드:
-      templateEn | string | 빈칸 표시용 영어 문장. "{{blank}}" 토큰 사용 권장.
 
-공통 선택 필드
-  expressionId | string | 선택. keyExpressions[].id 와 연결한다.
-
-expressionId 사용 원칙
-  - 표현 저장은 계속 keyExpressions[].id 기준으로 저장한다.
-  - 퀴즈 오답은 계속 quiz[].id 기준으로 저장한다.
-  - expressionId 는 "이 퀴즈가 어떤 핵심 표현을 연습하는지"를 연결하는 보조 정보다.
-  - localStorage key, UserProgress schemaVersion, savedExpressions 구조는 변경하지 않는다.
-
-예시
-{
-  "type": "next-line-choice",
-  "id": "s1-d1-q3-next-line",
-  "expressionId": "s1-d1-k3",
-  "partnerSpeakerLabelKo": "Channa",
-  "partnerLineEn": "What time works for you?",
-  "partnerLineKo": "몇 시가 좋아?",
-  "promptKo": "상대가 시간을 물었을 때 자연스러운 내 대답을 고르세요.",
-  "options": [
-    { "id": "a", "text": "How about that Italian place near the station? Say, seven?" }
-  ],
-  "correctOptionId": "a"
-}
+□ 짧은 Day 파일 예시
 
 {
-  "type": "pattern-fill-blank",
-  "id": "s1-d1-q4-pattern",
-  "expressionId": "s1-d1-k1",
-  "templateEn": "Are you {{blank}} for dinner this Friday?",
-  "promptKo": "친구에게 금요일 저녁 시간이 있는지 묻는 표현을 완성하세요.",
-  "options": [
-    { "id": "a", "text": "free" }
-  ],
-  "correctOptionId": "a"
+  "dayId": 1,
+  "titleKo": "...",
+  "descriptionKo": "...",
+  "sceneDescriptionKo": "...",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [{ "id": "s1-d1-n1", "textKo": "..." }],
+  "dialogue": [{ "id": "s1-d1-d1", "textEn": "...", "textKo": "..." }],
+  "keyExpressions": [{ "id": "s1-d1-k1", "expressionEn": "...", "expressionKo": "..." }],
+  "quiz": [{ "type": "multiple-choice", "id": "s1-d1-q1", "promptKo": "...", "options": [], "correctOptionId": "a" }]
 }

@@ -1,0 +1,181 @@
+{
+  "dayId": 1,
+  "titleKo": "챈나와 식사 약속",
+  "descriptionKo": "메시지로 저녁 약속 잡기",
+  "sceneDescriptionKo": "금요일 오후, 조용한 카페. 친구 챈나에게 저녁 약속 메시지를 보내려는 순간이다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d1-n1",
+      "textKo": "금요일 저녁, 친구 챈나와 식사하고 싶다. 카페에서 메시지를 켠다.",
+      "textEn": "It's Friday evening and you want to grab dinner with your friend Channa. You open your messages at a café."
+    },
+    {
+      "id": "s1-d1-n2",
+      "textKo": "부드럽게 물어보면 된다. 숨을 고르고 첫 문장을 입력한다.",
+      "textEn": "Keep it friendly and clear. You take a breath and start typing."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d1-d1",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "챈나, 이번 금요일 저녁 식사 같이 할래?",
+      "textEn": "Hey Channa, are you free for dinner this Friday?"
+    },
+    {
+      "id": "s1-d1-d2",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "응! 몇 시가 좋아?",
+      "textEn": "Yes! What time works for you?"
+    },
+    {
+      "id": "s1-d1-d3",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "역 근처 그 이탈리안 어때? 7시.",
+      "textEn": "How about that Italian place near the station? Say, seven?"
+    },
+    {
+      "id": "s1-d1-d4",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "좋아, 거기서 보자. 이따 봐!",
+      "textEn": "Perfect. See you there!"
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d1-k1",
+      "expressionEn": "Are you free for dinner this Friday?",
+      "expressionKo": "이번 금요일 저녁 식사할 시간 있어?",
+      "tipKo": "친한 사이면 Hey로 시작해도 자연스럽습니다."
+    },
+    {
+      "id": "s1-d1-k2",
+      "expressionEn": "What time works for you?",
+      "expressionKo": "몇 시가 너한테 괜찮아?",
+      "tipKo": "상대 스케줄을 먼저 묻는 표현입니다."
+    },
+    {
+      "id": "s1-d1-k3",
+      "expressionEn": "How about the Italian place near the station?",
+      "expressionKo": "역 근처 이탈리안 레스토랑은 어때?",
+      "tipKo": "How about ~? 로 장소·시간 제안에 쓸 수 있어요."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d1-q1",
+      "promptKo": "친구에게 '금요일 저녁 같이 먹을래?'라고 가장 자연스럽게 꺼내는 말은?",
+      "promptEn": "Which line sounds most natural to invite a friend to dinner on Friday?",
+      "explanationKo": "`Are you free for ~?` 패턴으로 요일과 일정(invite)을 동시에 말하면 초대 문장으로 자연스럽습니다. 나머지는 주제와 맞지 않습니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Are you free for dinner this Friday?"
+        },
+        {
+          "id": "b",
+          "text": "Did you eat lunch?"
+        },
+        {
+          "id": "c",
+          "text": "Where do you live?"
+        },
+        {
+          "id": "d",
+          "text": "Can you lend me money?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d1-q2",
+      "promptKo": "상대에게 시간 물을 때 알맞은 표현은?",
+      "promptEn": "Which asks politely about someone's preferred time?",
+      "explanationKo": "`What time works for you?`는 상대의 가능한 시간을 묻는 고정 패턴이라 약속·만남에 잘 맞습니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "What time works for you?"
+        },
+        {
+          "id": "b",
+          "text": "What's your shoe size?"
+        },
+        {
+          "id": "c",
+          "text": "Do you hate Fridays?"
+        },
+        {
+          "id": "d",
+          "text": "Where is Boston?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d1-q3-next-line",
+      "expressionId": "s1-d1-k3",
+      "partnerSpeakerLabelKo": "Channa",
+      "partnerLineKo": "? ?? ???",
+      "partnerLineEn": "What time works for you?",
+      "promptKo": "??? ??? ??? ? ????? ? ??? ????.",
+      "promptEn": "Choose the best reply when your friend asks what time works for you.",
+      "explanationKo": "??? ??? ??? ????? ??? ??? ???? ?? ???????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "How about that Italian place near the station? Say, seven?"
+        },
+        {
+          "id": "b",
+          "text": "Can you lend me money?"
+        },
+        {
+          "id": "c",
+          "text": "Where do you live?"
+        },
+        {
+          "id": "d",
+          "text": "Did you eat lunch?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d1-q4-pattern",
+      "expressionId": "s1-d1-k1",
+      "templateEn": "Are you {{blank}} for dinner this Friday?",
+      "promptKo": "???? ??? ?? ??? ??? ?? ??? ?????.",
+      "promptEn": "Complete the invitation pattern.",
+      "explanationKo": "`Are you free for ~?`? ??? ??? ? ?? ?? ?????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "free"
+        },
+        {
+          "id": "b",
+          "text": "late"
+        },
+        {
+          "id": "c",
+          "text": "closed"
+        },
+        {
+          "id": "d",
+          "text": "borrowed"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

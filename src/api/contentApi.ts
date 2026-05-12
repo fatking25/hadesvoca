@@ -2,7 +2,7 @@
  * `public/content/` 정적 JSON 전용 로더 (fetch). 사용자 진행·저장 데이터와 분리.
  */
 import type { StageMetadataFile, StageWordsFile } from '../types/content'
-import type { ConversationStage } from '../types/conversation'
+import type { ConversationStage, ConversationStageIndex } from '../types/conversation'
 
 const STAGE_METADATA_REL = 'content/stage-metadata.json'
 const CONTENT_SCHEMA_VERSION = '1'
@@ -253,6 +253,44 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
   return data as ConversationStage
 }
 
+function assertConversationStageIndex(
+  data: unknown,
+  url: string,
+): ConversationStageIndex {
+  if (typeof data !== 'object' || data === null) {
+    throw new ContentFetchError('실전 회화 스테이지 index: 유효하지 않은 데이터입니다.', url)
+  }
+  const o = data as Record<string, unknown>
+  if (
+    o.schemaVersion !== CONTENT_SCHEMA_VERSION ||
+    typeof o.stageId !== 'number' ||
+    !Array.isArray(o.dayFiles)
+  ) {
+    throw new ContentFetchError('실전 회화 스테이지 index: 예상 스키마와 맞지 않습니다.', url)
+  }
+  if (o.dayFiles.length === 0) {
+    throw new ContentFetchError('실전 회화 스테이지 index: dayFiles 가 비었습니다.', url)
+  }
+  for (const file of o.dayFiles) {
+    if (typeof file !== 'string' || file.trim() === '') {
+      throw new ContentFetchError('실전 회화 스테이지 index: dayFiles 항목이 올바르지 않습니다.', url)
+    }
+  }
+  if (
+    o.stageTitleKo !== undefined &&
+    typeof o.stageTitleKo !== 'string'
+  ) {
+    throw new ContentFetchError('실전 회화 스테이지 index: stageTitleKo 형식 오류입니다.', url)
+  }
+  if (
+    o.stageDescriptionKo !== undefined &&
+    typeof o.stageDescriptionKo !== 'string'
+  ) {
+    throw new ContentFetchError('실전 회화 스테이지 index: stageDescriptionKo 형식 오류입니다.', url)
+  }
+  return data as ConversationStageIndex
+}
+
 /**
  * `/content/stage-metadata.json` 로드
  */
@@ -290,9 +328,57 @@ export async function fetchConversationStageFile(conversationContentPath: string
   return assertConversationStage(raw, url)
 }
 
+async function fetchConversationStageIndexFile(
+  conversationIndexPath: string,
+): Promise<ConversationStageIndex> {
+  const url = resolvePublicUrl(conversationIndexPath)
+  let text: string
+  try {
+    text = await fetchText(url)
+  } catch (cause) {
+    throw new ContentFetchError(
+      `실전 회화 스테이지 index를 불러오지 못했습니다: ${conversationIndexPath}`,
+      url,
+      cause,
+    )
+  }
+  const raw = parseJson(url, text)
+  return assertConversationStageIndex(raw, url)
+}
+
+async function fetchConversationDayFile(dayPath: string): Promise<unknown> {
+  const url = resolvePublicUrl(dayPath)
+  let text: string
+  try {
+    text = await fetchText(url)
+  } catch (cause) {
+    throw new ContentFetchError(
+      `실전 회화 Day 파일을 불러오지 못했습니다: ${dayPath}`,
+      url,
+      cause,
+    )
+  }
+  return parseJson(url, text)
+}
+
 /**
- * 관례 경로 `/content/conversations/stage-{stageId}.json` 로드
+ * 관례 경로 `/content/conversations/stage-{stageId}/index.json` 와 Day 파일들을 조립해 로드
  */
 export async function getConversationStage(stageId: number): Promise<ConversationStage> {
-  return fetchConversationStageFile(`/content/conversations/stage-${stageId}.json`)
+  const stageDir = `/content/conversations/stage-${stageId}`
+  const indexPath = `${stageDir}/index.json`
+  const index = await fetchConversationStageIndexFile(indexPath)
+  const days = await Promise.all(
+    index.dayFiles.map((dayFile) =>
+      fetchConversationDayFile(`${stageDir}/${dayFile}`),
+    ),
+  )
+  const stage: ConversationStage = {
+    schemaVersion: index.schemaVersion,
+    stageId: index.stageId,
+    stageTitleKo: index.stageTitleKo,
+    stageDescriptionKo: index.stageDescriptionKo,
+    days: days as ConversationStage['days'],
+  }
+  return assertConversationStage(stage, resolvePublicUrl(indexPath))
 }

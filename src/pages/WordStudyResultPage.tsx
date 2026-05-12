@@ -184,7 +184,7 @@ export default function WordStudyResultPage() {
   return (
     <main className={`word-result${isReviewMode ? ' word-result--review' : ''}`}>
       <p className="word-result__done-badge">
-        {isReviewMode ? '복습 세션 완료' : '오늘 미션 완료 · 짧은 5분 학습 세트'}
+        {isReviewMode ? '복습 세션 완료' : '학습 완료'}
       </p>
       <h1 className="word-result__title">
         {isReviewMode ? '복습 결과' : '학습 결과'}
@@ -269,10 +269,7 @@ export default function WordStudyResultPage() {
                   </div>
                   {reward.memorizedDelta > 0 ? (
                     <div className="word-result__reward-cell">
-                      <span
-                        className="word-result__reward-label"
-                        title="이번 Day의 단어 수가 누적 학습 단어에 더해집니다"
-                      >
+                      <span className="word-result__reward-label">
                         학습 완료 단어
                       </span>
                       <span className="word-result__reward-value">
@@ -288,8 +285,7 @@ export default function WordStudyResultPage() {
                 aria-label="보상 안내"
               >
                 <p className="word-result__muted ui-card__body">
-                  이미 완료한 Day라 보상은 지급되지 않았습니다. 진행 기록은
-                  업데이트되었어요.
+                  진행 기록을 업데이트했어요.
                 </p>
               </section>
             )
@@ -348,11 +344,6 @@ export default function WordStudyResultPage() {
                 ))}
               </ul>
             )}
-            <p className="word-result__muted ui-card__body">
-              {isReviewMode
-                ? '이번 복습 세션의 오답은 오답노트와 단어별 복습 상태에 반영됩니다. (이 기기에서만)'
-                : '틀린 문항은 기기에 저장된 진행 데이터의 오답 목록에 반영됩니다. (이 기기에서만)'}
-            </p>
           </section>
         </>
       ) : (

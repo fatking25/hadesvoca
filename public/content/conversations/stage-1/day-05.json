@@ -1,0 +1,188 @@
+{
+  "dayId": 5,
+  "titleKo": "카페에서 안부 잡담",
+  "descriptionKo": "오랜만의 안부 묻기",
+  "sceneDescriptionKo": "토요일 오전, 자주 가는 동네 카페에서 챈나와 다시 만난다. 따뜻한 커피를 사이에 두고 가볍게 안부를 묻는다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d5-n1",
+      "textKo": "오랜만에 둘이 마주 앉았다. 가벼운 인사부터 꺼내면 된다.",
+      "textEn": "It's been a while since you sat down together. Start with a soft greeting."
+    },
+    {
+      "id": "s1-d5-n2",
+      "textKo": "근황을 묻고, 자연스럽게 주말 계획으로 화제를 옮긴다.",
+      "textEn": "Catch up on recent news, then drift toward weekend plans."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d5-d1",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "오랜만이야. 요즘 어떻게 지냈어?",
+      "textEn": "It's been a while. How have you been?"
+    },
+    {
+      "id": "s1-d5-d2",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "그럭저럭. 회사 일이 많아서 정신 없었어.",
+      "textEn": "Pretty busy with work, honestly. Time's been flying."
+    },
+    {
+      "id": "s1-d5-d3",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "고생이 많네. 이번 주말엔 뭐 해?",
+      "textEn": "That sounds rough. What are you up to this weekend?"
+    },
+    {
+      "id": "s1-d5-d4",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "별 거 없어. 영화나 한 편 볼까 했어.",
+      "textEn": "Nothing much. Maybe catch a movie."
+    },
+    {
+      "id": "s1-d5-d5",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "그럼 같이 가자. 표는 내가 예매할게.",
+      "textEn": "Let's go together then. I'll grab the tickets."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d5-k1",
+      "expressionEn": "How have you been?",
+      "expressionKo": "요즘 어떻게 지냈어?",
+      "tipKo": "오랜만에 만난 사람에게 가장 자연스러운 안부 인사입니다."
+    },
+    {
+      "id": "s1-d5-k2",
+      "expressionEn": "What are you up to this weekend?",
+      "expressionKo": "이번 주말에 뭐 해?",
+      "tipKo": "be up to ~ 는 '~할 예정이다' 라는 캐주얼한 표현입니다."
+    },
+    {
+      "id": "s1-d5-k3",
+      "expressionEn": "Let's go together then.",
+      "expressionKo": "그럼 같이 가자.",
+      "tipKo": "Let's ~ 로 자연스럽게 함께 하자고 제안합니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d5-q1",
+      "promptKo": "오랜만에 만난 친구에게 안부를 묻는 자연스러운 표현은?",
+      "promptEn": "Which line is the most natural greeting after a long time?",
+      "explanationKo": "`How have you been?`은 한동안 못 본 사이에 가장 흔히 쓰이는 안부 인사입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Did you finish dinner already?"
+        },
+        {
+          "id": "b",
+          "text": "Are you lost again?"
+        },
+        {
+          "id": "c",
+          "text": "How have you been?"
+        },
+        {
+          "id": "d",
+          "text": "Where is the manager right now?"
+        }
+      ],
+      "correctOptionId": "c"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d5-q2",
+      "promptKo": "상대의 주말 계획을 묻는 자연스러운 표현은?",
+      "promptEn": "Pick the most natural way to ask about weekend plans.",
+      "explanationKo": "`What are you up to ~?` 는 '~에 뭐 해?' 라는 캐주얼한 일정 묻기 패턴입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "What are you up to this weekend?"
+        },
+        {
+          "id": "b",
+          "text": "Why is Monday so angry?"
+        },
+        {
+          "id": "c",
+          "text": "Do you own the weekend?"
+        },
+        {
+          "id": "d",
+          "text": "Is the calendar tired now?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d5-q3-next-line",
+      "expressionId": "s1-d5-k3",
+      "partnerSpeakerLabelKo": "Channa",
+      "partnerLineKo": "??? ?? ?? ?.",
+      "partnerLineEn": "Maybe catch a movie.",
+      "promptKo": "??? ?? ??? ????? ?? ??? ????.",
+      "promptEn": "Choose the best reply to suggest going together.",
+      "explanationKo": "`Let's go together then`? ?? ??? ????? ??? ? ???????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Let's go together then. I'll grab the tickets."
+        },
+        {
+          "id": "b",
+          "text": "Why is Monday so angry?"
+        },
+        {
+          "id": "c",
+          "text": "Where is the manager right now?"
+        },
+        {
+          "id": "d",
+          "text": "Do you own the weekend?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d5-q4-pattern",
+      "expressionId": "s1-d5-k2",
+      "templateEn": "What are you {{blank}} this weekend?",
+      "promptKo": "?? ??? ?? ??? ?????.",
+      "promptEn": "Complete the weekend plan question.",
+      "explanationKo": "`be up to`? ????? ??? ? ???? ?? ? ???.",
+      "options": [
+        {
+          "id": "a",
+          "text": "up to"
+        },
+        {
+          "id": "b",
+          "text": "down by"
+        },
+        {
+          "id": "c",
+          "text": "late for"
+        },
+        {
+          "id": "d",
+          "text": "closed to"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

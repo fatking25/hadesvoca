@@ -1,0 +1,181 @@
+{
+  "dayId": 3,
+  "titleKo": "메뉴 주문하기",
+  "descriptionKo": "웨이터와 주문하기",
+  "sceneDescriptionKo": "예약한 테이블에 앉았다. 메뉴판을 넘기며 웨이터가 다가오는 걸 기다린다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day3-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d3-n1",
+      "textKo": "예약한 테이블에 앉았다. 웨이터가 메뉴판과 함께 다가온다.",
+      "textEn": "You're seated at your reserved table as the server walks over with menus."
+    },
+    {
+      "id": "s1-d3-n2",
+      "textKo": "주문은 짧고 명확하게 말하면 된다.",
+      "textEn": "Keeping your order clear saves everyone time."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d3-d1",
+      "speakerId": "waiter",
+      "speakerLabelKo": "웨이터",
+      "textKo": "어서 오세요. 준비되시면 알려주세요.",
+      "textEn": "Welcome in. Let me know when you're ready to order."
+    },
+    {
+      "id": "s1-d3-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "전 스테이크요, 미디엄 레어로 부탁합니다. 그리고 탄산수 하나요.",
+      "textEn": "I'll have the steak, medium rare, please. And sparkling water."
+    },
+    {
+      "id": "s1-d3-d3",
+      "speakerId": "waiter",
+      "speakerLabelKo": "웨이터",
+      "textKo": "알겠습니다. 다른 건 어떠세요?",
+      "textEn": "Sounds good. Anything else for you tonight?"
+    },
+    {
+      "id": "s1-d3-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "아니요, 이걸로 충분해요. 감사합니다.",
+      "textEn": "That's all, thanks."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d3-k1",
+      "expressionEn": "I'll have the steak, medium rare, please.",
+      "expressionKo": "스테이크 미디엔 레어로 주세요.",
+      "tipKo": "`I'll have ~` 로 메인 주문을 자연스럽게 말합니다."
+    },
+    {
+      "id": "s1-d3-k2",
+      "expressionEn": "Sparkling water, please.",
+      "expressionKo": "탄산수 주세요.",
+      "tipKo": "still water와 구분하고 싶을 때 sparkling을 붙입니다."
+    },
+    {
+      "id": "s1-d3-k3",
+      "expressionEn": "Could we get the check, please?",
+      "expressionKo": "계산서 좀 부탁드려도 될까요?",
+      "tipKo": "미국 식당에서 흔히 쓰는 결제 요청 표현입니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d3-q1",
+      "promptKo": "스테이크 굽기를 말할 때 자연스러운 표현은?",
+      "promptEn": "How do you usually request your steak doneness?",
+      "explanationKo": "주문은 `I'll have the ~`로 시작하고 굽기(medium rare 등)와 `please`를 붙이면 직원이 처리하기 좋습니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I'll have the steak, medium rare, please."
+        },
+        {
+          "id": "b",
+          "text": "Steak raw in a bag to go."
+        },
+        {
+          "id": "c",
+          "text": "Make it yesterday's special."
+        },
+        {
+          "id": "d",
+          "text": "No meat, only ice."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d3-q2",
+      "promptKo": "식사 후 계산 요청할 때 가장 무난한 말은?",
+      "promptEn": "Pick a natural way to ask for the bill.",
+      "explanationKo": "미국·캐주얼 레스토랑에서 계산서는 종종 **check**로 부르며, `Could we get the check, please?`가 무난합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Could we get the check, please?"
+        },
+        {
+          "id": "b",
+          "text": "Where is your manager's house?"
+        },
+        {
+          "id": "c",
+          "text": "I forgot my name."
+        },
+        {
+          "id": "d",
+          "text": "Cancel the restaurant."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d3-q3-next-line",
+      "expressionId": "s1-d3-k1",
+      "partnerSpeakerLabelKo": "Waiter",
+      "partnerLineKo": "??? ??? ?? ?? ???.",
+      "partnerLineEn": "Let me know when you're ready to order.",
+      "promptKo": "??? ??? ??? ? ????? ? ??? ????.",
+      "promptEn": "Choose the best reply when the server is ready to take your order.",
+      "explanationKo": "`I'll have ~`? ?? ??? ??? ? ???????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I'll have the steak, medium rare, please."
+        },
+        {
+          "id": "b",
+          "text": "Where is your manager's house?"
+        },
+        {
+          "id": "c",
+          "text": "Make it yesterday's special."
+        },
+        {
+          "id": "d",
+          "text": "Cancel the restaurant."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d3-q4-pattern",
+      "expressionId": "s1-d3-k3",
+      "templateEn": "Could we get the {{blank}}, please?",
+      "promptKo": "?? ? ??? ???? ??? ?????.",
+      "promptEn": "Complete the bill request pattern.",
+      "explanationKo": "???? ???? ??? ? `get the check`? ?? ???.",
+      "options": [
+        {
+          "id": "a",
+          "text": "check"
+        },
+        {
+          "id": "b",
+          "text": "window"
+        },
+        {
+          "id": "c",
+          "text": "station"
+        },
+        {
+          "id": "d",
+          "text": "calendar"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

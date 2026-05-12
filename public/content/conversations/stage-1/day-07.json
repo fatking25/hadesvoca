@@ -1,0 +1,181 @@
+{
+  "dayId": 7,
+  "titleKo": "Stage 1 회고",
+  "descriptionKo": "한 주의 표현 정리",
+  "sceneDescriptionKo": "일요일 밤, 하루를 마무리하며 이번 주에 익힌 표현을 머릿속으로 정리해 본다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d7-n1",
+      "textKo": "약속을 잡고, 예약하고, 메뉴를 주문하고, 길을 묻고, 안부를 나눴다. 한 주가 빠르게 지나갔다.",
+      "textEn": "You set up a dinner, booked a table, ordered food, asked for directions, and caught up with a friend. Quite a week."
+    },
+    {
+      "id": "s1-d7-n2",
+      "textKo": "오늘은 새 표현 대신, 한 주에 자주 쓴 마무리 인사 3개를 정리해 본다.",
+      "textEn": "Tonight, instead of new lines, recap three closing phrases that came up all week."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d7-d1",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "다음에 또 만나자고 자연스럽게 말하고 싶었지.",
+      "textEn": "I wanted to wrap things up with something like 'see you again soon.'"
+    },
+    {
+      "id": "s1-d7-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "헤어질 때 가벼운 인사가 늘 필요했어.",
+      "textEn": "A light closing line came in handy every single time."
+    },
+    {
+      "id": "s1-d7-d3",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "이번 주 즐거웠어. 또 보자!",
+      "textEn": "Great week. Let's do it again soon!"
+    },
+    {
+      "id": "s1-d7-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "또 보자. 곧 연락할게.",
+      "textEn": "See you soon. I'll text you."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d7-k1",
+      "expressionEn": "Let's catch up soon.",
+      "expressionKo": "조만간 또 보자.",
+      "tipKo": "회사·친구 모두에게 자연스럽게 쓰는 인사입니다."
+    },
+    {
+      "id": "s1-d7-k2",
+      "expressionEn": "Talk to you soon.",
+      "expressionKo": "또 연락할게.",
+      "tipKo": "메시지·통화 마무리에 자주 등장합니다."
+    },
+    {
+      "id": "s1-d7-k3",
+      "expressionEn": "Looking forward to it.",
+      "expressionKo": "기대돼.",
+      "tipKo": "다음 약속에 대한 긍정 반응으로 자주 씁니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d7-q1",
+      "promptKo": "헤어질 때 '다음에 또 보자' 를 자연스럽게 말하는 표현은?",
+      "promptEn": "Which line naturally says 'let's meet again soon'?",
+      "explanationKo": "`Let's catch up soon.` 은 친구·동료 모두에게 가볍게 다음 만남을 기약할 때 쓰는 마무리 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Forget you ever met me."
+        },
+        {
+          "id": "b",
+          "text": "Let's catch up soon."
+        },
+        {
+          "id": "c",
+          "text": "End this conversation now."
+        },
+        {
+          "id": "d",
+          "text": "Goodbye and never call."
+        }
+      ],
+      "correctOptionId": "b"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d7-q2",
+      "promptKo": "다음 약속에 긍정적으로 답할 때 자연스러운 표현은?",
+      "promptEn": "Pick the friendliest reply showing you look forward to next time.",
+      "explanationKo": "`Looking forward to it.` 은 다음 일정·만남을 기대한다고 말하는 가장 일반적인 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I doubt this will ever happen."
+        },
+        {
+          "id": "b",
+          "text": "Please cancel everything today."
+        },
+        {
+          "id": "c",
+          "text": "Stop talking to me again."
+        },
+        {
+          "id": "d",
+          "text": "Looking forward to it."
+        }
+      ],
+      "correctOptionId": "d"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d7-q3-next-line",
+      "expressionId": "s1-d7-k2",
+      "partnerSpeakerLabelKo": "Channa",
+      "partnerLineKo": "?? ? ????. ? ??!",
+      "partnerLineEn": "Great week. Let's do it again soon!",
+      "promptKo": "??? ??? ????? ????? ?? ????.",
+      "promptEn": "Choose the best closing reply.",
+      "explanationKo": "`See you soon`? `I'll text you`? ??? ??? ??? ???????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "See you soon. I'll text you."
+        },
+        {
+          "id": "b",
+          "text": "Goodbye and never call."
+        },
+        {
+          "id": "c",
+          "text": "Stop talking to me again."
+        },
+        {
+          "id": "d",
+          "text": "End this conversation now."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d7-q4-pattern",
+      "expressionId": "s1-d7-k3",
+      "templateEn": "Looking {{blank}} to it.",
+      "promptKo": "?? ??? ????? ??? ?????.",
+      "promptEn": "Complete the positive closing phrase.",
+      "explanationKo": "`Looking forward to it`? ?? ???? ??? ????? ?? ? ???.",
+      "options": [
+        {
+          "id": "a",
+          "text": "forward"
+        },
+        {
+          "id": "b",
+          "text": "behind"
+        },
+        {
+          "id": "c",
+          "text": "around"
+        },
+        {
+          "id": "d",
+          "text": "away"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

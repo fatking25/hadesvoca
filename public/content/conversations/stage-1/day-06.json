@@ -1,0 +1,188 @@
+{
+  "dayId": 6,
+  "titleKo": "약속 일정 변경",
+  "descriptionKo": "메시지로 일정 미루기",
+  "sceneDescriptionKo": "일요일 저녁, 다음 주 약속을 앞두고 챈나에게서 일정 변경 메시지가 도착한다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d6-n1",
+      "textKo": "다음 주 화요일에 챈나와 점심 약속이 있다. 그런데 메시지 하나가 왔다.",
+      "textEn": "You had a Tuesday lunch with Channa next week. A message just popped up."
+    },
+    {
+      "id": "s1-d6-n2",
+      "textKo": "차분히 사정을 듣고 다른 날을 제안하면 된다.",
+      "textEn": "Hear her out and suggest another day."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d6-d1",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "미안한데, 화요일 약속 미룰 수 있을까?",
+      "textEn": "Sorry, can we reschedule Tuesday?"
+    },
+    {
+      "id": "s1-d6-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "괜찮아. 무슨 일 있어?",
+      "textEn": "No problem. Is everything okay?"
+    },
+    {
+      "id": "s1-d6-d3",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "회사에서 갑자기 일이 생겼어.",
+      "textEn": "Something came up at work, unfortunately."
+    },
+    {
+      "id": "s1-d6-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "이해해. 목요일은 어때?",
+      "textEn": "I get it. Would Thursday work for you?"
+    },
+    {
+      "id": "s1-d6-d5",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "목요일 좋아. 정말 고마워!",
+      "textEn": "Thursday works. Thanks so much!"
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d6-k1",
+      "expressionEn": "Can we reschedule?",
+      "expressionKo": "약속 미룰 수 있을까?",
+      "tipKo": "약속 변경을 부드럽게 부탁할 때 씁니다."
+    },
+    {
+      "id": "s1-d6-k2",
+      "expressionEn": "Something came up.",
+      "expressionKo": "갑자기 일이 생겼어.",
+      "tipKo": "구체적 사유를 말하기 어려울 때 자주 씁니다."
+    },
+    {
+      "id": "s1-d6-k3",
+      "expressionEn": "Would Thursday work for you?",
+      "expressionKo": "목요일 괜찮아?",
+      "tipKo": "대안 날짜를 정중히 제안하는 표현입니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d6-q1",
+      "promptKo": "친구에게 약속을 부드럽게 미루자고 할 때 자연스러운 표현은?",
+      "promptEn": "Which line politely asks to reschedule a plan?",
+      "explanationKo": "`Can we reschedule?` 는 약속·미팅 일정을 부드럽게 옮기자고 부탁하는 표준 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Forget our plan forever."
+        },
+        {
+          "id": "b",
+          "text": "Lunch is canceled by law."
+        },
+        {
+          "id": "c",
+          "text": "I will hide from you."
+        },
+        {
+          "id": "d",
+          "text": "Can we reschedule?"
+        }
+      ],
+      "correctOptionId": "d"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d6-q2",
+      "promptKo": "상대에게 다른 요일을 정중히 제안할 때 자연스러운 표현은?",
+      "promptEn": "Which option politely suggests an alternative day?",
+      "explanationKo": "`Would Thursday work for you?` 처럼 `Would ~ work for you?` 패턴은 대안 일정을 부드럽게 묻습니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Pick a day or else."
+        },
+        {
+          "id": "b",
+          "text": "Would Thursday work for you?"
+        },
+        {
+          "id": "c",
+          "text": "Time is just a lie."
+        },
+        {
+          "id": "d",
+          "text": "Bring me a calendar now."
+        }
+      ],
+      "correctOptionId": "b"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d6-q3-next-line",
+      "expressionId": "s1-d6-k3",
+      "partnerSpeakerLabelKo": "Channa",
+      "partnerLineKo": "???? ??? ?? ???.",
+      "partnerLineEn": "Something came up at work, unfortunately.",
+      "promptKo": "?? ??? ???? ?? ?? ???? ??? ????.",
+      "promptEn": "Choose the best reply to suggest another day.",
+      "explanationKo": "?? ??? ??? ? `Would Thursday work for you?`? ??? ?????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I get it. Would Thursday work for you?"
+        },
+        {
+          "id": "b",
+          "text": "Pick a day or else."
+        },
+        {
+          "id": "c",
+          "text": "Lunch is canceled by law."
+        },
+        {
+          "id": "d",
+          "text": "Bring me a calendar now."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d6-q4-pattern",
+      "expressionId": "s1-d6-k3",
+      "templateEn": "Would Thursday {{blank}} for you?",
+      "promptKo": "?? ??? ???? ?? ??? ?????.",
+      "promptEn": "Complete the alternative day suggestion.",
+      "explanationKo": "`Would ~ work for you?`? ?? ??? ??? ??? ?? ?????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "work"
+        },
+        {
+          "id": "b",
+          "text": "hide"
+        },
+        {
+          "id": "c",
+          "text": "sleep"
+        },
+        {
+          "id": "d",
+          "text": "cancel"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

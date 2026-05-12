@@ -115,7 +115,7 @@ export default function ConversationDayResultPage() {
           </p>
         )}
         <p className="conv-detail__session-note">
-          오늘 배운 표현은 복습할수록 더 자연스럽게 나옵니다. 수고했어요.
+          수고했어요.
         </p>
       </div>
 

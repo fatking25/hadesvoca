@@ -1,0 +1,115 @@
+HadesVoca Page Asset List
+Updated: Phase 14-4
+
+Purpose
+- Track page-level static assets used by the app.
+- Keep conversation cutscene paths visible before replacing placeholders.
+- This file is documentation only. It is not read by the app.
+
+Global / PWA
+- index.html
+  - /favicon.svg
+  - /manifest.json
+  - /icons/icon-192.png
+  - /icons/icon-512.png
+- public/manifest.json
+  - /icons/icon-192.png
+  - /icons/icon-512.png
+- public/sw.js
+  - /manifest.json
+  - /favicon.svg
+
+Start / Onboarding
+- /
+  - No file-based page image assets currently referenced.
+- /onboarding
+  - No file-based page image assets currently referenced.
+
+Home
+- /home
+  - No file-based page image assets currently referenced.
+  - Mascot/visual marks are rendered with text, symbols, or CSS.
+
+Word Study
+- /word-study
+  - No file-based page image assets currently referenced.
+- /word-study/:dayId
+  - No file-based page image assets currently referenced.
+- /word-study/:dayId/result
+  - No file-based page image assets currently referenced.
+- /word-study/review
+  - No file-based page image assets currently referenced.
+- /word-study/review/result
+  - No file-based page image assets currently referenced.
+
+Conversation Stage List
+- /conversation
+  - Uses ConversationDay.cutsceneImagePath from assembled ConversationStage.days.
+  - Source files: public/content/conversations/stage-1/index.json + day-xx.json.
+  - Rendered as each Day card thumbnail.
+  - Fallback when cutsceneImagePath is missing or empty:
+    - /content/conversations/assets/placeholder-day1-cutscene.svg
+
+Conversation Day Detail
+- /conversation/:dayId
+  - Uses ConversationDay.cutsceneImagePath from assembled ConversationStage.days.
+  - Source files: public/content/conversations/stage-1/index.json + day-xx.json.
+  - Rendered as the main cutscene / VN image.
+  - Fallback when cutsceneImagePath is missing or empty:
+    - /content/conversations/assets/placeholder-day1-cutscene.svg
+  - Current code does not have img onError fallback handling.
+
+Conversation Result
+- /conversation/:dayId/result
+  - No file-based page image assets currently referenced.
+
+Vocabulary Book
+- /vocabulary-book
+  - No file-based page image assets currently referenced.
+
+Wrong Note
+- /wrong-note
+  - No file-based page image assets currently referenced.
+
+Settings / Help Sheet
+- AppSettingsSheet
+  - No file-based page image assets currently referenced.
+  - Menu icons are rendered as inline characters.
+
+Current Conversation Stage 1 Cutscene Paths
+- Day 1: /content/conversations/assets/placeholder-day1-cutscene.svg
+- Day 2: /content/conversations/assets/placeholder-day2-cutscene.svg
+- Day 3: /content/conversations/assets/placeholder-day3-cutscene.svg
+- Day 4: /content/conversations/assets/placeholder-day1-cutscene.svg
+- Day 5: /content/conversations/assets/placeholder-day1-cutscene.svg
+- Day 6: /content/conversations/assets/placeholder-day1-cutscene.svg
+- Day 7: /content/conversations/assets/placeholder-day1-cutscene.svg
+
+Existing Conversation Asset Files
+- public/content/conversations/assets/placeholder-day1-cutscene.svg
+- public/content/conversations/assets/placeholder-day2-cutscene.svg
+- public/content/conversations/assets/placeholder-day3-cutscene.svg
+
+Needed Conversation Asset Targets
+- Stage 1 Day 1 cutscene image
+- Stage 1 Day 2 cutscene image
+- Stage 1 Day 3 cutscene image
+- Stage 1 Day 4 cutscene image
+- Stage 1 Day 5 cutscene image
+- Stage 1 Day 6 cutscene image
+- Stage 1 Day 7 cutscene image
+
+Recommended Naming Draft
+- /content/conversations/assets/stage-1-day-01-cutscene.webp
+- /content/conversations/assets/stage-1-day-02-cutscene.webp
+- /content/conversations/assets/stage-1-day-03-cutscene.webp
+- /content/conversations/assets/stage-1-day-04-cutscene.webp
+- /content/conversations/assets/stage-1-day-05-cutscene.webp
+- /content/conversations/assets/stage-1-day-06-cutscene.webp
+- /content/conversations/assets/stage-1-day-07-cutscene.webp
+
+Notes
+- cutsceneImagePath must stay in each ConversationDay because both list and detail screens read it.
+- Paths should be site-root paths beginning with /content/...
+- resolvePublicUrl handles Vite BASE_URL before the browser loads the asset.
+- If a path exists in JSON but the file is missing, current UI can show a broken image.

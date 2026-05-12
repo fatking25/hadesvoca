@@ -128,7 +128,7 @@ export default function VocabularyBookPage() {
     panel =
       wordsSorted.length === 0 ? (
         <p className="ui-card__body vocab-empty">
-          아직 저장한 단어가 없습니다. 단어 학습 중 &quot;단어장에 저장&quot;을 눌러 보세요.
+          저장한 단어가 없습니다.
         </p>
       ) : (
         <ul className="vocab-list" aria-label="저장한 단어 목록">
@@ -192,7 +192,7 @@ export default function VocabularyBookPage() {
     panel =
       expressionsSorted.length === 0 ? (
         <p className="ui-card__body vocab-empty">
-          아직 저장한 표현이 없습니다. 실전 회화 핵심 표현에서 저장해 보세요.
+          저장한 표현이 없습니다.
         </p>
       ) : (
         <ul className="vocab-list" aria-label="저장한 표현 목록">

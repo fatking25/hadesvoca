@@ -254,7 +254,7 @@ export default function WrongNotePage() {
         {filtered.length === 0 ? (
           <p className="wrong-empty ui-card__body">
             {sorted.length === 0
-              ? '아직 저장된 오답이 없습니다. 단어나 회화 표현 퀴즈에서 틀리면 여기에 쌓여요.'
+              ? '오답이 없습니다.'
               : '이 탭에 해당하는 오답이 없습니다.'}
           </p>
         ) : (
@@ -300,9 +300,6 @@ export default function WrongNotePage() {
                 </li>
               ))}
             </ul>
-            <p className="wrong-footnote ui-card__body">
-              틀린 문항은 이 기기에서 다시 확인할 수 있도록 정리됩니다.
-            </p>
           </>
         )}
       </section>

@@ -216,9 +216,6 @@ export default function HomePage() {
             {progress.nickname.trim() !== '' ? `${progress.nickname.trim()}님` : '학습자님'}
           </p>
         </div>
-        <p className="home-dashboard-top__tagline">
-          하데스와 함께 오늘의 영어 미션을 완료하세요.
-        </p>
       </header>
 
       <section className="home-duo-banner" aria-label="오늘 학습 세션 요약">
@@ -258,7 +255,6 @@ export default function HomePage() {
           <p className="home-duo-banner__grade">
             LV {rankLv} · {userGrade}
           </p>
-          <p className="home-duo-banner__line">단어와 회화를 조금씩 나눠서 해도 좋아요.</p>
         </div>
         <Link to="/word-study" className="ui-btn ui-btn--secondary home-duo-banner__cta">
           학습 경로 보기
@@ -312,11 +308,11 @@ export default function HomePage() {
         >
           {continueLabel}
         </Link>
-        <p className="home-continue__hint ui-card__body">
-          {recent === null
-            ? '학습을 한 번이라도 완료하면 이곳에 최근 위치가 표시됩니다.'
-            : '같은 Day로 바로 이동합니다. 목록은 하단 메뉴에서도 열 수 있어요.'}
-        </p>
+        {recent === null ? (
+          <p className="home-continue__hint ui-card__body">
+            최근 학습이 아직 없어요.
+          </p>
+        ) : null}
       </section>
 
       {hasAnyWordReviewStatus ? (

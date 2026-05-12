@@ -235,28 +235,28 @@ export function AppSettingsSheet({
       </button>
       <ul className="shell-help-list">
         <li>
-          <strong>단어 학습:</strong> Day를 풀고 결과 화면까지 가면 진행이 저장됩니다.
+          <strong>최근 학습:</strong> 마지막 학습 위치는 홈에 표시됩니다.
         </li>
         <li>
-          <strong>Day 열림:</strong> Day는 앞 순서부터 차례대로 열립니다. 완료한 Day는 다시 복습할 수 있습니다.
+          <strong>Day 복습:</strong> 완료한 Day는 다시 풀 수 있습니다.
         </li>
         <li>
-          <strong>코인:</strong> 일반 Day 시작 시 코인 5개가 차감됩니다. 코인이 부족하면 새 Day를 시작할 수 없습니다.
+          <strong>보상:</strong> 완료한 Day를 다시 풀면 보상은 중복 지급되지 않습니다.
         </li>
         <li>
-          <strong>복습:</strong> 복습 Day는 코인이 차감되지 않고, 완료 보상도 지급되지 않습니다.
+          <strong>오답노트:</strong> 오답은 오답노트에 저장됩니다.
         </li>
         <li>
-          <strong>실전 회화:</strong> 퀴즈까지 마치면 Day 완료로 기록됩니다.
+          <strong>단어장:</strong> 저장한 단어와 표현은 단어장에서 확인할 수 있습니다.
         </li>
         <li>
-          <strong>단어장:</strong> 저장한 단어와 표현을 다시 확인할 수 있습니다.
+          <strong>JSON:</strong> 이 기기의 학습 기록 백업·복원용입니다.
         </li>
         <li>
-          <strong>오답노트:</strong> 틀린 문항을 모아 다시 확인할 수 있습니다.
+          <strong>Stage 가져오기:</strong> 콘텐츠 가져오기는 준비 중입니다.
         </li>
         <li>
-          <strong>PWA:</strong> 홈 화면에 추가하면 브라우저 없이 앱처럼 쓸 수 있습니다.
+          <strong>다시 시작:</strong> 이 기기의 학습 기록이 삭제됩니다.
         </li>
       </ul>
     </div>

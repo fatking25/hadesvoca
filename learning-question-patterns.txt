@@ -54,13 +54,15 @@
 2. 실전회화 현재 구조
 
 관련 콘텐츠/타입
-- public/content/conversations/stage-1.json
+- public/content/conversations/stage-1/index.json
+- public/content/conversations/stage-1/day-01.json ~ day-07.json
 - src/types/conversation.ts
 - src/pages/conversation/ConversationDayDetailPage.tsx
 - src/pages/conversation/ConversationDayResultPage.tsx
 
 콘텐츠 단위
 - Stage
+  - index.json(dayFiles)
   - Day
     - narrations[]
     - dialogue[]

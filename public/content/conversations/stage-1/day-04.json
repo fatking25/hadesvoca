@@ -1,0 +1,188 @@
+{
+  "dayId": 4,
+  "titleKo": "길 안내 묻기",
+  "descriptionKo": "메시지로 길 안내받기",
+  "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향한다. 길이 헷갈려 메시지로 물어보기로 한다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s1-d4-n1",
+      "textKo": "식당에서 나와 다음 약속 장소로 향한다. 길이 헷갈리지만 챈나에게 물어보면 된다.",
+      "textEn": "You're heading to your next stop but the route is a bit unclear. A quick message to Channa should do."
+    },
+    {
+      "id": "s1-d4-n2",
+      "textKo": "지하철로 가는 게 빠른지부터 묻자.",
+      "textEn": "Start by asking whether the subway is the faster option."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d4-d1",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "챈나, 그 서점까지 어떻게 가? 지하철이 빨라?",
+      "textEn": "Hey Channa, how do I get to the bookstore? Is the subway faster?"
+    },
+    {
+      "id": "s1-d4-d2",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "응, 2호선 타고 한 정거장이면 돼.",
+      "textEn": "Yeah, just one stop on Line 2."
+    },
+    {
+      "id": "s1-d4-d3",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "어느 출구로 나가야 해?",
+      "textEn": "Which exit should I take?"
+    },
+    {
+      "id": "s1-d4-d4",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "3번 출구로 나와서 왼쪽으로 5분만 걸으면 돼.",
+      "textEn": "Take exit 3 and walk left for about five minutes."
+    },
+    {
+      "id": "s1-d4-d5",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "알았어, 고마워. 도착하면 연락할게.",
+      "textEn": "Got it, thanks. I'll text you when I'm there."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d4-k1",
+      "expressionEn": "How do I get to the bookstore?",
+      "expressionKo": "서점까지 어떻게 가?",
+      "tipKo": "길 안내를 시작할 때 가장 흔한 패턴입니다."
+    },
+    {
+      "id": "s1-d4-k2",
+      "expressionEn": "Which exit should I take?",
+      "expressionKo": "어느 출구로 나가야 해?",
+      "tipKo": "지하철 출구를 물을 때 자연스럽게 씁니다."
+    },
+    {
+      "id": "s1-d4-k3",
+      "expressionEn": "I'll text you when I'm there.",
+      "expressionKo": "도착하면 연락할게.",
+      "tipKo": "도착 후 알려 주겠다고 약속할 때 자주 씁니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "multiple-choice",
+      "id": "s1-d4-q1",
+      "promptKo": "친구에게 목적지까지 길을 물을 때 가장 자연스러운 표현은?",
+      "promptEn": "Which line asks a friend how to get somewhere?",
+      "explanationKo": "`How do I get to ~?` 패턴은 길·교통편을 묻는 가장 일반적인 표현이라 친구·낯선 사람 모두에게 통합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Where are you living these days?"
+        },
+        {
+          "id": "b",
+          "text": "How do I get to the bookstore?"
+        },
+        {
+          "id": "c",
+          "text": "Why is the road so long?"
+        },
+        {
+          "id": "d",
+          "text": "Do you speak English well?"
+        }
+      ],
+      "correctOptionId": "b"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d4-q2",
+      "promptKo": "지하철 출구를 묻는 자연스러운 표현은?",
+      "promptEn": "Pick a natural way to ask which subway exit to use.",
+      "explanationKo": "`Which exit should I take?`는 지하철·역사 안내에서 가장 자주 쓰이는 패턴입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Open the door right now."
+        },
+        {
+          "id": "b",
+          "text": "Take me there yourself."
+        },
+        {
+          "id": "c",
+          "text": "Which exit should I take?"
+        },
+        {
+          "id": "d",
+          "text": "Is the train sleeping today?"
+        }
+      ],
+      "correctOptionId": "c"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d4-q3-next-line",
+      "expressionId": "s1-d4-k2",
+      "partnerSpeakerLabelKo": "Channa",
+      "partnerLineKo": "2?? ? ????? ?.",
+      "partnerLineEn": "Yeah, just one stop on Line 2.",
+      "promptKo": "??? ??? ?? ? ??? ??? ????? ?? ????.",
+      "promptEn": "Choose the best follow-up question after hearing the subway line.",
+      "explanationKo": "? ????? ?? ??? ??? ?? ??? ???????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Which exit should I take?"
+        },
+        {
+          "id": "b",
+          "text": "Do you hate Fridays?"
+        },
+        {
+          "id": "c",
+          "text": "Can I borrow your receipt?"
+        },
+        {
+          "id": "d",
+          "text": "Is the train sleeping today?"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d4-q4-pattern",
+      "expressionId": "s1-d4-k3",
+      "templateEn": "I'll {{blank}} you when I'm there.",
+      "promptKo": "???? ?????? ??? ?????.",
+      "promptEn": "Complete the arrival update pattern.",
+      "explanationKo": "`text you`? ???? ?????? ????.",
+      "options": [
+        {
+          "id": "a",
+          "text": "text"
+        },
+        {
+          "id": "b",
+          "text": "book"
+        },
+        {
+          "id": "c",
+          "text": "cancel"
+        },
+        {
+          "id": "d",
+          "text": "lend"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}
