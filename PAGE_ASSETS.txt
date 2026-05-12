@@ -77,13 +77,13 @@ Settings / Help Sheet
   - Menu icons are rendered as inline characters.
 
 Current Conversation Stage 1 Cutscene Paths
-- Day 1: /content/conversations/assets/placeholder-day1-cutscene.svg
-- Day 2: /content/conversations/assets/placeholder-day2-cutscene.svg
-- Day 3: /content/conversations/assets/placeholder-day3-cutscene.svg
-- Day 4: /content/conversations/assets/placeholder-day1-cutscene.svg
-- Day 5: /content/conversations/assets/placeholder-day1-cutscene.svg
-- Day 6: /content/conversations/assets/placeholder-day1-cutscene.svg
-- Day 7: /content/conversations/assets/placeholder-day1-cutscene.svg
+- Day 1: /content/conversations/assets/stage-1-day-01-cutscene.jpg
+- Day 2: /content/conversations/assets/stage-1-day-02-cutscene.jpg
+- Day 3: /content/conversations/assets/stage-1-day-03-cutscene.jpg
+- Day 4: /content/conversations/assets/stage-1-day-04-cutscene.jpg
+- Day 5: /content/conversations/assets/stage-1-day-05-cutscene.jpg
+- Day 6: /content/conversations/assets/stage-1-day-06-cutscene.jpg
+- Day 7: /content/conversations/assets/stage-1-day-07-cutscene.jpg
 
 Existing Conversation Asset Files
 - public/content/conversations/assets/placeholder-day1-cutscene.svg
@@ -100,13 +100,13 @@ Needed Conversation Asset Targets
 - Stage 1 Day 7 cutscene image
 
 Recommended Naming Draft
-- /content/conversations/assets/stage-1-day-01-cutscene.webp
-- /content/conversations/assets/stage-1-day-02-cutscene.webp
-- /content/conversations/assets/stage-1-day-03-cutscene.webp
-- /content/conversations/assets/stage-1-day-04-cutscene.webp
-- /content/conversations/assets/stage-1-day-05-cutscene.webp
-- /content/conversations/assets/stage-1-day-06-cutscene.webp
-- /content/conversations/assets/stage-1-day-07-cutscene.webp
+- /content/conversations/assets/stage-1-day-01-cutscene.jpg
+- /content/conversations/assets/stage-1-day-02-cutscene.jpg
+- /content/conversations/assets/stage-1-day-03-cutscene.jpg
+- /content/conversations/assets/stage-1-day-04-cutscene.jpg
+- /content/conversations/assets/stage-1-day-05-cutscene.jpg
+- /content/conversations/assets/stage-1-day-06-cutscene.jpg
+- /content/conversations/assets/stage-1-day-07-cutscene.jpg
 
 Notes
 - cutsceneImagePath must stay in each ConversationDay because both list and detail screens read it.

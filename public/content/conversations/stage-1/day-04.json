@@ -3,7 +3,7 @@
   "titleKo": "길 안내 묻기",
   "descriptionKo": "메시지로 길 안내받기",
   "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향한다. 길이 헷갈려 메시지로 물어보기로 한다.",
-  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-04-cutscene.jpg",
   "narrations": [
     {
       "id": "s1-d4-n1",

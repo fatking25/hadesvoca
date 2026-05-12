@@ -3,7 +3,7 @@
   "titleKo": "카페에서 안부 잡담",
   "descriptionKo": "오랜만의 안부 묻기",
   "sceneDescriptionKo": "토요일 오전, 자주 가는 동네 카페에서 챈나와 다시 만난다. 따뜻한 커피를 사이에 두고 가볍게 안부를 묻는다.",
-  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-05-cutscene.jpg",
   "narrations": [
     {
       "id": "s1-d5-n1",

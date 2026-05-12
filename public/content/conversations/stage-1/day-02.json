@@ -3,7 +3,7 @@
   "titleKo": "식당 예약하기",
   "descriptionKo": "전화로 테이블 예약",
   "sceneDescriptionKo": "금요일 저녁 자리를 잡기 위해, 익숙한 이탈리안 레스토랑에 전화를 건다.",
-  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-02-cutscene.jpg",
   "narrations": [
     {
       "id": "s1-d2-n1",

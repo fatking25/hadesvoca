@@ -3,7 +3,7 @@
   "titleKo": "약속 일정 변경",
   "descriptionKo": "메시지로 일정 미루기",
   "sceneDescriptionKo": "일요일 저녁, 다음 주 약속을 앞두고 챈나에게서 일정 변경 메시지가 도착한다.",
-  "cutsceneImagePath": "/content/conversations/assets/placeholder-day1-cutscene.svg",
+  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-06-cutscene.jpg",
   "narrations": [
     {
       "id": "s1-d6-n1",

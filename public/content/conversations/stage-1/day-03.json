@@ -3,7 +3,7 @@
   "titleKo": "메뉴 주문하기",
   "descriptionKo": "웨이터와 주문하기",
   "sceneDescriptionKo": "예약한 테이블에 앉았다. 메뉴판을 넘기며 웨이터가 다가오는 걸 기다린다.",
-  "cutsceneImagePath": "/content/conversations/assets/placeholder-day3-cutscene.svg",
+  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-03-cutscene.jpg",
   "narrations": [
     {
       "id": "s1-d3-n1",
