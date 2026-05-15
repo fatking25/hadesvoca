@@ -1,115 +1,157 @@
-HadesVoca Page Asset List
-Updated: Phase 14-4
+HadesVoca Page Asset Guide
+Updated: Phase 16-5
 
 Purpose
 - Track page-level static assets used by the app.
-- Keep conversation cutscene paths visible before replacing placeholders.
+- Keep conversation Stage asset paths visible when adding new Stages.
 - This file is documentation only. It is not read by the app.
 
+
 Global / PWA
-- index.html
-  - /favicon.svg
-  - /manifest.json
-  - /icons/icon-192.png
-  - /icons/icon-512.png
-- public/manifest.json
-  - /icons/icon-192.png
-  - /icons/icon-512.png
-- public/sw.js
-  - /manifest.json
-  - /favicon.svg
+------------
 
-Start / Onboarding
+index.html
+- /favicon.svg
+- /manifest.json
+- /icons/icon-192.png
+- /icons/icon-512.png
+
+public/manifest.json
+- /icons/icon-192.png
+- /icons/icon-512.png
+
+public/sw.js
+- /manifest.json
+- /favicon.svg
+
+
+Pages Without File-Based Image Assets
+-------------------------------------
+
 - /
-  - No file-based page image assets currently referenced.
 - /onboarding
-  - No file-based page image assets currently referenced.
-
-Home
 - /home
-  - No file-based page image assets currently referenced.
-  - Mascot/visual marks are rendered with text, symbols, or CSS.
-
-Word Study
 - /word-study
-  - No file-based page image assets currently referenced.
 - /word-study/:dayId
-  - No file-based page image assets currently referenced.
 - /word-study/:dayId/result
-  - No file-based page image assets currently referenced.
 - /word-study/review
-  - No file-based page image assets currently referenced.
 - /word-study/review/result
-  - No file-based page image assets currently referenced.
-
-Conversation Stage List
-- /conversation
-  - Uses ConversationDay.cutsceneImagePath from assembled ConversationStage.days.
-  - Source files: public/content/conversations/stage-1/index.json + day-xx.json.
-  - Rendered as each Day card thumbnail.
-  - Fallback when cutsceneImagePath is missing or empty:
-    - /content/conversations/assets/placeholder-day1-cutscene.svg
-
-Conversation Day Detail
-- /conversation/:dayId
-  - Uses ConversationDay.cutsceneImagePath from assembled ConversationStage.days.
-  - Source files: public/content/conversations/stage-1/index.json + day-xx.json.
-  - Rendered as the main cutscene / VN image.
-  - Fallback when cutsceneImagePath is missing or empty:
-    - /content/conversations/assets/placeholder-day1-cutscene.svg
-  - Current code does not have img onError fallback handling.
-
-Conversation Result
 - /conversation/:dayId/result
-  - No file-based page image assets currently referenced.
-
-Vocabulary Book
 - /vocabulary-book
-  - No file-based page image assets currently referenced.
-
-Wrong Note
 - /wrong-note
-  - No file-based page image assets currently referenced.
-
-Settings / Help Sheet
 - AppSettingsSheet
-  - No file-based page image assets currently referenced.
-  - Menu icons are rendered as inline characters.
 
-Current Conversation Stage 1 Cutscene Paths
-- Day 1: /content/conversations/assets/stage-1-day-01-cutscene.jpg
-- Day 2: /content/conversations/assets/stage-1-day-02-cutscene.jpg
-- Day 3: /content/conversations/assets/stage-1-day-03-cutscene.jpg
-- Day 4: /content/conversations/assets/stage-1-day-04-cutscene.jpg
-- Day 5: /content/conversations/assets/stage-1-day-05-cutscene.jpg
-- Day 6: /content/conversations/assets/stage-1-day-06-cutscene.jpg
-- Day 7: /content/conversations/assets/stage-1-day-07-cutscene.jpg
+Notes
+- Mascot marks, simple symbols, and menu icons are currently rendered through text, inline characters, CSS, or existing UI.
+- Word study currently does not reference per-page image files.
 
-Existing Conversation Asset Files
+
+Conversation Pages
+------------------
+
+/conversation
+- Uses ConversationDay.cutsceneImagePath from assembled ConversationStage.days.
+- Source files:
+  - public/content/conversations/stage-{stageId}/index.json
+  - public/content/conversations/stage-{stageId}/day-{DD}.json
+- Rendered as each Day card thumbnail.
+
+/conversation/:dayId
+- cutscene step: cutsceneImagePath
+- narration step: sceneImages.intro
+- dialogue step: sceneImages.dialogue
+- quiz step: sceneImages.review
+- key expression step: sceneImages.review
+
+Fallback order in detail view
+  sceneImages[role].imagePath
+  -> cutsceneImagePath
+  -> /content/conversations/assets/placeholder-day1-cutscene.svg
+
+Current limitation
+- If JSON points to an existing-looking path but the file is missing, the browser can show a broken image.
+- There is no dedicated img onError fallback yet.
+
+
+Conversation Stage Asset Folder Convention
+------------------------------------------
+
+Stage-specific conversation assets live next to the Stage JSON files.
+
+  public/content/conversations/
+    stage-{stageId}/
+      index.json
+      day-{DD}.json
+      assets/
+        stage-{stageId}-day-{DD}-cutscene.jpg
+        stage-{stageId}-day-{DD}-scene-01.jpg
+        stage-{stageId}-day-{DD}-scene-02.jpg
+        stage-{stageId}-day-{DD}-scene-03.jpg
+
+Shared fallback-only assets live here:
+
+  public/content/conversations/assets/
+
+JSON path rules
+- All JSON image paths must be site-root paths beginning with /content/...
+- cutsceneImagePath is the representative Day thumbnail/card image.
+- sceneImages.intro uses scene-01.
+- sceneImages.dialogue uses scene-02.
+- sceneImages.review uses scene-03.
+
+Recommended paths for Stage 1 Day 1
+- /content/conversations/stage-1/assets/stage-1-day-01-cutscene.jpg
+- /content/conversations/stage-1/assets/stage-1-day-01-scene-01.jpg
+- /content/conversations/stage-1/assets/stage-1-day-01-scene-02.jpg
+- /content/conversations/stage-1/assets/stage-1-day-01-scene-03.jpg
+
+
+Current Conversation Stage 1 Assets
+-----------------------------------
+
+Shared fallback assets
 - public/content/conversations/assets/placeholder-day1-cutscene.svg
 - public/content/conversations/assets/placeholder-day2-cutscene.svg
 - public/content/conversations/assets/placeholder-day3-cutscene.svg
 
-Needed Conversation Asset Targets
-- Stage 1 Day 1 cutscene image
-- Stage 1 Day 2 cutscene image
-- Stage 1 Day 3 cutscene image
-- Stage 1 Day 4 cutscene image
-- Stage 1 Day 5 cutscene image
-- Stage 1 Day 6 cutscene image
-- Stage 1 Day 7 cutscene image
+Stage 1 local assets
+- public/content/conversations/stage-1/assets/stage-1-day-01-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-01-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-01-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-01-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-02-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-02-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-02-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-02-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-03-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-03-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-03-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-03-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-04-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-04-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-04-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-04-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-05-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-05-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-05-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-05-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-06-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-06-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-06-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-06-scene-03.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-07-cutscene.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-07-scene-01.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-07-scene-02.jpg
+- public/content/conversations/stage-1/assets/stage-1-day-07-scene-03.jpg
 
-Recommended Naming Draft
-- /content/conversations/assets/stage-1-day-01-cutscene.jpg
-- /content/conversations/assets/stage-1-day-02-cutscene.jpg
-- /content/conversations/assets/stage-1-day-03-cutscene.jpg
-- /content/conversations/assets/stage-1-day-04-cutscene.jpg
-- /content/conversations/assets/stage-1-day-05-cutscene.jpg
-- /content/conversations/assets/stage-1-day-06-cutscene.jpg
-- /content/conversations/assets/stage-1-day-07-cutscene.jpg
 
-Notes
-- cutsceneImagePath must stay in each ConversationDay because both list and detail screens read it.
-- Paths should be site-root paths beginning with /content/...
-- resolvePublicUrl handles Vite BASE_URL before the browser loads the asset.
-- If a path exists in JSON but the file is missing, current UI can show a broken image.
+Stage 2 Asset Checklist
+-----------------------
+
+When adding Stage 2, create:
+- public/content/conversations/stage-2/assets/stage-2-day-08-cutscene.jpg
+- public/content/conversations/stage-2/assets/stage-2-day-08-scene-01.jpg
+- public/content/conversations/stage-2/assets/stage-2-day-08-scene-02.jpg
+- public/content/conversations/stage-2/assets/stage-2-day-08-scene-03.jpg
+
+Repeat the same pattern for every Day in the Stage.

@@ -2,8 +2,22 @@
   "dayId": 2,
   "titleKo": "식당 예약하기",
   "descriptionKo": "전화로 테이블 예약",
-  "sceneDescriptionKo": "금요일 저녁 자리를 잡기 위해, 익숙한 이탈리안 레스토랑에 전화를 건다.",
-  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-02-cutscene.jpg",
+  "sceneDescriptionKo": "금요일 저녁 자리를 잡기 위해, 동네 이탈리안 레스토랑에 전화를 건다.",
+  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-02-cutscene.jpg",
+  "sceneImages": {
+    "intro": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-01.jpg",
+      "altKo": "식당 예약하기 - 도입 장면"
+    },
+    "dialogue": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-02.jpg",
+      "altKo": "식당 예약하기 - 대화 장면"
+    },
+    "review": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-03.jpg",
+      "altKo": "식당 예약하기 - 복습 장면"
+    }
+  },
   "narrations": [
     {
       "id": "s1-d2-n1",
@@ -12,7 +26,7 @@
     },
     {
       "id": "s1-d2-n2",
-      "textKo": "직원이 받자마자 간단히 인사하고 목적을 말하면 된다.",
+      "textKo": "직원이 받으면 간단히 인사하고 예약 목적과 인원을 말하면 된다.",
       "textEn": "Answer with a quick greeting, then state why you're calling."
     }
   ],
@@ -21,69 +35,130 @@
       "id": "s1-d2-d1",
       "speakerId": "staff",
       "speakerLabelKo": "직원",
-      "textKo": "고객님, 행복 레스토랑입니다. 무엇을 도와드릴까요?",
+      "textKo": "안녕하세요, 해피 비스트로입니다. 무엇을 도와드릴까요?",
       "textEn": "Happy Bistro, how can I help you?"
     },
     {
       "id": "s1-d2-d2",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "네, 금요일 저녁 두 명 자리 예약하고 싶어요.",
-      "textEn": "Hi, I'd like to book a table for two this Friday evening."
+      "textKo": "안녕하세요, 이번 금요일 저녁에 두 명 자리 예약하고 싶어요.",
+      "textEn": "Hi, I'd like to book a table for two this Friday evening.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "직원이 예약 전화를 받았습니다. 가장 자연스럽게 예약을 시작하는 대답을 고르세요.",
+        "promptEn": "The staff answered your reservation call. Choose the best opening reply.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hi, I'd like to book a table for two this Friday evening."
+          },
+          {
+            "id": "b",
+            "text": "I hate Italian food."
+          },
+          {
+            "id": "c",
+            "text": "What's your wifi password?"
+          },
+          {
+            "id": "d",
+            "text": "Cancel everything forever."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "예약을 시작할 때 `I'd like to book a table for two`처럼 목적과 인원을 바로 말하면 자연스럽습니다."
+      }
     },
     {
       "id": "s1-d2-d3",
       "speakerId": "staff",
       "speakerLabelKo": "직원",
-      "textKo": "몇 시쯤 원하시나요?",
+      "textKo": "몇 시로 원하시나요?",
       "textEn": "What time would you like?"
     },
     {
       "id": "s1-d2-d4",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "7시면 될 것 같아요. 창가 자리 가능할까요?",
-      "textEn": "Around seven, please. Could we have a window seat if possible?"
+      "textKo": "7시쯤이면 좋겠어요. 가능하면 창가 자리로 부탁드려도 될까요?",
+      "textEn": "Around seven, please. Could we have a window seat if possible?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "직원이 원하는 시간을 물었습니다. 시간과 좌석 요청을 자연스럽게 말해 보세요.",
+        "promptEn": "The staff asked what time you would like. Choose the best reply.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Around seven, please. Could we have a window seat if possible?"
+          },
+          {
+            "id": "b",
+            "text": "Give me the boss table now."
+          },
+          {
+            "id": "c",
+            "text": "Windows are ugly."
+          },
+          {
+            "id": "d",
+            "text": "I'll sit in the kitchen."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Could we have ~, please?`는 좌석이나 추가 요청을 공손하게 말할 때 좋습니다."
+      }
     },
     {
       "id": "s1-d2-d5",
       "speakerId": "staff",
       "speakerLabelKo": "직원",
-      "textKo": "7시에 두 분, 창가로 잡아두었습니다. 이름이 어떻게 되세요?",
-      "textEn": "Seven for two by the window—got it. May I have your name?"
+      "textKo": "네, 7시에 두 분 창가 자리로 잡아드릴게요. 성함이 어떻게 되세요?",
+      "textEn": "Seven for two by the window? Got it. May I have your name?"
+    },
+    {
+      "id": "s1-d2-d6",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "제 이름은 하데스입니다. 감사합니다.",
+      "textEn": "It's Hades. Thank you."
     }
   ],
   "keyExpressions": [
     {
       "id": "s1-d2-k1",
       "expressionEn": "I'd like to book a table for two.",
-      "expressionKo": "두 명 테이블 예약하고 싶습니다.",
-      "tipKo": "전화 예약에서 가장 흔한 패턴입니다."
+      "expressionKo": "두 명 자리 예약하고 싶습니다.",
+      "tipKo": "전화 예약에서 가장 기본이 되는 표현입니다."
     },
     {
       "id": "s1-d2-k2",
       "expressionEn": "What time would you like?",
-      "expressionKo": "몇 시로 도와드릴까요? (직원측 표현)",
-      "tipKo": "직원이 시간을 물을 때 자주 나옵니다."
+      "expressionKo": "몇 시로 원하시나요?",
+      "tipKo": "직원이 예약 시간을 물을 때 자주 쓰는 표현입니다."
     },
     {
       "id": "s1-d2-k3",
       "expressionEn": "Could we have a window seat, please?",
-      "expressionKo": "창가 자리 가능할까요?",
-      "tipKo": "`Could we ~` 로 정중하게 요청합니다."
+      "expressionKo": "창가 자리로 부탁드려도 될까요?",
+      "tipKo": "`Could we ~?`로 정중하게 요청할 수 있습니다."
     }
   ],
   "quiz": [
     {
-      "type": "multiple-choice",
+      "type": "next-line-choice",
       "id": "s1-d2-q1",
-      "promptKo": "전화로 예약 시작할 때 가장 알맞은 표현은?",
-      "promptEn": "Which opening fits a phone reservation best?",
-      "explanationKo": "`I'd like to book a table for two…`처럼 목적(예약)과 인원·시점을 바로 말하면 통화 목적이 분명해집니다.",
+      "expressionId": "s1-d2-k1",
+      "partnerSpeakerLabelKo": "직원",
+      "partnerLineKo": "해피 비스트로입니다. 무엇을 도와드릴까요?",
+      "partnerLineEn": "Happy Bistro, how can I help you?",
+      "promptKo": "전화로 식당 예약을 시작할 때 가장 자연스러운 대답을 고르세요.",
+      "promptEn": "Choose the best reply to start a phone reservation.",
+      "explanationKo": "`I'd like to book a table for two`처럼 목적과 인원을 바로 말하면 예약 의도가 분명해집니다.",
       "options": [
         {
           "id": "a",
-          "text": "I'd like to book a table for two this Friday evening."
+          "text": "Hi, I'd like to book a table for two this Friday evening."
         },
         {
           "id": "b",
@@ -101,15 +176,19 @@
       "correctOptionId": "a"
     },
     {
-      "type": "multiple-choice",
+      "type": "next-line-choice",
       "id": "s1-d2-q2",
-      "promptKo": "'창가 자리'를 정중히 부탁할 때?",
-      "promptEn": "Choose the politest way to request a window seat.",
-      "explanationKo": "`Could we have ~, please?`는 부드러운 요청형이라 좌석·추가 부탁에 자주 씁니다.",
+      "expressionId": "s1-d2-k3",
+      "partnerSpeakerLabelKo": "직원",
+      "partnerLineKo": "몇 시로 원하시나요?",
+      "partnerLineEn": "What time would you like?",
+      "promptKo": "시간을 말하면서 창가 자리를 정중하게 부탁하는 대답을 고르세요.",
+      "promptEn": "Choose the best reply that gives a time and politely requests a window seat.",
+      "explanationKo": "`Could we have ~, please?`는 좌석이나 추가 요청을 공손하게 말할 때 좋습니다.",
       "options": [
         {
           "id": "a",
-          "text": "Could we have a window seat, please?"
+          "text": "Around seven, please. Could we have a window seat if possible?"
         },
         {
           "id": "b",
@@ -127,43 +206,13 @@
       "correctOptionId": "a"
     },
     {
-      "type": "next-line-choice",
+      "type": "pattern-fill-blank",
       "id": "s1-d2-q3-next-line",
       "expressionId": "s1-d2-k1",
-      "partnerSpeakerLabelKo": "Staff",
-      "partnerLineKo": "??? ???????",
-      "partnerLineEn": "Happy Bistro, how can I help you?",
-      "promptKo": "?? ??? ??? ?? ?? ??? ????? ????.",
-      "promptEn": "Choose the best reply to start a phone reservation.",
-      "explanationKo": "?? ????? ??? ??? ??? ?? ??? ???????.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Hi, I'd like to book a table for two this Friday evening."
-        },
-        {
-          "id": "b",
-          "text": "What's your wifi password?"
-        },
-        {
-          "id": "c",
-          "text": "I hate Italian food."
-        },
-        {
-          "id": "d",
-          "text": "Cancel everything forever."
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "pattern-fill-blank",
-      "id": "s1-d2-q4-pattern",
-      "expressionId": "s1-d2-k1",
       "templateEn": "I'd like to {{blank}} a table for two.",
-      "promptKo": "? ? ?? ?? ??? ?????.",
+      "promptKo": "예약 표현의 빈칸에 들어갈 알맞은 단어를 고르세요.",
       "promptEn": "Complete the reservation pattern.",
-      "explanationKo": "`book a table`? ?? ??? ??? ? ?? ?? ??????.",
+      "explanationKo": "`book a table`은 식당 자리를 예약한다는 뜻입니다.",
       "options": [
         {
           "id": "a",
@@ -180,6 +229,32 @@
         {
           "id": "d",
           "text": "carry"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d2-q4-pattern",
+      "promptKo": "`Could we have a window seat, please?`의 가장 자연스러운 의미는 무엇인가요?",
+      "promptEn": "What does `Could we have a window seat, please?` mean?",
+      "explanationKo": "창가 자리를 정중하게 요청할 때 쓰는 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "창가 자리로 부탁드려도 될까요?"
+        },
+        {
+          "id": "b",
+          "text": "예약을 모두 취소해 주세요."
+        },
+        {
+          "id": "c",
+          "text": "주방에 앉고 싶어요."
+        },
+        {
+          "id": "d",
+          "text": "와이파이 비밀번호가 뭐예요?"
         }
       ],
       "correctOptionId": "a"

@@ -7,6 +7,7 @@ import type { ConversationStage, ConversationStageIndex } from '../types/convers
 const STAGE_METADATA_REL = 'content/stage-metadata.json'
 const CONTENT_SCHEMA_VERSION = '1'
 const WORD_QUESTION_TYPES = new Set(['word-to-meaning', 'meaning-to-word', 'fill-blank'])
+const CONVERSATION_SCENE_IMAGE_KEYS = ['intro', 'dialogue', 'review'] as const
 const CONTENT_OFFLINE_MESSAGE =
   '콘텐츠를 불러오지 못했습니다. 오프라인 상태라면 한 번 온라인으로 접속해 콘텐츠를 캐시한 뒤 다시 시도해 주세요.'
 
@@ -161,6 +162,82 @@ function assertStageWords(data: unknown, url: string): StageWordsFile {
   return data as StageWordsFile
 }
 
+function assertConversationSceneImages(data: unknown, url: string): void {
+  if (data === undefined) return
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    throw new ContentFetchError('실전 회화 Day sceneImages 형식 오류입니다.', url)
+  }
+  const sceneImages = data as Record<string, unknown>
+  for (const key of CONVERSATION_SCENE_IMAGE_KEYS) {
+    const sceneImage = sceneImages[key]
+    if (sceneImage === undefined) continue
+    if (
+      typeof sceneImage !== 'object' ||
+      sceneImage === null ||
+      Array.isArray(sceneImage)
+    ) {
+      throw new ContentFetchError(`실전 회화 Day sceneImages.${key} 형식 오류입니다.`, url)
+    }
+    const img = sceneImage as Record<string, unknown>
+    if (typeof img.imagePath !== 'string' || img.imagePath.trim() === '') {
+      throw new ContentFetchError(
+        `실전 회화 Day sceneImages.${key}.imagePath 형식 오류입니다.`,
+        url,
+      )
+    }
+    if (img.altKo !== undefined && typeof img.altKo !== 'string') {
+      throw new ContentFetchError(
+        `실전 회화 Day sceneImages.${key}.altKo 형식 오류입니다.`,
+        url,
+      )
+    }
+  }
+}
+
+function assertConversationResponseQuiz(data: unknown, url: string): void {
+  if (data === undefined) return
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz 형식 오류입니다.', url)
+  }
+  const quiz = data as Record<string, unknown>
+  if (
+    quiz.type !== 'next-line-choice' ||
+    typeof quiz.promptKo !== 'string' ||
+    typeof quiz.correctOptionId !== 'string'
+  ) {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz 기본 필드 형식 오류입니다.', url)
+  }
+  if (quiz.promptEn !== undefined && typeof quiz.promptEn !== 'string') {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz promptEn 형식 오류입니다.', url)
+  }
+  if (quiz.explanationKo !== undefined && typeof quiz.explanationKo !== 'string') {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz explanationKo 형식 오류입니다.', url)
+  }
+  if (quiz.explanationEn !== undefined && typeof quiz.explanationEn !== 'string') {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz explanationEn 형식 오류입니다.', url)
+  }
+  if (!Array.isArray(quiz.options) || quiz.options.length === 0) {
+    throw new ContentFetchError('실전 회화 dialogue responseQuiz options 가 비었습니다.', url)
+  }
+  const optionIds = new Set<string>()
+  for (const opt of quiz.options) {
+    if (typeof opt !== 'object' || opt === null) {
+      throw new ContentFetchError('실전 회화 dialogue responseQuiz 선택지 형식 오류입니다.', url)
+    }
+    const option = opt as Record<string, unknown>
+    if (typeof option.id !== 'string' || typeof option.text !== 'string') {
+      throw new ContentFetchError('실전 회화 dialogue responseQuiz 선택지 id/text 형식 오류입니다.', url)
+    }
+    optionIds.add(option.id)
+  }
+  if (!optionIds.has(quiz.correctOptionId)) {
+    throw new ContentFetchError(
+      '실전 회화 dialogue responseQuiz correctOptionId 가 options 중 어떤 id 와도 일치하지 않습니다.',
+      url,
+    )
+  }
+}
+
 function assertConversationStage(data: unknown, url: string): ConversationStage {
   if (typeof data !== 'object' || data === null) {
     throw new ContentFetchError('실전 회화 스테이지: 유효하지 않은 데이터입니다.', url)
@@ -180,6 +257,7 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
     if (typeof d.dayId !== 'number' || typeof d.titleKo !== 'string') {
       throw new ContentFetchError('실전 회화 스테이지: Day 항목이 올바르지 않습니다.', url)
     }
+    assertConversationSceneImages(d.sceneImages, url)
     if (
       !Array.isArray(d.narrations) ||
       !Array.isArray(d.dialogue) ||
@@ -187,6 +265,29 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
       !Array.isArray(d.quiz)
     ) {
       throw new ContentFetchError('실전 회화 스테이지: Day narrations/dialogue/keyExpressions/quiz 배열 형식 오류입니다.', url)
+    }
+    for (const dialogueLine of d.dialogue) {
+      if (typeof dialogueLine !== 'object' || dialogueLine === null) {
+        throw new ContentFetchError('실전 회화 스테이지: dialogue 항목 형식 오류입니다.', url)
+      }
+      const line = dialogueLine as Record<string, unknown>
+      if (
+        typeof line.id !== 'string' ||
+        typeof line.textKo !== 'string' ||
+        typeof line.textEn !== 'string'
+      ) {
+        throw new ContentFetchError('실전 회화 스테이지: dialogue id/textKo/textEn 형식 오류입니다.', url)
+      }
+      if (line.speakerId !== undefined && typeof line.speakerId !== 'string') {
+        throw new ContentFetchError('실전 회화 스테이지: dialogue speakerId 형식 오류입니다.', url)
+      }
+      if (
+        line.speakerLabelKo !== undefined &&
+        typeof line.speakerLabelKo !== 'string'
+      ) {
+        throw new ContentFetchError('실전 회화 스테이지: dialogue speakerLabelKo 형식 오류입니다.', url)
+      }
+      assertConversationResponseQuiz(line.responseQuiz, url)
     }
     for (const quiz of d.quiz) {
       if (typeof quiz !== 'object' || quiz === null) {

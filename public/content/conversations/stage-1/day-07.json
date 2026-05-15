@@ -3,16 +3,30 @@
   "titleKo": "Stage 1 회고",
   "descriptionKo": "한 주의 표현 정리",
   "sceneDescriptionKo": "일요일 밤, 하루를 마무리하며 이번 주에 익힌 표현을 머릿속으로 정리해 본다.",
-  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-07-cutscene.jpg",
+  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-07-cutscene.jpg",
+  "sceneImages": {
+    "intro": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-01.jpg",
+      "altKo": "Stage 1 회고 - 도입 장면"
+    },
+    "dialogue": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-02.jpg",
+      "altKo": "Stage 1 회고 - 대화 장면"
+    },
+    "review": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-03.jpg",
+      "altKo": "Stage 1 회고 - 복습 장면"
+    }
+  },
   "narrations": [
     {
       "id": "s1-d7-n1",
-      "textKo": "약속을 잡고, 예약하고, 메뉴를 주문하고, 길을 묻고, 안부를 나눴다. 한 주가 빠르게 지나갔다.",
+      "textKo": "약속을 잡고, 예약하고, 메뉴를 주문하고, 길을 묻고, 안부를 나누며 한 주가 빠르게 지나갔다.",
       "textEn": "You set up a dinner, booked a table, ordered food, asked for directions, and caught up with a friend. Quite a week."
     },
     {
       "id": "s1-d7-n2",
-      "textKo": "오늘은 새 표현 대신, 한 주에 자주 쓴 마무리 인사 3개를 정리해 본다.",
+      "textKo": "오늘은 새 표현 대신, 한 주 동안 자주 쓴 마무리 인사 3가지를 정리해 본다.",
       "textEn": "Tonight, instead of new lines, recap three closing phrases that came up all week."
     }
   ],
@@ -21,29 +35,93 @@
       "id": "s1-d7-d1",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "다음에 또 만나자고 자연스럽게 말하고 싶었지.",
-      "textEn": "I wanted to wrap things up with something like 'see you again soon.'"
+      "textKo": "이번 주에 정말 여러 표현을 썼네.",
+      "textEn": "I used so many different phrases this week."
     },
     {
       "id": "s1-d7-d2",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "헤어질 때 가벼운 인사가 늘 필요했어.",
-      "textEn": "A light closing line came in handy every single time."
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "맞아. 특히 마지막 인사가 자연스러워졌어.",
+      "textEn": "Right. Your closing lines sounded much more natural."
     },
     {
       "id": "s1-d7-d3",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "이번 주 즐거웠어. 또 보자!",
-      "textEn": "Great week. Let's do it again soon!"
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "다음에도 곧 보자고 말하고 싶을 땐 뭐라고 하면 좋을까?",
+      "textEn": "What should I say when I want to meet again soon?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "다시 만나자는 표현을 알고 싶습니다. 친구에게 물어볼 자연스러운 질문을 고르세요.",
+        "promptEn": "You want to ask how to suggest meeting again. Choose the best question.",
+        "options": [
+          {
+            "id": "a",
+            "text": "What should I say when I want to meet again soon?"
+          },
+          {
+            "id": "b",
+            "text": "Forget you ever met me."
+          },
+          {
+            "id": "c",
+            "text": "End this conversation now."
+          },
+          {
+            "id": "d",
+            "text": "Goodbye and never call."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "표현이 떠오르지 않을 때는 `What should I say when ~?`로 자연스럽게 물어볼 수 있습니다."
+      }
     },
     {
       "id": "s1-d7-d4",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "Let's catch up soon. 이라고 하면 좋아.",
+      "textEn": "You can say, `Let's catch up soon.`"
+    },
+    {
+      "id": "s1-d7-d5",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "또 보자. 곧 연락할게.",
-      "textEn": "See you soon. I'll text you."
+      "textKo": "좋아. 그럼 곧 연락할게.",
+      "textEn": "Great. Talk to you soon.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "친구가 쓸 수 있는 표현을 알려줬습니다. 대화를 부드럽게 마무리하는 답장을 고르세요.",
+        "promptEn": "Channa suggested a phrase. Choose the best closing reply.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Great. Talk to you soon."
+          },
+          {
+            "id": "b",
+            "text": "Goodbye and never call."
+          },
+          {
+            "id": "c",
+            "text": "Stop talking to me again."
+          },
+          {
+            "id": "d",
+            "text": "End this conversation now."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Talk to you soon.`은 곧 다시 연락하겠다는 가벼운 마무리 표현입니다."
+      }
+    },
+    {
+      "id": "s1-d7-d6",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "나도 기대할게. 다음에 또 보자!",
+      "textEn": "Looking forward to it. See you next time!"
     }
   ],
   "keyExpressions": [
@@ -51,28 +129,32 @@
       "id": "s1-d7-k1",
       "expressionEn": "Let's catch up soon.",
       "expressionKo": "조만간 또 보자.",
-      "tipKo": "회사·친구 모두에게 자연스럽게 쓰는 인사입니다."
+      "tipKo": "친구나 동료에게 가볍게 다음 만남을 기약할 때 쓰는 표현입니다."
     },
     {
       "id": "s1-d7-k2",
       "expressionEn": "Talk to you soon.",
-      "expressionKo": "또 연락할게.",
-      "tipKo": "메시지·통화 마무리에 자주 등장합니다."
+      "expressionKo": "곧 연락할게.",
+      "tipKo": "메시지나 통화 마무리에 자주 등장합니다."
     },
     {
       "id": "s1-d7-k3",
       "expressionEn": "Looking forward to it.",
-      "expressionKo": "기대돼.",
-      "tipKo": "다음 약속에 대한 긍정 반응으로 자주 씁니다."
+      "expressionKo": "기대하고 있어.",
+      "tipKo": "다음 약속에 대한 긍정적인 반응으로 자주 씁니다."
     }
   ],
   "quiz": [
     {
-      "type": "multiple-choice",
+      "type": "next-line-choice",
       "id": "s1-d7-q1",
-      "promptKo": "헤어질 때 '다음에 또 보자' 를 자연스럽게 말하는 표현은?",
-      "promptEn": "Which line naturally says 'let's meet again soon'?",
-      "explanationKo": "`Let's catch up soon.` 은 친구·동료 모두에게 가볍게 다음 만남을 기약할 때 쓰는 마무리 표현입니다.",
+      "expressionId": "s1-d7-k1",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "이번 주 즐거웠어. 다음에도 또 보자!",
+      "partnerLineEn": "Great week. Let's do it again soon!",
+      "promptKo": "다음 만남을 자연스럽게 기약하는 대답을 고르세요.",
+      "promptEn": "Choose the best reply to naturally say you want to meet again soon.",
+      "explanationKo": "`Let's catch up soon.`은 친구나 동료에게 가볍게 다음 만남을 기약할 때 쓰는 표현입니다.",
       "options": [
         {
           "id": "a",
@@ -94,45 +176,19 @@
       "correctOptionId": "b"
     },
     {
-      "type": "multiple-choice",
-      "id": "s1-d7-q2",
-      "promptKo": "다음 약속에 긍정적으로 답할 때 자연스러운 표현은?",
-      "promptEn": "Pick the friendliest reply showing you look forward to next time.",
-      "explanationKo": "`Looking forward to it.` 은 다음 일정·만남을 기대한다고 말하는 가장 일반적인 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "I doubt this will ever happen."
-        },
-        {
-          "id": "b",
-          "text": "Please cancel everything today."
-        },
-        {
-          "id": "c",
-          "text": "Stop talking to me again."
-        },
-        {
-          "id": "d",
-          "text": "Looking forward to it."
-        }
-      ],
-      "correctOptionId": "d"
-    },
-    {
       "type": "next-line-choice",
-      "id": "s1-d7-q3-next-line",
+      "id": "s1-d7-q2",
       "expressionId": "s1-d7-k2",
-      "partnerSpeakerLabelKo": "Channa",
-      "partnerLineKo": "?? ? ????. ? ??!",
-      "partnerLineEn": "Great week. Let's do it again soon!",
-      "promptKo": "??? ??? ????? ????? ?? ????.",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "좋아. 시간 정해지면 알려줘.",
+      "partnerLineEn": "Great. Let me know once you pick a time.",
+      "promptKo": "대화를 부드럽게 마무리하는 답장을 고르세요.",
       "promptEn": "Choose the best closing reply.",
-      "explanationKo": "`See you soon`? `I'll text you`? ??? ??? ??? ???????.",
+      "explanationKo": "`Talk to you soon.`은 곧 다시 연락하겠다는 가벼운 마무리 표현입니다.",
       "options": [
         {
           "id": "a",
-          "text": "See you soon. I'll text you."
+          "text": "Talk to you soon."
         },
         {
           "id": "b",
@@ -151,12 +207,12 @@
     },
     {
       "type": "pattern-fill-blank",
-      "id": "s1-d7-q4-pattern",
+      "id": "s1-d7-q3-next-line",
       "expressionId": "s1-d7-k3",
       "templateEn": "Looking {{blank}} to it.",
-      "promptKo": "?? ??? ????? ??? ?????.",
+      "promptKo": "기대감을 표현하는 문장의 빈칸을 고르세요.",
       "promptEn": "Complete the positive closing phrase.",
-      "explanationKo": "`Looking forward to it`? ?? ???? ??? ????? ?? ? ???.",
+      "explanationKo": "`Looking forward to it.`은 다음 일정이나 만남을 기대한다고 말할 때 쓰는 표현입니다.",
       "options": [
         {
           "id": "a",
@@ -173,6 +229,32 @@
         {
           "id": "d",
           "text": "away"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d7-q4-pattern",
+      "promptKo": "`Looking forward to it.`의 가장 자연스러운 의미는 무엇인가요?",
+      "promptEn": "What does `Looking forward to it.` mean?",
+      "explanationKo": "앞으로 있을 약속이나 일을 기대한다고 말할 때 쓰는 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "기대하고 있어."
+        },
+        {
+          "id": "b",
+          "text": "오늘 모두 취소해 줘."
+        },
+        {
+          "id": "c",
+          "text": "다시는 연락하지 마."
+        },
+        {
+          "id": "d",
+          "text": "이 대화를 끝내."
         }
       ],
       "correctOptionId": "a"

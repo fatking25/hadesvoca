@@ -27,6 +27,7 @@ export interface ConversationDialogueLine {
   readonly speakerLabelKo?: string
   readonly textKo: string
   readonly textEn: string
+  readonly responseQuiz?: ConversationDialogueResponseQuiz
 }
 
 /** 핵심 표현 */
@@ -40,6 +41,16 @@ export interface ConversationKeyExpression {
 export interface ConversationQuizOption {
   readonly id: string
   readonly text: string
+}
+
+export interface ConversationDialogueResponseQuiz {
+  readonly type: 'next-line-choice'
+  readonly promptKo: string
+  readonly promptEn?: string
+  readonly explanationKo?: string
+  readonly explanationEn?: string
+  readonly options: readonly ConversationQuizOption[]
+  readonly correctOptionId: string
 }
 
 export type ConversationQuizType =
@@ -82,6 +93,13 @@ export type ConversationQuiz =
   | ConversationQuizNextLineChoice
   | ConversationQuizPatternFillBlank
 
+export type ConversationSceneImageKey = 'intro' | 'dialogue' | 'review'
+
+export interface ConversationSceneImage {
+  readonly imagePath: string
+  readonly altKo?: string
+}
+
 /** 하루치 회화 콘텐츠 */
 export interface ConversationDay {
   readonly dayId: number
@@ -91,6 +109,7 @@ export interface ConversationDay {
   readonly sceneDescriptionKo?: string
   /** 컷씬·배경 placeholder (실제 에셋 없을 때 경로만 보관) */
   readonly cutsceneImagePath?: string
+  readonly sceneImages?: Partial<Record<ConversationSceneImageKey, ConversationSceneImage>>
   readonly narrations: readonly ConversationNarration[]
   readonly dialogue: readonly ConversationDialogueLine[]
   readonly keyExpressions: readonly ConversationKeyExpression[]

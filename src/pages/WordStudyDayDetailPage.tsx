@@ -302,9 +302,15 @@ export default function WordStudyDayDetailPage() {
       for (const d of p.completedWordDays) {
         if (d.stageId === MVP_WORD_STAGE_ID) completed.add(d.dayId)
       }
-      const replay = isWordDayCompleted(p, MVP_WORD_STAGE_ID, dayNum)
-      if (!replay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
+      const isCompletedWordDay = isWordDayCompleted(p, MVP_WORD_STAGE_ID, dayNum)
+      if (!isCompletedWordDay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
         navigate('/word-study', { replace: true })
+        return
+      }
+
+      if (isCompletedWordDay) {
+        if (cancelled) return
+        setCoinGate({ status: 'ready', stageId: MVP_WORD_STAGE_ID, dayId: dayNum })
         return
       }
 

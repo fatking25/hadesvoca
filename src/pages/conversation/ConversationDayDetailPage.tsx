@@ -1,5 +1,5 @@
 /**
- * 실전 회화 Day 상세: JSON 로드 후 컷씬 → 나레이션 → 대화 → 표현 → 퀴즈 스텝 진행, 마지막에 결과 화면으로 이동합니다.
+ * 실전 회화 Day 상세: JSON 로드 후 컷씬 → 나레이션 → 대화 → 퀴즈 → 표현 스텝 진행, 마지막에 결과 화면으로 이동합니다.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -18,6 +18,7 @@ import type {
   ConversationDay,
   ConversationDialogueLine,
   ConversationQuiz,
+  ConversationSceneImageKey,
   ConversationStage,
 } from '../../types/conversation'
 import { isSequentialDayUnlocked } from '../../utils/learningUnlock'
@@ -29,14 +30,14 @@ import {
 } from '../../utils/storage'
 import '../ConversationDayDetailPage.css'
 
-type FlowStep = 'cutscene' | 'narration' | 'dialogue' | 'expressions' | 'quiz'
+type FlowStep = 'cutscene' | 'narration' | 'dialogue' | 'quiz' | 'expressions'
 
 const FLOW_STEPS: readonly FlowStep[] = [
   'cutscene',
   'narration',
   'dialogue',
-  'expressions',
   'quiz',
+  'expressions',
 ] as const
 
 function stepIndex(step: FlowStep): number {
@@ -57,12 +58,116 @@ function resolvedSceneDescription(d: ConversationDay): string {
   return t !== undefined && t.length > 0 ? t : ''
 }
 
+type ConversationSceneImageView = Readonly<{
+  src: string
+  alt: string
+}>
+
+function sceneImageKeyForStep(step: FlowStep): ConversationSceneImageKey | null {
+  if (step === 'narration') return 'intro'
+  if (step === 'dialogue') return 'dialogue'
+  if (step === 'quiz' || step === 'expressions') return 'review'
+  return null
+}
+
+function fallbackSceneAlt(d: ConversationDay): string {
+  const title = d.titleKo.trim()
+  const desc = d.descriptionKo?.trim()
+  return desc !== undefined && desc.length > 0 ? `${title} - ${desc}` : title
+}
+
+function getCurrentConversationSceneImage(
+  d: ConversationDay,
+  step: FlowStep,
+): ConversationSceneImageView {
+  const sceneKey = sceneImageKeyForStep(step)
+  const sceneImage = sceneKey !== null ? d.sceneImages?.[sceneKey] : undefined
+  const sceneImagePath = sceneImage?.imagePath.trim()
+  const cutsceneImagePath = d.cutsceneImagePath?.trim()
+  const imagePath =
+    sceneImagePath !== undefined && sceneImagePath.length > 0
+      ? sceneImagePath
+      : cutsceneImagePath !== undefined && cutsceneImagePath.length > 0
+        ? cutsceneImagePath
+        : FALLBACK_CONVERSATION_CUTSCENE_PATH
+  const sceneAlt = sceneImage?.altKo?.trim()
+  return {
+    src: resolvePublicUrl(imagePath),
+    alt:
+      sceneAlt !== undefined && sceneAlt.length > 0
+        ? sceneAlt
+        : fallbackSceneAlt(d),
+  }
+}
+
 function dialogueSpeakerSlot(line: ConversationDialogueLine): string {
   const ko = line.speakerLabelKo?.trim()
   if (ko !== undefined && ko.length > 0) return ko
   const id = line.speakerId?.trim()
   if (id !== undefined && id.length > 0) return id
   return 'Speaker'
+}
+
+type SentenceBuilderToken = Readonly<{
+  id: string
+  text: string
+}>
+
+function normalizeSentenceBuilderAnswer(text: string): string {
+  return text
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([?.!,])/g, '$1')
+    .toLocaleLowerCase('en-US')
+}
+
+function splitSentenceBuilderTokens(text: string): readonly string[] {
+  return text
+    .trim()
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length > 0)
+}
+
+function getCorrectQuizOptionText(q: ConversationQuiz): string {
+  return q.options.find((opt) => opt.id === q.correctOptionId)?.text ?? ''
+}
+
+function extractBacktickExpression(text: string | undefined): string | null {
+  if (text === undefined) return null
+  const matched = text.match(/`([^`]+)`/)
+  const extracted = matched?.[1]?.trim()
+  return extracted !== undefined && extracted.length > 0 ? extracted : null
+}
+
+function sentenceBuilderAnswerText(q: ConversationQuiz): string {
+  const correct = getCorrectQuizOptionText(q)
+  if (q.type === 'pattern-fill-blank') {
+    return q.templateEn.replaceAll('{{blank}}', correct)
+  }
+  if (q.type === 'multiple-choice') {
+    return extractBacktickExpression(q.promptEn) ?? extractBacktickExpression(q.promptKo) ?? correct
+  }
+  return correct
+}
+
+function sentenceBuilderShuffleValue(seed: string, index: number): number {
+  let n = 0
+  for (let i = 0; i < seed.length; i += 1) {
+    n = (n * 31 + seed.charCodeAt(i)) % 9973
+  }
+  return (n + index * 37) % 9973
+}
+
+function sentenceBuilderTokensForQuiz(q: ConversationQuiz): readonly SentenceBuilderToken[] {
+  return splitSentenceBuilderTokens(sentenceBuilderAnswerText(q))
+    .map((text, index) => ({
+      id: `${q.id}-tok-${index}`,
+      text,
+      order: sentenceBuilderShuffleValue(q.id, index),
+    }))
+    .sort((a, b) => a.order - b.order)
+    .map(({ id, text }) => ({ id, text }))
 }
 
 function createPersistNonce(): string {
@@ -96,8 +201,11 @@ export default function ConversationDayDetailPage() {
   const [currentStep, setCurrentStep] = useState<FlowStep>('cutscene')
   const [narrationIndex, setNarrationIndex] = useState(0)
   const [dialogueIndex, setDialogueIndex] = useState(0)
+  const [selectedDialogueResponseOptionId, setSelectedDialogueResponseOptionId] =
+    useState<string | null>(null)
+  const [isDialogueResponseAnswered, setIsDialogueResponseAnswered] = useState(false)
   const [quizIndex, setQuizIndex] = useState(0)
-  const [quizSelected, setQuizSelected] = useState<string | null>(null)
+  const [quizSelectedTokenIds, setQuizSelectedTokenIds] = useState<readonly string[]>([])
   const [quizRevealed, setQuizRevealed] = useState(false)
   const quizCorrectRef = useRef(0)
   /** 틀린 표현 퀴즈 `quiz.id` 목록(결과까지 유지) */
@@ -113,13 +221,23 @@ export default function ConversationDayDetailPage() {
       ),
     )
   }, [exprVocabTick])
+  const learnerNickname = useMemo(() => {
+    void exprVocabTick
+    const nickname = loadUserProgress().nickname.trim()
+    return nickname.length > 0 ? nickname : null
+  }, [exprVocabTick])
 
   // 렌더 중에도 호출할 수 있도록 state 리셋만 분리한다(ref 는 건드리지 않음).
   // react-hooks/refs 룰: 렌더 중에는 ref.current 접근 금지.
   const resetQuizStateLocals = useCallback(() => {
     setQuizIndex(0)
-    setQuizSelected(null)
+    setQuizSelectedTokenIds([])
     setQuizRevealed(false)
+  }, [])
+
+  const resetDialogueResponseState = useCallback(() => {
+    setSelectedDialogueResponseOptionId(null)
+    setIsDialogueResponseAnswered(false)
   }, [])
 
   // 이벤트 핸들러(클릭 등)에서 그대로 부르는 진입점. state + ref 모두 리셋.
@@ -189,6 +307,7 @@ export default function ConversationDayDetailPage() {
     setCurrentStep('cutscene')
     setNarrationIndex(0)
     setDialogueIndex(0)
+    resetDialogueResponseState()
     resetQuizStateLocals()
   }
 
@@ -213,14 +332,18 @@ export default function ConversationDayDetailPage() {
       setCurrentStep('dialogue')
       setDialogueIndex(0)
     } else if (currentStep === 'dialogue' && day.dialogue.length === 0) {
-      setCurrentStep('expressions')
+      if (day.quiz.length > 0) {
+        setCurrentStep('quiz')
+        resetQuizStateLocals()
+      } else {
+        setCurrentStep('expressions')
+      }
     } else if (
-      currentStep === 'expressions' &&
-      day.keyExpressions.length === 0 &&
-      day.quiz.length > 0
+      currentStep === 'quiz' &&
+      day.quiz.length === 0 &&
+      day.keyExpressions.length > 0
     ) {
-      setCurrentStep('quiz')
-      resetQuizStateLocals()
+      setCurrentStep('expressions')
     }
   }
 
@@ -233,28 +356,26 @@ export default function ConversationDayDetailPage() {
     if (dayIdParam === undefined || dayIdParam === '') return
     const expressionsEmpty =
       currentStep === 'expressions' &&
-      day.keyExpressions.length === 0 &&
-      day.quiz.length === 0
-    const quizEmpty = currentStep === 'quiz' && day.quiz.length === 0
+      day.keyExpressions.length === 0
+    const quizEmpty =
+      currentStep === 'quiz' &&
+      day.quiz.length === 0 &&
+      day.keyExpressions.length === 0
     if (!(expressionsEmpty || quizEmpty)) return
     const noQuizPayload: ConversationDayResultLocationState = {
       fromFlow: true,
-      quizCorrect: 0,
-      quizTotal: 0,
-      skippedQuiz: true,
+      quizCorrect: quizCorrectRef.current,
+      quizTotal: day.quiz.length,
+      skippedQuiz: day.quiz.length === 0,
       nextDayId: nextDayForResult,
       persistNonce: createPersistNonce(),
-      wrongQuizIds: [],
+      wrongQuizIds: [...wrongQuizIdsRef.current],
     }
     navigate(`/conversation/${dayIdParam}/result`, {
       replace: true,
       state: noQuizPayload,
     })
   }, [currentStep, day, navigate, dayIdParam, nextDayForResult])
-
-  const cutsceneSrc = day?.cutsceneImagePath?.trim()
-    ? resolvePublicUrl(day.cutsceneImagePath)
-    : resolvePublicUrl(FALLBACK_CONVERSATION_CUTSCENE_PATH)
 
   const advanceFromCutscene = () => {
     setCurrentStep('narration')
@@ -268,21 +389,35 @@ export default function ConversationDayDetailPage() {
     } else {
       setCurrentStep('dialogue')
       setDialogueIndex(0)
+      resetDialogueResponseState()
     }
   }
 
   const advanceDialogue = () => {
     if (day === null) return
+    resetDialogueResponseState()
     if (dialogueIndex < day.dialogue.length - 1) {
       setDialogueIndex((i) => i + 1)
+    } else if (day.quiz.length > 0) {
+      setCurrentStep('quiz')
+      resetQuizLocals()
     } else {
       setCurrentStep('expressions')
     }
   }
 
   const advanceFromExpressions = () => {
-    setCurrentStep('quiz')
-    resetQuizLocals()
+    if (day === null || dayIdParam === undefined || dayIdParam === '') return
+    const payload: ConversationDayResultLocationState = {
+      fromFlow: true,
+      quizCorrect: quizCorrectRef.current,
+      quizTotal: day.quiz.length,
+      skippedQuiz: day.quiz.length === 0,
+      nextDayId: nextDayForResult,
+      persistNonce: createPersistNonce(),
+      wrongQuizIds: [...wrongQuizIdsRef.current],
+    }
+    navigate(`/conversation/${dayIdParam}/result`, { state: payload })
   }
 
   const activeQuiz: ConversationQuiz | undefined =
@@ -292,9 +427,20 @@ export default function ConversationDayDetailPage() {
     if (day === null || activeQuiz === undefined || dayIdParam === undefined || dayIdParam === '')
       return
 
+    const sentenceTokens = sentenceBuilderTokensForQuiz(activeQuiz)
+    const tokenById = new Map(sentenceTokens.map((token) => [token.id, token]))
+    const builtAnswer = quizSelectedTokenIds
+      .map((id) => tokenById.get(id)?.text ?? '')
+      .filter((text) => text.length > 0)
+      .join(' ')
+    const targetAnswer = sentenceBuilderAnswerText(activeQuiz)
+
     if (!quizRevealed) {
-      if (quizSelected === null) return
-      if (quizSelected === activeQuiz.correctOptionId) {
+      if (quizSelectedTokenIds.length === 0) return
+      if (
+        normalizeSentenceBuilderAnswer(builtAnswer) ===
+        normalizeSentenceBuilderAnswer(targetAnswer)
+      ) {
         quizCorrectRef.current += 1
       } else {
         wrongQuizIdsRef.current.push(activeQuiz.id)
@@ -305,27 +451,14 @@ export default function ConversationDayDetailPage() {
 
     if (quizIndex < day.quiz.length - 1) {
       setQuizIndex((i) => i + 1)
-      setQuizSelected(null)
+      setQuizSelectedTokenIds([])
       setQuizRevealed(false)
     } else {
-      const payload: ConversationDayResultLocationState = {
-        fromFlow: true,
-        quizCorrect: quizCorrectRef.current,
-        quizTotal: day.quiz.length,
-        nextDayId: nextDayForResult,
-        persistNonce: createPersistNonce(),
-        wrongQuizIds: [...wrongQuizIdsRef.current],
-      }
-      navigate(`/conversation/${dayIdParam}/result`, { state: payload })
+      setCurrentStep('expressions')
     }
   }
 
   const progressIdx = Math.max(0, stepIndex(currentStep))
-
-  const resultHref =
-    dayIdParam !== undefined && dayIdParam !== ''
-      ? `/conversation/${dayIdParam}/result`
-      : '/conversation'
 
   if (dayIdNum === null) {
     return (
@@ -381,12 +514,25 @@ export default function ConversationDayDetailPage() {
 
   const dayLabel = `Stage ${MVP_CONVERSATION_STAGE_ID} · Day ${day.dayId}`
 
-  const primaryDisabled =
-    currentStep === 'quiz' &&
-    !quizRevealed &&
-    (quizSelected === null || activeQuiz === undefined)
+  const activeDialogueLine =
+    currentStep === 'dialogue' ? day.dialogue[dialogueIndex] : undefined
+  const activeDialogueResponseQuiz =
+    activeDialogueLine?.speakerId === 'learner'
+      ? activeDialogueLine.responseQuiz
+      : undefined
+  const dialogueResponseCorrect =
+    activeDialogueResponseQuiz !== undefined &&
+    selectedDialogueResponseOptionId !== null &&
+    selectedDialogueResponseOptionId === activeDialogueResponseQuiz.correctOptionId
 
-  const quizPrimaryLabel = !quizRevealed ? '정답 확인' : quizIndex >= day.quiz.length - 1 ? '결과 보기' : '다음 문제'
+  const primaryDisabled =
+    currentStep === 'quiz'
+      ? !quizRevealed && (quizSelectedTokenIds.length === 0 || activeQuiz === undefined)
+      : currentStep === 'dialogue' && activeDialogueResponseQuiz !== undefined
+        ? !isDialogueResponseAnswered && selectedDialogueResponseOptionId === null
+        : false
+
+  const quizPrimaryLabel = !quizRevealed ? '정답 확인' : quizIndex >= day.quiz.length - 1 ? '핵심 표현으로' : '다음 문제'
 
   let stepNotice: string
   if (currentStep === 'cutscene') stepNotice = '컷씬'
@@ -394,6 +540,21 @@ export default function ConversationDayDetailPage() {
   else if (currentStep === 'dialogue') stepNotice = '대화'
   else if (currentStep === 'expressions') stepNotice = '핵심 표현'
   else stepNotice = '퀴즈'
+
+  function renderSceneImage(d: ConversationDay): ReactNode {
+    const image = getCurrentConversationSceneImage(d, currentStep)
+    return (
+      <div className="conv-vn__image-shell">
+        <img
+          className="conv-vn__image"
+          src={image.src}
+          alt={image.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )
+  }
 
   function renderStepBody(d: ConversationDay): ReactNode {
     switch (currentStep) {
@@ -404,30 +565,27 @@ export default function ConversationDayDetailPage() {
         const sceneLines = resolvedSceneDescription(d)
 
         return (
-          <section className="conv-vn" aria-labelledby="conv-vn-heading">
+          <section
+            className="conv-vn conv-vn--tap"
+            aria-labelledby="conv-vn-heading"
+            role="button"
+            tabIndex={0}
+            onClick={handlePrimaryFooter}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                handlePrimaryFooter()
+              }
+            }}
+          >
             <h2 id="conv-vn-heading" className="conv-vn__sr-only">
               {isOpening ? '컷씬' : '나레이션'}
             </h2>
 
-            <div className="conv-vn__image-shell">
-              <img
-                className="conv-vn__image"
-                src={cutsceneSrc}
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-
-            {sceneLines.length > 0 ? (
-              <p className="conv-vn__scene-desc" lang="ko">
-                {sceneLines}
-              </p>
-            ) : (
-              <p className="conv-vn__scene-desc conv-vn__scene-desc--muted">
-                장면 설명이 준비중입니다.
-              </p>
-            )}
+            {renderSceneImage(d)}
+            <span className="conv-vn__tap-hint" aria-hidden="true">
+              touch
+            </span>
 
             <div className="ui-card ui-card--dashboard conv-vn__narr-card">
               <div className="conv-vn__narr-head">
@@ -443,7 +601,7 @@ export default function ConversationDayDetailPage() {
 
               {isOpening ? (
                 <p className="conv-vn__narr-intro ui-card__body">
-                  같은 배경에서 곧 속마음 나레이션이 시작됩니다. 아래 다음을 눌러 진행합니다.
+                  {sceneLines.length > 0 ? sceneLines : '장면 설명이 준비중입니다.'}
                 </p>
               ) : block !== undefined ? (
                 <div className="conv-detail__narration-box">
@@ -465,41 +623,118 @@ export default function ConversationDayDetailPage() {
         )
       }
       case 'dialogue': {
-        const revealed = d.dialogue.slice(0, dialogueIndex + 1)
+        const currentDialogueLine = activeDialogueLine
+        const shouldShowDialogueLine =
+          currentDialogueLine !== undefined &&
+          (activeDialogueResponseQuiz === undefined || isDialogueResponseAnswered)
         return (
           <section
             className="conv-detail__panel conv-dialogue-vn ui-card ui-card--dashboard"
             aria-labelledby="conv-script-label"
           >
+            {renderSceneImage(d)}
             <h2 id="conv-script-label" className="ui-card__section-heading">
               대화{' '}
               <span className="conv-detail__step-chip">
                 {dialogueIndex + 1} / {d.dialogue.length}
               </span>
             </h2>
-            <div className="conv-dialogue-vn__list" role="feed" aria-label="대화 스크립트">
-              {revealed.map((line, i) => {
-                const isLatest = i === revealed.length - 1
-                const slot = dialogueSpeakerSlot(line)
-                return (
-                  <article
-                    key={line.id}
-                    className={`conv-dialogue-vn__block${isLatest ? ' conv-dialogue-vn__block--latest' : ''}`}
-                    aria-current={isLatest ? 'step' : undefined}
-                  >
-                    <p className="conv-dialogue-vn__speaker" lang="ko">
-                      [{slot}]
-                    </p>
-                    <p className="conv-dialogue-vn__en" lang="en">
-                      {line.textEn}
-                    </p>
-                    <p className="conv-dialogue-vn__ko" lang="ko">
-                      {line.textKo}
-                    </p>
-                  </article>
-                )
-              })}
+            <div className="conv-dialogue-vn__stage">
+              {shouldShowDialogueLine ? (
+                (() => {
+                  const line = currentDialogueLine
+                  const slot =
+                    line.speakerId === 'learner' && learnerNickname !== null
+                      ? learnerNickname
+                      : dialogueSpeakerSlot(line)
+                  return (
+                    <article
+                      key={line.id}
+                      className="conv-dialogue-vn__block conv-dialogue-vn__block--latest"
+                      aria-current="step"
+                    >
+                      <p className="conv-dialogue-vn__speaker" lang="ko">
+                        [{slot}]
+                      </p>
+                      <p className="conv-dialogue-vn__en" lang="en">
+                        {line.textEn}
+                      </p>
+                      <p className="conv-dialogue-vn__ko" lang="ko">
+                        {line.textKo}
+                      </p>
+                    </article>
+                  )
+                })()
+              ) : null}
             </div>
+            {activeDialogueResponseQuiz !== undefined ? (
+              <div className="conv-detail__quiz-context conv-dialogue-vn__response">
+                {!isDialogueResponseAnswered ? (
+                  <>
+                    <p className="conv-detail__quiz-context-label">뭐라고 답할까?</p>
+                    <p className="conv-detail__quiz-prompt" lang="ko">
+                      {activeDialogueResponseQuiz.promptKo}
+                    </p>
+                    {activeDialogueResponseQuiz.promptEn !== undefined &&
+                    activeDialogueResponseQuiz.promptEn.trim() !== '' ? (
+                      <p className="conv-detail__quiz-prompt-en" lang="en">
+                        {activeDialogueResponseQuiz.promptEn}
+                      </p>
+                    ) : null}
+                    <div className="conv-detail__quiz-choices" role="group" aria-label="이어질 말">
+                      {activeDialogueResponseQuiz.options.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          className="ui-btn ui-btn--secondary ui-btn--align-start conv-detail__quiz-choice"
+                          onClick={() => {
+                            setSelectedDialogueResponseOptionId(opt.id)
+                            setIsDialogueResponseAnswered(true)
+                          }}
+                        >
+                          ({opt.id.toUpperCase()}) {opt.text}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="conv-detail__quiz-context-label">
+                      {dialogueResponseCorrect ? '자연스러운 대답' : '조금 어색한 대답'}
+                    </p>
+                    <p
+                      className={`conv-detail__quiz-feedback${
+                        dialogueResponseCorrect
+                          ? ' conv-detail__quiz-feedback--ok'
+                          : ' conv-detail__quiz-feedback--ng'
+                      }`}
+                    >
+                      {dialogueResponseCorrect
+                        ? '좋아요. 지금 상황에 잘 어울려요.'
+                        : '이 상황에서는 조금 어색해요. 더 자연스러운 말로 이어가 볼게요.'}
+                    </p>
+                    {activeDialogueResponseQuiz.explanationKo !== undefined &&
+                    activeDialogueResponseQuiz.explanationKo.trim() !== '' ? (
+                      <div className="conv-detail__quiz-explanation">
+                        <p className="conv-detail__quiz-explanation-label">해설</p>
+                        <p className="conv-detail__quiz-explanation-ko" lang="ko">
+                          {activeDialogueResponseQuiz.explanationKo}
+                        </p>
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            ) : null}
+            {activeDialogueResponseQuiz === undefined || isDialogueResponseAnswered ? (
+              <button
+                type="button"
+                className="ui-btn ui-btn--primary ui-btn--block conv-dialogue-vn__next"
+                onClick={handleDialoguePrimary}
+              >
+                {dialogueIndex < d.dialogue.length - 1 ? '다음 대화' : d.quiz.length > 0 ? '퀴즈로' : '핵심 표현으로'}
+              </button>
+            ) : null}
           </section>
         )
       }
@@ -509,6 +744,7 @@ export default function ConversationDayDetailPage() {
             className="conv-detail__panel conv-expr-wrap"
             aria-labelledby="conv-phrases-label"
           >
+            {renderSceneImage(d)}
             <div className="conv-expr-wrap__intro">
               <h2 id="conv-phrases-label" className="ui-card__section-heading conv-expr-wrap__heading">
                 핵심 표현
@@ -600,21 +836,24 @@ export default function ConversationDayDetailPage() {
     d: ConversationDay,
     q: ConversationQuiz,
   ): ReactNode {
-    const selectedId = quizSelected
+    const sentenceTokens = sentenceBuilderTokensForQuiz(q)
+    const tokenById = new Map(sentenceTokens.map((token) => [token.id, token]))
+    const selectedTokens = quizSelectedTokenIds
+      .map((id) => tokenById.get(id))
+      .filter((token): token is SentenceBuilderToken => token !== undefined)
+    const selectedTokenIdSet = new Set(quizSelectedTokenIds)
+    const availableTokens = sentenceTokens.filter((token) => !selectedTokenIdSet.has(token.id))
+    const builtAnswer = selectedTokens.map((token) => token.text).join(' ')
+    const targetAnswer = sentenceBuilderAnswerText(q)
     const correct =
-      selectedId !== null && selectedId === q.correctOptionId
+      normalizeSentenceBuilderAnswer(builtAnswer) ===
+      normalizeSentenceBuilderAnswer(targetAnswer)
     const quizTitle =
       q.type === 'next-line-choice'
-        ? '내 대답 고르기'
+        ? '대답 문장 만들기'
         : q.type === 'pattern-fill-blank'
-          ? '표현 빈칸 채우기'
-          : '표현 퀴즈'
-    const quizBadge =
-      q.type === 'next-line-choice'
-        ? '대화 응답'
-        : q.type === 'pattern-fill-blank'
-          ? '패턴 연습'
-          : '객관식'
+          ? '빈칸 문장 만들기'
+          : '핵심 문장 만들기'
     const explainKoRaw = q.explanationKo?.trim()
     const explainEnRaw = q.explanationEn?.trim()
     const explainKo =
@@ -628,112 +867,170 @@ export default function ConversationDayDetailPage() {
     const showExplanation =
       quizRevealed && (explainKo !== undefined || explainEn !== undefined)
 
+    const removeSelectedToken = (tokenId: string): void => {
+      if (quizRevealed) return
+      setQuizSelectedTokenIds((ids) => ids.filter((id) => id !== tokenId))
+    }
+
+    const moveSelectedToken = (tokenId: string, direction: -1 | 1): void => {
+      if (quizRevealed) return
+      setQuizSelectedTokenIds((ids) => {
+        const next = [...ids]
+        const index = next.indexOf(tokenId)
+        const swapIndex = index + direction
+        if (index < 0 || swapIndex < 0 || swapIndex >= next.length) return ids
+        const current = next[index]
+        const swap = next[swapIndex]
+        if (current === undefined || swap === undefined) return ids
+        next[index] = swap
+        next[swapIndex] = current
+        return next
+      })
+    }
+
     return (
       <section
-        className="conv-detail__panel conv-detail__quiz ui-card ui-card--dashboard"
+        className="conv-detail__panel conv-detail__quiz conv-quiz-vn ui-card ui-card--dashboard"
         aria-labelledby="conv-quiz-label"
       >
-        <div className="conv-detail__panel-head">
-          <h2 id="conv-quiz-label" className="ui-card__section-heading">
-            표현 퀴즈
-          </h2>
-          <span className="conv-detail__panel-badge conv-detail__panel-badge--muted">
-            객관식
-          </span>
-        </div>
-        <p className="conv-detail__quiz-meta">
-          문제 {quizIndex + 1} / {d.quiz.length}
-        </p>
-        {q.type !== 'multiple-choice' ? (
-          <p className="conv-detail__quiz-meta">{quizTitle} · {quizBadge}</p>
-        ) : null}
-        {q.type === 'next-line-choice' ? (
-          <div className="conv-detail__quiz-context">
-            <p className="conv-detail__quiz-context-label">
-              {q.partnerSpeakerLabelKo ?? '상대'}
-            </p>
-            <p className="conv-detail__quiz-context-en" lang="en">
-              {q.partnerLineEn}
-            </p>
-            {q.partnerLineKo !== undefined && q.partnerLineKo.trim() !== '' ? (
-              <p className="conv-detail__quiz-context-ko" lang="ko">
-                {q.partnerLineKo}
-              </p>
-            ) : null}
+        {renderSceneImage(d)}
+        <div className="conv-quiz-vn__overlay">
+          <div className="conv-detail__panel-head">
+            <h2 id="conv-quiz-label" className="ui-card__section-heading">
+              문장 맞추기
+            </h2>
+            <span className="conv-detail__panel-badge conv-detail__panel-badge--muted">
+              {quizIndex + 1} / {d.quiz.length}
+            </span>
           </div>
-        ) : null}
-        {q.type === 'pattern-fill-blank' ? (
-          <p className="conv-detail__quiz-pattern" lang="en">
-            {q.templateEn.replaceAll('{{blank}}', '____')}
+          <p className="conv-detail__quiz-meta">{quizTitle}</p>
+          {q.type === 'next-line-choice' ? (
+            <div className="conv-detail__quiz-context">
+              <p className="conv-detail__quiz-context-label">
+                {q.partnerSpeakerLabelKo ?? '상대'}
+              </p>
+              <p className="conv-detail__quiz-context-en" lang="en">
+                {q.partnerLineEn}
+              </p>
+              {q.partnerLineKo !== undefined && q.partnerLineKo.trim() !== '' ? (
+                <p className="conv-detail__quiz-context-ko" lang="ko">
+                  {q.partnerLineKo}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+          <p className="conv-detail__quiz-prompt" lang="ko">
+            {q.promptKo}
           </p>
-        ) : null}
-        <p className="conv-detail__quiz-prompt" lang="ko">
-          {q.promptKo}
-        </p>
-        {q.promptEn !== undefined && q.promptEn.trim() !== '' ? (
-          <p className="conv-detail__quiz-prompt-en" lang="en">
-            {q.promptEn}
-          </p>
-        ) : null}
-        <div className="conv-detail__quiz-choices" role="group" aria-label="선택지">
-          {q.options.map((opt) => {
-            let cls =
-              'ui-btn ui-btn--secondary ui-btn--align-start conv-detail__quiz-choice'
-            if (!quizRevealed && quizSelected === opt.id) {
-              cls += ' conv-detail__quiz-choice--picked'
-            }
-            if (quizRevealed) {
-              if (opt.id === q.correctOptionId) cls += ' conv-detail__quiz-choice--correct'
-              else if (
-                quizSelected === opt.id &&
-                opt.id !== q.correctOptionId
-              ) {
-                cls += ' conv-detail__quiz-choice--wrong'
-              }
-            }
-            return (
+          {q.promptEn !== undefined && q.promptEn.trim() !== '' ? (
+            <p className="conv-detail__quiz-prompt-en" lang="en">
+              {q.promptEn}
+            </p>
+          ) : null}
+          <div className="conv-sentence-builder__answer" aria-label="내가 만든 문장">
+            {selectedTokens.length > 0 ? (
+              selectedTokens.map((token, index) => (
+                <span key={token.id} className="conv-sentence-builder__selected-token">
+                  <button
+                    type="button"
+                    className="conv-sentence-builder__move"
+                    disabled={quizRevealed || index === 0}
+                    aria-label={`${token.text} 왼쪽으로 이동`}
+                    onClick={() => moveSelectedToken(token.id, -1)}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    className="conv-sentence-builder__selected-word"
+                    disabled={quizRevealed}
+                    onClick={() => removeSelectedToken(token.id)}
+                  >
+                    {token.text}
+                  </button>
+                  <button
+                    type="button"
+                    className="conv-sentence-builder__move"
+                    disabled={quizRevealed || index === selectedTokens.length - 1}
+                    aria-label={`${token.text} 오른쪽으로 이동`}
+                    onClick={() => moveSelectedToken(token.id, 1)}
+                  >
+                    ›
+                  </button>
+                </span>
+              ))
+            ) : (
+              <span className="conv-sentence-builder__placeholder">
+                머릿속 문장을 순서대로 놓아 보세요.
+              </span>
+            )}
+          </div>
+          <div className="conv-sentence-builder__bank" role="group" aria-label="단어 풍선">
+            {availableTokens.map((token) => (
               <button
-                key={opt.id}
+                key={token.id}
                 type="button"
+                className="conv-sentence-builder__token"
                 disabled={quizRevealed}
-                className={cls}
                 onClick={() => {
-                  if (!quizRevealed) setQuizSelected(opt.id)
+                  setQuizSelectedTokenIds((ids) => [...ids, token.id])
                 }}
               >
-                ({opt.id.toUpperCase()}) {opt.text}
+                {token.text}
               </button>
-            )
-          })}
+            ))}
+          </div>
+          {quizRevealed ? (
+            <>
+              <p
+                className={`conv-detail__quiz-feedback${correct ? ' conv-detail__quiz-feedback--ok' : ' conv-detail__quiz-feedback--ng'}`}
+              >
+                {correct
+                  ? '좋아요. 자연스럽게 들려요.'
+                  : '조금 어색해요. 자연스러운 순서는 아래와 같아요.'}
+              </p>
+              {!correct ? (
+                <p className="conv-sentence-builder__correct-answer" lang="en">
+                  {targetAnswer}
+                </p>
+              ) : null}
+              {showExplanation ? (
+                <div className="conv-detail__quiz-explanation">
+                  <p className="conv-detail__quiz-explanation-label">해설</p>
+                  {explainKo !== undefined ? (
+                    <p className="conv-detail__quiz-explanation-ko" lang="ko">
+                      {explainKo}
+                    </p>
+                  ) : null}
+                  {explainEn !== undefined ? (
+                    <p className="conv-detail__quiz-explanation-en" lang="en">
+                      {explainEn}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="ui-btn ui-btn--primary ui-btn--block conv-quiz-vn__next"
+            disabled={!quizRevealed && selectedTokens.length === 0}
+            onClick={handleQuizPrimary}
+          >
+            {quizPrimaryLabel}
+          </button>
         </div>
-        {quizRevealed ? (
-          <>
-            <p
-              className={`conv-detail__quiz-feedback${correct ? ' conv-detail__quiz-feedback--ok' : ' conv-detail__quiz-feedback--ng'}`}
-            >
-              {correct
-                ? '정답입니다.'
-                : '오답입니다. 위 정답 문장과 핵심 표현 카드를 다시 복습해 보세요.'}
-            </p>
-            {showExplanation ? (
-              <div className="conv-detail__quiz-explanation">
-                <p className="conv-detail__quiz-explanation-label">해설</p>
-                {explainKo !== undefined ? (
-                  <p className="conv-detail__quiz-explanation-ko" lang="ko">
-                    {explainKo}
-                  </p>
-                ) : null}
-                {explainEn !== undefined ? (
-                  <p className="conv-detail__quiz-explanation-en" lang="en">
-                    {explainEn}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-          </>
-        ) : null}
       </section>
     )
+  }
+
+  const handleDialoguePrimary = () => {
+    if (activeDialogueResponseQuiz !== undefined && !isDialogueResponseAnswered) {
+      if (selectedDialogueResponseOptionId === null) return
+      setIsDialogueResponseAnswered(true)
+      return
+    }
+    advanceDialogue()
   }
 
   const handlePrimaryFooter = () => {
@@ -745,7 +1042,7 @@ export default function ConversationDayDetailPage() {
         advanceNarration()
         return
       case 'dialogue':
-        advanceDialogue()
+        handleDialoguePrimary()
         return
       case 'expressions':
         advanceFromExpressions()
@@ -760,83 +1057,106 @@ export default function ConversationDayDetailPage() {
 
   const footerPrimaryLabel =
     currentStep === 'cutscene'
-      ? '다음 · 나레이션'
+      ? '장면 보기'
       : currentStep === 'narration'
         ? narrationIndex < day.narrations.length - 1
           ? '다음'
-          : '다음 · 대화'
+          : '대화로'
         : currentStep === 'dialogue'
-          ? dialogueIndex < day.dialogue.length - 1
-            ? '다음 대사'
-            : '다음 · 핵심 표현'
-          : currentStep === 'expressions'
-            ? day.quiz.length > 0
-              ? '퀴즈로'
-              : '완료 보기'
-            : quizPrimaryLabel
+          ? activeDialogueResponseQuiz !== undefined && !isDialogueResponseAnswered
+            ? '답하기'
+            : dialogueIndex < day.dialogue.length - 1
+              ? '다음 대화'
+              : day.quiz.length > 0
+                ? '퀴즈로'
+                : '핵심 표현으로'
+          : currentStep === 'quiz'
+            ? quizPrimaryLabel
+            : 'Day 완료'
 
   const handleFooterPrimary = () => {
-    if (currentStep === 'expressions' && day.quiz.length === 0) {
-      const noQuizPayload: ConversationDayResultLocationState = {
-        fromFlow: true,
-        quizCorrect: 0,
-        quizTotal: 0,
-        skippedQuiz: true,
-        nextDayId: nextDayForResult,
-        persistNonce: createPersistNonce(),
-        wrongQuizIds: [],
-      }
-      navigate(resultHref, { state: noQuizPayload })
-      return
-    }
     handlePrimaryFooter()
   }
 
   const footerPrimaryDisabled =
-    currentStep === 'quiz' ? primaryDisabled : false
+    currentStep === 'quiz' || currentStep === 'dialogue' ? primaryDisabled : false
 
   const isVnStep = currentStep === 'cutscene' || currentStep === 'narration'
+  const isCompactSceneStep =
+    currentStep === 'cutscene' ||
+    currentStep === 'narration' ||
+    currentStep === 'dialogue' ||
+    currentStep === 'quiz'
 
   return (
-    <main className={`conv-detail${isVnStep ? ' conv-detail--vn-flow' : ''}`}>
-      <div className="conv-detail__title-block">
-        <p className="conv-detail__eyebrow">{dayLabel}</p>
-        <h1 className="conv-detail__title">{day.titleKo}</h1>
-        <div className="conv-detail__scene-dots" aria-label="진행 단계">
-          {FLOW_STEPS.map((s, i) => (
-            <span
-              key={s}
-              className={
-                i === progressIdx
-                  ? 'conv-detail__scene-dot conv-detail__scene-dot--active'
-                  : 'conv-detail__scene-dot'
-              }
-              title={s}
-            />
-          ))}
+    <main
+      className={`conv-detail${isVnStep ? ' conv-detail--vn-flow' : ''}${isCompactSceneStep ? ' conv-detail--compact-scene' : ''}`}
+    >
+      {isCompactSceneStep ? (
+        <div className="conv-detail__title-block conv-detail__title-block--compact">
+          <div className="conv-detail__compact-topline">
+            <p className="conv-detail__eyebrow">{dayLabel}</p>
+            <div className="conv-detail__scene-dots" aria-label="진행 단계">
+              {FLOW_STEPS.map((s, i) => (
+                <span
+                  key={s}
+                  className={
+                    i === progressIdx
+                      ? 'conv-detail__scene-dot conv-detail__scene-dot--active'
+                      : 'conv-detail__scene-dot'
+                  }
+                  title={s}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="conv-detail__compact-title-row">
+            <h1 className="conv-detail__title">{day.titleKo}</h1>
+            <p className="conv-detail__session-note">
+              {stepNotice}
+              {day.descriptionKo !== undefined ? ` · ${day.descriptionKo}` : ''}
+            </p>
+          </div>
         </div>
-        <p className="conv-detail__session-note">
-          {isVnStep
-            ? `${stepNotice} · 장면 학습`
-            : `${stepNotice}${day.descriptionKo !== undefined ? ` · ${day.descriptionKo}` : ''}`}
-        </p>
-      </div>
+      ) : (
+        <div className="conv-detail__title-block">
+          <p className="conv-detail__eyebrow">{dayLabel}</p>
+          <h1 className="conv-detail__title">{day.titleKo}</h1>
+          <div className="conv-detail__scene-dots" aria-label="진행 단계">
+            {FLOW_STEPS.map((s, i) => (
+              <span
+                key={s}
+                className={
+                  i === progressIdx
+                    ? 'conv-detail__scene-dot conv-detail__scene-dot--active'
+                    : 'conv-detail__scene-dot'
+                }
+                title={s}
+              />
+            ))}
+          </div>
+          <p className="conv-detail__session-note">
+            {isVnStep
+              ? `${stepNotice} · 장면 학습`
+              : `${stepNotice}${day.descriptionKo !== undefined ? ` · ${day.descriptionKo}` : ''}`}
+          </p>
+        </div>
+      )}
 
       {renderStepBody(day)}
 
-      <div className="conv-detail__step-footer">
-        <button
-          type="button"
-          className="ui-btn ui-btn--primary ui-btn--block"
-          disabled={footerPrimaryDisabled}
-          onClick={handleFooterPrimary}
-        >
-          {footerPrimaryLabel}
-        </button>
-        <Link className="ui-btn ui-btn--ghost ui-btn--block" to="/conversation">
-          목록으로 나가기
-        </Link>
-      </div>
+      {!isCompactSceneStep ? (
+        <div className="conv-detail__step-footer">
+          <button
+            type="button"
+            className="ui-btn ui-btn--primary ui-btn--block"
+            disabled={footerPrimaryDisabled}
+            onClick={handleFooterPrimary}
+          >
+            {footerPrimaryLabel}
+          </button>
+        </div>
+      ) : null}
     </main>
   )
 }

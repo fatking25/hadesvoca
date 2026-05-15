@@ -2,17 +2,31 @@
   "dayId": 4,
   "titleKo": "길 안내 묻기",
   "descriptionKo": "메시지로 길 안내받기",
-  "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향한다. 길이 헷갈려 메시지로 물어보기로 한다.",
-  "cutsceneImagePath": "/content/conversations/assets/stage-1-day-04-cutscene.jpg",
+  "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향하려는데 길이 헷갈려 메시지로 물어본다.",
+  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-04-cutscene.jpg",
+  "sceneImages": {
+    "intro": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-01.jpg",
+      "altKo": "길 안내 묻기 - 도입 장면"
+    },
+    "dialogue": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-02.jpg",
+      "altKo": "길 안내 묻기 - 대화 장면"
+    },
+    "review": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-03.jpg",
+      "altKo": "길 안내 묻기 - 복습 장면"
+    }
+  },
   "narrations": [
     {
       "id": "s1-d4-n1",
-      "textKo": "식당에서 나와 다음 약속 장소로 향한다. 길이 헷갈리지만 챈나에게 물어보면 된다.",
+      "textKo": "식당에서 나온 뒤 다음 약속 장소로 가려는데 길이 헷갈린다. 챈나에게 메시지를 보내면 된다.",
       "textEn": "You're heading to your next stop but the route is a bit unclear. A quick message to Channa should do."
     },
     {
       "id": "s1-d4-n2",
-      "textKo": "지하철로 가는 게 빠른지부터 묻자.",
+      "textKo": "먼저 목적지까지 어떻게 가는지 묻고, 필요한 출구를 확인하자.",
       "textEn": "Start by asking whether the subway is the faster option."
     }
   ],
@@ -21,8 +35,33 @@
       "id": "s1-d4-d1",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "챈나, 그 서점까지 어떻게 가? 지하철이 빨라?",
-      "textEn": "Hey Channa, how do I get to the bookstore? Is the subway faster?"
+      "textKo": "챈나, 그 서점까지 어떻게 가? 지하철이 더 빨라?",
+      "textEn": "Hey Channa, how do I get to the bookstore? Is the subway faster?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "서점까지 가는 방법을 친구에게 물어보려 합니다. 가장 자연스러운 질문을 고르세요.",
+        "promptEn": "You want to ask how to get to the bookstore. Choose the best question.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hey Channa, how do I get to the bookstore? Is the subway faster?"
+          },
+          {
+            "id": "b",
+            "text": "Where are you living these days?"
+          },
+          {
+            "id": "c",
+            "text": "Why is the road so long?"
+          },
+          {
+            "id": "d",
+            "text": "Do you speak English well?"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`How do I get to ~?`는 목적지까지 가는 방법을 물을 때 쓰는 기본 표현입니다."
+      }
     },
     {
       "id": "s1-d4-d2",
@@ -36,7 +75,32 @@
       "speakerId": "learner",
       "speakerLabelKo": "나",
       "textKo": "어느 출구로 나가야 해?",
-      "textEn": "Which exit should I take?"
+      "textEn": "Which exit should I take?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "친구가 지하철 노선을 알려줬습니다. 이어서 물어볼 가장 자연스러운 질문을 고르세요.",
+        "promptEn": "Channa told you the subway line. Choose the best follow-up question.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the door right now."
+          },
+          {
+            "id": "b",
+            "text": "Take me there yourself."
+          },
+          {
+            "id": "c",
+            "text": "Which exit should I take?"
+          },
+          {
+            "id": "d",
+            "text": "Is the train sleeping today?"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanationKo": "지하철을 탈 때는 어느 출구로 나가야 하는지 확인하는 것이 자연스럽습니다."
+      }
     },
     {
       "id": "s1-d4-d4",
@@ -49,8 +113,15 @@
       "id": "s1-d4-d5",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "알았어, 고마워. 도착하면 연락할게.",
+      "textKo": "알겠어, 고마워. 도착하면 연락할게.",
       "textEn": "Got it, thanks. I'll text you when I'm there."
+    },
+    {
+      "id": "s1-d4-d6",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "좋아. 근처에서 기다리고 있을게.",
+      "textEn": "Great. I'll wait nearby."
     }
   ],
   "keyExpressions": [
@@ -58,13 +129,13 @@
       "id": "s1-d4-k1",
       "expressionEn": "How do I get to the bookstore?",
       "expressionKo": "서점까지 어떻게 가?",
-      "tipKo": "길 안내를 시작할 때 가장 흔한 패턴입니다."
+      "tipKo": "길 안내를 시작할 때 가장 기본이 되는 표현입니다."
     },
     {
       "id": "s1-d4-k2",
       "expressionEn": "Which exit should I take?",
       "expressionKo": "어느 출구로 나가야 해?",
-      "tipKo": "지하철 출구를 물을 때 자연스럽게 씁니다."
+      "tipKo": "지하철 출구를 물을 때 자연스럽게 쓰입니다."
     },
     {
       "id": "s1-d4-k3",
@@ -75,11 +146,15 @@
   ],
   "quiz": [
     {
-      "type": "multiple-choice",
+      "type": "next-line-choice",
       "id": "s1-d4-q1",
-      "promptKo": "친구에게 목적지까지 길을 물을 때 가장 자연스러운 표현은?",
-      "promptEn": "Which line asks a friend how to get somewhere?",
-      "explanationKo": "`How do I get to ~?` 패턴은 길·교통편을 묻는 가장 일반적인 표현이라 친구·낯선 사람 모두에게 통합니다.",
+      "expressionId": "s1-d4-k1",
+      "partnerSpeakerLabelKo": "나",
+      "partnerLineKo": "서점으로 가는 길이 헷갈립니다.",
+      "partnerLineEn": "You are not sure how to get to the bookstore.",
+      "promptKo": "친구에게 목적지까지 가는 방법을 물을 때 가장 자연스러운 문장을 고르세요.",
+      "promptEn": "Choose the best line to ask a friend how to get somewhere.",
+      "explanationKo": "`How do I get to ~?`는 목적지까지 가는 방법을 물을 때 쓰는 기본 표현입니다.",
       "options": [
         {
           "id": "a",
@@ -101,11 +176,15 @@
       "correctOptionId": "b"
     },
     {
-      "type": "multiple-choice",
+      "type": "next-line-choice",
       "id": "s1-d4-q2",
-      "promptKo": "지하철 출구를 묻는 자연스러운 표현은?",
-      "promptEn": "Pick a natural way to ask which subway exit to use.",
-      "explanationKo": "`Which exit should I take?`는 지하철·역사 안내에서 가장 자주 쓰이는 패턴입니다.",
+      "expressionId": "s1-d4-k2",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "응, 2호선 타고 한 정거장이면 돼.",
+      "partnerLineEn": "Yeah, just one stop on Line 2.",
+      "promptKo": "지하철 노선을 들은 뒤 이어서 물어볼 가장 자연스러운 질문을 고르세요.",
+      "promptEn": "Choose the best follow-up question after hearing the subway line.",
+      "explanationKo": "지하철을 탈 때는 어느 출구로 나가야 하는지 확인하는 것이 자연스럽습니다.",
       "options": [
         {
           "id": "a",
@@ -127,43 +206,13 @@
       "correctOptionId": "c"
     },
     {
-      "type": "next-line-choice",
-      "id": "s1-d4-q3-next-line",
-      "expressionId": "s1-d4-k2",
-      "partnerSpeakerLabelKo": "Channa",
-      "partnerLineKo": "2?? ? ????? ?.",
-      "partnerLineEn": "Yeah, just one stop on Line 2.",
-      "promptKo": "??? ??? ?? ? ??? ??? ????? ?? ????.",
-      "promptEn": "Choose the best follow-up question after hearing the subway line.",
-      "explanationKo": "? ????? ?? ??? ??? ?? ??? ???????.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Which exit should I take?"
-        },
-        {
-          "id": "b",
-          "text": "Do you hate Fridays?"
-        },
-        {
-          "id": "c",
-          "text": "Can I borrow your receipt?"
-        },
-        {
-          "id": "d",
-          "text": "Is the train sleeping today?"
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
       "type": "pattern-fill-blank",
-      "id": "s1-d4-q4-pattern",
+      "id": "s1-d4-q3-next-line",
       "expressionId": "s1-d4-k3",
       "templateEn": "I'll {{blank}} you when I'm there.",
-      "promptKo": "???? ?????? ??? ?????.",
+      "promptKo": "도착 후 연락하겠다는 표현의 빈칸을 고르세요.",
       "promptEn": "Complete the arrival update pattern.",
-      "explanationKo": "`text you`? ???? ?????? ????.",
+      "explanationKo": "`text you`는 메시지를 보내 연락하겠다는 뜻입니다.",
       "options": [
         {
           "id": "a",
@@ -180,6 +229,32 @@
         {
           "id": "d",
           "text": "lend"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d4-q4-pattern",
+      "promptKo": "`Which exit should I take?`의 가장 자연스러운 의미는 무엇인가요?",
+      "promptEn": "What does `Which exit should I take?` mean?",
+      "explanationKo": "지하철이나 건물에서 어느 출구로 나가야 하는지 물을 때 쓰는 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "어느 출구로 나가야 해?"
+        },
+        {
+          "id": "b",
+          "text": "언제 예약해야 해?"
+        },
+        {
+          "id": "c",
+          "text": "뭘 주문해야 해?"
+        },
+        {
+          "id": "d",
+          "text": "주말에 뭐 해?"
         }
       ],
       "correctOptionId": "a"
