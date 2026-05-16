@@ -40,6 +40,11 @@
 4. 정답 확인 후 피드백을 본다.
 5. 마지막 문제 후 결과 화면으로 이동한다.
 
+Phase 17 UI 정책
+- 단어학습 문제 화면은 현재 문제에 집중하는 단일 focus panel 안에 문제, 선택지, 피드백, 다음 버튼을 배치한다.
+- 단어학습 JSON schema는 변경하지 않았다. word-to-meaning, meaning-to-word, fill-blank 타입을 그대로 사용한다.
+- 저장, 코인, EXP, 정오답 처리, 결과 이동 정책은 UI 변경과 분리한다.
+
 
 2. 실전회화 현재 구조
 --------------------
@@ -94,22 +99,47 @@ Stage 1 표준 수량
 - multiple-choice
 - next-line-choice
 - pattern-fill-blank
+- blank-bubble-fill
 
 현재 UI 렌더링
-- 모든 실전회화 quiz는 단어 풍선 문장 만들기 방식으로 렌더링한다.
+- multiple-choice, next-line-choice, pattern-fill-blank는 단어 풍선 문장 만들기 방식으로 렌더링한다.
 - 사용자는 단어 토큰을 눌러 문장을 배열한다.
 - 선택한 토큰은 다시 빼거나 좌우로 순서를 바꿀 수 있다.
 - 정답 확인 후 다음 문제로 넘어간다.
 - 마지막 quiz 후 결과 화면으로 바로 가지 않고, 핵심 표현/단어장 저장 흐름으로 이동한다.
+- blank-bubble-fill은 기존 sentence-builder를 대체하지 않는 구현 완료 추가 패턴이다.
+- blank-bubble-fill은 말풍선 안의 "{{blank}}" 빈칸에 option bubble 하나를 채우는 UX로 렌더링한다.
+- Phase 17 기준 Stage 1 Day 1의 s1-d1-q3-next-line 1문항에 시범 적용되어 있다.
+- TODO 후보: 선택 토큰을 touch-and-drag로 재정렬하는 기능은 검토만 했고 구현하지 않았다.
 
 정답 문장 결정 규칙
 - pattern-fill-blank:
   - templateEn의 "{{blank}}"에 correct option text를 넣은 문장
+- blank-bubble-fill:
+  - templateEn의 "{{blank}}"에 correct option text를 넣은 말풍선 문장
+  - templateEn은 반드시 "{{blank}}" 토큰을 포함한다.
 - multiple-choice:
   - promptEn 또는 promptKo에 backtick 문장(`...`)이 있으면 그 문장
   - 없으면 correct option text
 - next-line-choice:
   - correct option text
+
+blank-bubble-fill 예시
+{
+  "type": "blank-bubble-fill",
+  "id": "s1-d1-q3-next-line",
+  "expressionId": "s1-d1-k1",
+  "templateEn": "Are you {{blank}} for dinner this Friday?",
+  "promptKo": "초대 표현의 빈칸에 들어갈 자연스러운 단어를 고르세요.",
+  "promptEn": "Complete the invitation bubble.",
+  "options": [
+    { "id": "a", "text": "free" },
+    { "id": "b", "text": "late" },
+    { "id": "c", "text": "closed" },
+    { "id": "d", "text": "borrowed" }
+  ],
+  "correctOptionId": "a"
+}
 
 
 5. 문제 문장 톤

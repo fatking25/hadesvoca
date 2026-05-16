@@ -1,263 +1,263 @@
-{
-  "dayId": 5,
-  "titleKo": "카페에서 안부 잡담",
-  "descriptionKo": "오랜만의 안부 묻기",
-  "sceneDescriptionKo": "토요일 오전, 자주 가던 동네 카페에서 챈나와 다시 만난다. 따뜻한 커피 사이로 가볍게 안부를 묻는다.",
-  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-05-cutscene.jpg",
-  "sceneImages": {
-    "intro": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-05-scene-01.jpg",
-      "altKo": "카페에서 안부 잡담 - 도입 장면"
-    },
-    "dialogue": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-05-scene-02.jpg",
-      "altKo": "카페에서 안부 잡담 - 대화 장면"
-    },
-    "review": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-05-scene-03.jpg",
-      "altKo": "카페에서 안부 잡담 - 복습 장면"
-    }
-  },
-  "narrations": [
-    {
-      "id": "s1-d5-n1",
-      "textKo": "오랜만에 마주 앉았다. 가벼운 인사부터 꺼내면 된다.",
-      "textEn": "It's been a while since you sat down together. Start with a soft greeting."
-    },
-    {
-      "id": "s1-d5-n2",
-      "textKo": "근황을 묻고, 자연스럽게 주말 계획으로 화제를 이어가자.",
-      "textEn": "Catch up on recent news, then drift toward weekend plans."
-    }
-  ],
-  "dialogue": [
-    {
-      "id": "s1-d5-d1",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "오랜만이야. 요즘 어떻게 지냈어?",
-      "textEn": "It's been a while. How have you been?",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "오랜만에 친구를 만났습니다. 안부를 묻는 가장 자연스러운 문장을 고르세요.",
-        "promptEn": "You are meeting a friend after a long time. Choose the best greeting.",
-        "options": [
-          {
-            "id": "a",
-            "text": "It's been a while. How have you been?"
-          },
-          {
-            "id": "b",
-            "text": "Are you lost again?"
-          },
-          {
-            "id": "c",
-            "text": "Did you finish dinner already?"
-          },
-          {
-            "id": "d",
-            "text": "Where is the manager right now?"
-          }
-        ],
-        "correctOptionId": "a",
-        "explanationKo": "`How have you been?`은 한동안 못 본 사람에게 안부를 묻는 기본 표현입니다."
-      }
-    },
-    {
-      "id": "s1-d5-d2",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "그러게. 회사 일이 많아서 정신없었어.",
-      "textEn": "Pretty busy with work, honestly. Time's been flying."
-    },
-    {
-      "id": "s1-d5-d3",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "고생 많았네. 이번 주말엔 뭐 해?",
-      "textEn": "That sounds rough. What are you up to this weekend?"
-    },
-    {
-      "id": "s1-d5-d4",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "별거 없어. 영화나 한 편 볼까 해.",
-      "textEn": "Nothing much. Maybe catch a movie."
-    },
-    {
-      "id": "s1-d5-d5",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "그럼 같이 가자. 내가 표 예매할게.",
-      "textEn": "Let's go together then. I'll grab the tickets.",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "친구가 주말에 영화를 볼 수도 있다고 했습니다. 자연스럽게 함께 가자고 제안하세요.",
-        "promptEn": "Channa might catch a movie this weekend. Choose the best suggestion.",
-        "options": [
-          {
-            "id": "a",
-            "text": "Let's go together then. I'll grab the tickets."
-          },
-          {
-            "id": "b",
-            "text": "Why is Monday so angry?"
-          },
-          {
-            "id": "c",
-            "text": "Where is the manager right now?"
-          },
-          {
-            "id": "d",
-            "text": "Do you own the weekend?"
-          }
-        ],
-        "correctOptionId": "a",
-        "explanationKo": "`Let's go together then`은 상대의 계획에 자연스럽게 함께하자고 제안하는 표현입니다."
-      }
-    },
-    {
-      "id": "s1-d5-d6",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "좋아, 재밌겠다. 시간 정해지면 알려줘.",
-      "textEn": "Sounds fun. Let me know once you pick a time."
-    }
-  ],
-  "keyExpressions": [
-    {
-      "id": "s1-d5-k1",
-      "expressionEn": "How have you been?",
-      "expressionKo": "요즘 어떻게 지냈어?",
-      "tipKo": "오랜만에 만난 사람에게 가장 자연스러운 안부 인사입니다."
-    },
-    {
-      "id": "s1-d5-k2",
-      "expressionEn": "What are you up to this weekend?",
-      "expressionKo": "이번 주말엔 뭐 해?",
-      "tipKo": "be up to는 '~할 예정이다'라는 캐주얼한 표현입니다."
-    },
-    {
-      "id": "s1-d5-k3",
-      "expressionEn": "Let's go together then.",
-      "expressionKo": "그럼 같이 가자.",
-      "tipKo": "Let's ~로 자연스럽게 함께 하자고 제안합니다."
-    }
-  ],
-  "quiz": [
-    {
-      "type": "next-line-choice",
-      "id": "s1-d5-q1",
-      "expressionId": "s1-d5-k1",
-      "partnerSpeakerLabelKo": "나",
-      "partnerLineKo": "오랜만에 친구를 만났습니다.",
-      "partnerLineEn": "You are meeting a friend after a long time.",
-      "promptKo": "오랜만에 만난 친구에게 안부를 물을 때 가장 자연스러운 문장을 고르세요.",
-      "promptEn": "Choose the most natural greeting after a long time.",
-      "explanationKo": "`How have you been?`은 한동안 못 본 사람에게 안부를 묻는 기본 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Did you finish dinner already?"
-        },
-        {
-          "id": "b",
-          "text": "Are you lost again?"
-        },
-        {
-          "id": "c",
-          "text": "How have you been?"
-        },
-        {
-          "id": "d",
-          "text": "Where is the manager right now?"
-        }
-      ],
-      "correctOptionId": "c"
-    },
-    {
-      "type": "next-line-choice",
-      "id": "s1-d5-q2",
-      "expressionId": "s1-d5-k3",
-      "partnerSpeakerLabelKo": "챈나",
-      "partnerLineKo": "별거 없어. 영화나 한 편 볼까 해.",
-      "partnerLineEn": "Nothing much. Maybe catch a movie.",
-      "promptKo": "같이 영화를 보자고 제안할 때 가장 자연스러운 대답을 고르세요.",
-      "promptEn": "Choose the best reply to suggest going together.",
-      "explanationKo": "`Let's go together then`은 상대의 계획에 자연스럽게 함께하자고 제안하는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Let's go together then. I'll grab the tickets."
-        },
-        {
-          "id": "b",
-          "text": "Why is Monday so angry?"
-        },
-        {
-          "id": "c",
-          "text": "Where is the manager right now?"
-        },
-        {
-          "id": "d",
-          "text": "Do you own the weekend?"
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "pattern-fill-blank",
-      "id": "s1-d5-q3-next-line",
-      "expressionId": "s1-d5-k2",
-      "templateEn": "What are you {{blank}} this weekend?",
-      "promptKo": "주말 계획을 묻는 표현의 빈칸을 고르세요.",
-      "promptEn": "Complete the weekend plan question.",
-      "explanationKo": "`be up to`는 상대의 계획을 캐주얼하게 물을 때 쓰는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "up to"
-        },
-        {
-          "id": "b",
-          "text": "down by"
-        },
-        {
-          "id": "c",
-          "text": "late for"
-        },
-        {
-          "id": "d",
-          "text": "closed to"
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "multiple-choice",
-      "id": "s1-d5-q4-pattern",
-      "promptKo": "`What are you up to this weekend?`의 가장 자연스러운 의미는 무엇인가요?",
-      "promptEn": "What does `What are you up to this weekend?` mean?",
-      "explanationKo": "상대의 주말 계획을 편하게 물을 때 쓰는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "이번 주말엔 뭐 해?"
-        },
-        {
-          "id": "b",
-          "text": "오늘 길을 잃었어?"
-        },
-        {
-          "id": "c",
-          "text": "매니저가 어디 있어?"
-        },
-        {
-          "id": "d",
-          "text": "달력이 피곤해?"
-        }
-      ],
-      "correctOptionId": "a"
-    }
-  ]
+﻿{
+    "dayId":  5,
+    "titleKo":  "?? ? ????",
+    "descriptionKo":  "??? ???? ??? ???",
+    "sceneDescriptionKo":  "??? ?? ?? ?? ???. ??? ?? ? ??? ??? ???.",
+    "cutsceneImagePath":  "/content/conversations/stage-1/assets/stage-1-day-05-cutscene.jpg",
+    "sceneImages":  {
+                        "intro":  {
+                                      "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-05-scene-01.jpg",
+                                      "altKo":  "?? ? ???? - ?? ??"
+                                  },
+                        "dialogue":  {
+                                         "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-05-scene-02.jpg",
+                                         "altKo":  "?? ? ???? - ?? ??"
+                                     },
+                        "review":  {
+                                       "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-05-scene-03.jpg",
+                                       "altKo":  "?? ? ???? - ?? ??"
+                                   }
+                    },
+    "narrations":  [
+                       {
+                           "id":  "s1-d5-n1",
+                           "textKo":  "??? ??? ???? ??? ?? ?? ???. ?? ? ?? ???? ?? ??.",
+                           "textEn":  "You arrive at the concert lobby, and Ttinggyul waves excitedly. Share a quick chat before the show starts."
+                       },
+                       {
+                           "id":  "s1-d5-n2",
+                           "textKo":  "??? ????, ??? ????? ??? ????? ??? ??.",
+                           "textEn":  "Check your seats and say naturally that you are excited for the show."
+                       }
+                   ],
+    "dialogue":  [
+                     {
+                         "id":  "s1-d5-d1",
+                         "speakerId":  "ttinggyul",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "??? ??! ?? ????",
+                         "textEn":  "We finally made it! Are you excited for the show?"
+                     },
+                     {
+                         "id":  "s1-d5-d2",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "?, ?? ???. ?? ??? ????",
+                         "textEn":  "Yes, I am really excited. Where are our seats?",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "??? ??? ????? ?????. ???? ??? ??? ?? ?? ????.",
+                                              "promptEn":  "Ttinggyul asked if you are excited. Choose the best reply.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "Yes, I am really excited. Where are our seats?"
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "Could I get it to go?"
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Which exit should I take?"
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "Wednesday works for me."
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "I am really excited? ???? ??? ? ???????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d5-d3",
+                         "speakerId":  "ttinggyul",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "?? ?????. ???? ? ? ???.",
+                         "textEn":  "They are near the front on the right. We have ten minutes before it starts."
+                     },
+                     {
+                         "id":  "s1-d5-d4",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "??. ???? ?? ?? ?? ???",
+                         "textEn":  "Nice. Should we grab a drink before it starts?",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "?? ?? ? ??? ?? ?????. ??? ??? ????? ?????.",
+                                              "promptEn":  "There is a little time before the show starts. Choose the best suggestion.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "Nice. Should we grab a drink before it starts?"
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "Go straight and turn left."
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Can we reschedule Tuesday?"
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "I need a blue sign."
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "Should we grab ~? ? ??? ?? ??? ??? ? ???????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d5-d5",
+                         "speakerId":  "ttinggyul",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "??! ?? ????.",
+                         "textEn":  "Good idea! Let us go quickly."
+                     },
+                     {
+                         "id":  "s1-d5-d6",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "??, ?? ?? ? ???.",
+                         "textEn":  "Sounds perfect before the show."
+                     }
+                 ],
+    "keyExpressions":  [
+                           {
+                               "id":  "s1-d5-k1",
+                               "expressionEn":  "Are you excited for the show?",
+                               "expressionKo":  "?? ????",
+                               "tipKo":  "be excited for ~ ? ?? ?? ????? ?? ? ???."
+                           },
+                           {
+                               "id":  "s1-d5-k2",
+                               "expressionEn":  "Where are our seats?",
+                               "expressionKo":  "?? ??? ????",
+                               "tipKo":  "????? ???? ?? ??? ?? ? ???????."
+                           },
+                           {
+                               "id":  "s1-d5-k3",
+                               "expressionEn":  "Should we grab a drink?",
+                               "expressionKo":  "?? ?? ???",
+                               "tipKo":  "Should we grab ~? ? ??? ?? ??? ??? ? ????."
+                           }
+                       ],
+    "quiz":  [
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d5-q1",
+                     "expressionId":  "s1-d5-k1",
+                     "partnerSpeakerLabelKo":  "??",
+                     "partnerLineKo":  "??",
+                     "partnerLineEn":  "We finally made it! Are you excited for the show?",
+                     "promptKo":  "??? ?? ???? ???? ?? ????.",
+                     "promptEn":  "Choose the best reply to show excitement for the concert.",
+                     "explanationKo":  "I am really excited? ???? ????? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "Yes, I am really excited. Where are our seats?"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "No, I need a train map."
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "Cancel the cafe."
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "What size would you like?"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d5-q2",
+                     "expressionId":  "s1-d5-k3",
+                     "partnerSpeakerLabelKo":  "??",
+                     "partnerLineKo":  "??",
+                     "partnerLineEn":  "We have ten minutes before it starts.",
+                     "promptKo":  "?? ? ??? ??? ???? ?? ????.",
+                     "promptEn":  "Choose the best reply to suggest getting a drink before the show.",
+                     "explanationKo":  "Should we grab a drink? ? ??? ????? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "Should we grab a drink before it starts?"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "Which exit should I take?"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "I will update the plan."
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "Is there a big sign nearby?"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "pattern-fill-blank",
+                     "id":  "s1-d5-q3-next-line",
+                     "expressionId":  "s1-d5-k1",
+                     "templateEn":  "Are you {{blank}} for the show?",
+                     "promptKo":  "???? ?? ??? ??? ????.",
+                     "promptEn":  "Complete the excitement question.",
+                     "explanationKo":  "excited for? ??? ????? ????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "excited"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "medium"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "straight"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "nearby"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "multiple-choice",
+                     "id":  "s1-d5-q4-pattern",
+                     "promptKo":  "`Where are our seats?`? ?? ????? ??? ??????",
+                     "promptEn":  "What does `Where are our seats?` mean?",
+                     "explanationKo":  "????? ???? ?? ??? ?? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "?? ??? ????"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "?? ??? ????"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "??? ?? ? ????"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "??? ???? ????"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 }
+             ]
 }

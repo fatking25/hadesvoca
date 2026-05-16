@@ -57,6 +57,7 @@ export type ConversationQuizType =
   | 'multiple-choice'
   | 'next-line-choice'
   | 'pattern-fill-blank'
+  | 'blank-bubble-fill'
 
 interface ConversationQuizBase {
   readonly type: ConversationQuizType
@@ -88,10 +89,16 @@ export interface ConversationQuizPatternFillBlank extends ConversationQuizBase {
   readonly templateEn: string
 }
 
+export interface ConversationQuizBlankBubbleFill extends ConversationQuizBase {
+  readonly type: 'blank-bubble-fill'
+  readonly templateEn: string
+}
+
 export type ConversationQuiz =
   | ConversationQuizMultipleChoice
   | ConversationQuizNextLineChoice
   | ConversationQuizPatternFillBlank
+  | ConversationQuizBlankBubbleFill
 
 export type ConversationSceneImageKey = 'intro' | 'dialogue' | 'review'
 

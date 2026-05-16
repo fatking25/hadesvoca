@@ -297,10 +297,11 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
       if (
         qItem.type !== 'multiple-choice' &&
         qItem.type !== 'next-line-choice' &&
-        qItem.type !== 'pattern-fill-blank'
+        qItem.type !== 'pattern-fill-blank' &&
+        qItem.type !== 'blank-bubble-fill'
       ) {
         throw new ContentFetchError(
-          '실전 회화 스테이지: 퀴즈 type은 현재 multiple-choice 만 지원합니다.',
+          '실전 회화 스테이지: 지원하지 않는 quiz type 입니다.',
           url,
         )
       }
@@ -331,6 +332,13 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
         typeof qItem.templateEn !== 'string'
       ) {
         throw new ContentFetchError('?ㅼ쟾 ?뚰솕 ?ㅽ뀒?댁?: pattern-fill-blank templateEn ?뺤떇 ?ㅻ쪟?낅땲??', url)
+      }
+      if (
+        qItem.type === 'blank-bubble-fill' &&
+        (typeof qItem.templateEn !== 'string' ||
+          !qItem.templateEn.includes('{{blank}}'))
+      ) {
+        throw new ContentFetchError('실전 회화 스테이지: blank-bubble-fill templateEn 형식 오류입니다.', url)
       }
       const optionIds = new Set<string>()
       for (const opt of qItem.options) {

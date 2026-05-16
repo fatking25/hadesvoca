@@ -1,5 +1,5 @@
 HadesVoca Page Asset Guide
-Updated: Phase 16-5
+Updated: Phase 17-12
 
 Purpose
 - Track page-level static assets used by the app.
@@ -44,6 +44,8 @@ Pages Without File-Based Image Assets
 Notes
 - Mascot marks, simple symbols, and menu icons are currently rendered through text, inline characters, CSS, or existing UI.
 - Word study currently does not reference per-page image files.
+- Phase 17 changed word-study UI layout only. No word-study image assets were added.
+- Phase 17 conversation/content updates reused existing Stage 1 asset paths. No conversation asset path changes were made.
 
 
 Conversation Pages

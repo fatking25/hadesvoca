@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 메인 허브(대시보드): localStorage + Phase 6-2 통계 파생 값 표시.
  * - "최근 틀린 단어·표현" 섹션은 `wrongNotes`에서 미해결 항목 최근 3건을 골라
  *   `contentJoin` 헬퍼로 본문을 join해 표시한다. 본문은 표시 시점에만 fetch.
@@ -7,10 +7,11 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { fetchStageMetadata, getConversationStage } from '../api/contentApi'
 import { MVP_WORD_STAGE_ID } from '../constants/content'
-import type { StageWordsFile } from '../types/content'
+import type { StageMetadataFile, StageWordsFile } from '../types/content'
 import type { ConversationStage } from '../types/conversation'
-import type { WrongNoteRef } from '../types/user-progress'
+import type { RecentStudySnapshot, WrongNoteRef } from '../types/user-progress'
 import {
   findExpressionQuiz,
   findWordQuestionWithEntry,
@@ -32,8 +33,106 @@ import './HomePage.css'
 
 type WordPacks = Readonly<Record<number, StageWordsFile | null>>
 type ConvPacks = Readonly<Record<number, ConversationStage | null>>
+type StageDayMap = Readonly<Record<number, readonly number[] | null>>
+type HomeNextRecommendation = Readonly<{
+  recentLine: string | null
+  href: string
+  label: string
+  hint: string | null
+}>
 
 const HOME_RECENT_WRONG_MAX = 3
+
+function sortedDayIds(dayIds: readonly number[]): readonly number[] {
+  return [...dayIds]
+    .filter((dayId) => Number.isFinite(dayId))
+    .map((dayId) => Math.floor(dayId))
+    .sort((a, b) => a - b)
+}
+
+function nextDayIdAfter(dayIds: readonly number[], currentDayId: number): number | null {
+  const next = sortedDayIds(dayIds).find((dayId) => dayId > currentDayId)
+  return next ?? null
+}
+
+function stageDaysFromMetadata(metadata: StageMetadataFile | null): StageDayMap {
+  if (metadata === null) return {}
+  const next: Record<number, readonly number[]> = {}
+  for (const stage of metadata.stages) {
+    next[stage.id] = sortedDayIds(stage.dayIds)
+  }
+  return next
+}
+
+function buildHomeNextRecommendation(
+  recent: RecentStudySnapshot | null,
+  wordStageDays: StageDayMap,
+  conversationStageDays: StageDayMap,
+): HomeNextRecommendation {
+  if (recent === null) {
+    return {
+      recentLine: null,
+      href: '/word-study/1',
+      label: '단어 Stage 1 Day 1 시작하기',
+      hint: '최근 학습이 아직 없어 기본 단어 학습부터 추천합니다.',
+    }
+  }
+
+  const isWord = recent.type === 'word'
+  const kindLabel = isWord ? '단어' : '실전회화'
+  const basePath = isWord ? '/word-study' : '/conversation'
+  const stageDays = isWord ? wordStageDays : conversationStageDays
+  const currentDays = stageDays[recent.stageId]
+  const recentLine = `최근 학습: ${kindLabel} Stage ${recent.stageId} Day ${recent.dayId}`
+
+  if (currentDays === undefined) {
+    return {
+      recentLine,
+      href: basePath,
+      label: `${kindLabel} 다음 학습 확인 중`,
+      hint: '콘텐츠 정보를 불러오는 중입니다.',
+    }
+  }
+
+  if (currentDays === null || currentDays.length === 0) {
+    return {
+      recentLine,
+      href: basePath,
+      label: `${kindLabel} 학습 목록 보기`,
+      hint: `최근 Stage ${recent.stageId} 콘텐츠를 확인할 수 없어 목록으로 안내합니다.`,
+    }
+  }
+
+  const nextDayId = nextDayIdAfter(currentDays, recent.dayId)
+  if (nextDayId !== null) {
+    return {
+      recentLine,
+      href: `${basePath}/${nextDayId}`,
+      label: `${kindLabel} Stage ${recent.stageId} Day ${nextDayId} 추천`,
+      hint: null,
+    }
+  }
+
+  const nextStageId = recent.stageId + 1
+  const nextStageDays = stageDays[nextStageId]
+  if (nextStageDays !== undefined && nextStageDays !== null && nextStageDays.length > 0) {
+    const firstDayId = sortedDayIds(nextStageDays)[0] ?? 1
+    return {
+      recentLine,
+      href: `${basePath}/${firstDayId}`,
+      label: `${kindLabel} Stage ${nextStageId} Day ${firstDayId} 추천`,
+      hint: `Stage ${recent.stageId}를 마쳤습니다. 다음 Stage로 이어가세요.`,
+    }
+  }
+
+  return {
+    recentLine,
+    href: basePath,
+    label: `${kindLabel} Stage ${nextStageId} 준비 중`,
+    hint: `Stage ${recent.stageId} 마지막 Day를 마쳤습니다. 다음 Stage 콘텐츠가 열리면 이어서 추천합니다.`,
+  }
+}
+
 /**
  * MVP 단계는 Stage 1 만 콘텐츠가 배포되어 있다.
  * 복습 기준 Word Day(`currentWordDayId`)는 이 Stage 의 완료 Day 만 본다
@@ -78,24 +177,58 @@ export default function HomePage() {
   const totalMemo = Math.max(0, Math.floor(progress.totalMemorizedWords))
 
   const recent = progress.recentStudy
-  const recentLine =
-    recent === null
-      ? null
-      : recent.type === 'word'
-        ? `최근 학습: 단어 Day ${recent.dayId}`
-        : `최근 학습: 실전회화 Day ${recent.dayId}`
-  const continueHref =
-    recent === null
-      ? '/word-study'
-      : recent.type === 'word'
-        ? `/word-study/${recent.dayId}`
-        : `/conversation/${recent.dayId}`
-  const continueLabel =
-    recent === null
-      ? '오늘 첫 학습 시작하기'
-      : recent.type === 'word'
-        ? `이어서 단어 Day ${recent.dayId} 학습하기`
-        : `이어서 회화 Day ${recent.dayId} 진행하기`
+  const [wordStageDays, setWordStageDays] = useState<StageDayMap>({})
+  const [conversationStageDays, setConversationStageDays] = useState<StageDayMap>({})
+
+  useEffect(() => {
+    let cancelled = false
+    fetchStageMetadata()
+      .then((metadata) => {
+        if (cancelled) return
+        setWordStageDays(stageDaysFromMetadata(metadata))
+      })
+      .catch(() => {
+        if (cancelled) return
+        setWordStageDays({ [MVP_WORD_STAGE_ID]: null })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    const stageIds =
+      recent?.type === 'conversation'
+        ? [recent.stageId, recent.stageId + 1]
+        : [MVP_WORD_STAGE_ID]
+    let cancelled = false
+    Promise.all(
+      stageIds.map((stageId) =>
+        getConversationStage(stageId)
+          .then((stage): { stageId: number; dayIds: readonly number[] | null } => ({
+            stageId,
+            dayIds: sortedDayIds(stage.days.map((day) => day.dayId)),
+          }))
+          .catch((): { stageId: number; dayIds: readonly number[] | null } => ({
+            stageId,
+            dayIds: null,
+          })),
+      ),
+    ).then((rows) => {
+      if (cancelled) return
+      const next: Record<number, readonly number[] | null> = {}
+      for (const row of rows) next[row.stageId] = row.dayIds
+      setConversationStageDays(next)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [recent])
+
+  const nextRecommendation = useMemo(
+    () => buildHomeNextRecommendation(recent, wordStageDays, conversationStageDays),
+    [recent, wordStageDays, conversationStageDays],
+  )
 
   const canGrantToday = useMemo(() => canGrantDailyCoin(progress), [progress])
   const dailyAmount = Math.max(0, Math.floor(progress.dailyCoinAmount))
@@ -299,18 +432,18 @@ export default function HomePage() {
         aria-label="이어서 학습"
       >
         <p className="home-continue__eyebrow">바로 이어가기</p>
-        {recentLine !== null ? (
-          <p className="home-continue__recent ui-card__body">{recentLine}</p>
+        {nextRecommendation.recentLine !== null ? (
+          <p className="home-continue__recent ui-card__body">{nextRecommendation.recentLine}</p>
         ) : null}
         <Link
-          to={continueHref}
+          to={nextRecommendation.href}
           className="ui-btn ui-btn--primary ui-btn--block home-continue__btn"
         >
-          {continueLabel}
+          {nextRecommendation.label}
         </Link>
-        {recent === null ? (
+        {nextRecommendation.hint !== null ? (
           <p className="home-continue__hint ui-card__body">
-            최근 학습이 아직 없어요.
+            {nextRecommendation.hint}
           </p>
         ) : null}
       </section>

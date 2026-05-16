@@ -1,263 +1,263 @@
-{
-  "dayId": 6,
-  "titleKo": "약속 일정 변경",
-  "descriptionKo": "메시지로 일정 미루기",
-  "sceneDescriptionKo": "일요일 저녁, 다음 주 약속을 앞두고 챈나에게서 일정 변경 메시지가 도착한다.",
-  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-06-cutscene.jpg",
-  "sceneImages": {
-    "intro": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-06-scene-01.jpg",
-      "altKo": "약속 일정 변경 - 도입 장면"
-    },
-    "dialogue": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-06-scene-02.jpg",
-      "altKo": "약속 일정 변경 - 대화 장면"
-    },
-    "review": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-06-scene-03.jpg",
-      "altKo": "약속 일정 변경 - 복습 장면"
-    }
-  },
-  "narrations": [
-    {
-      "id": "s1-d6-n1",
-      "textKo": "다음 주 화요일에 챈나와 점심 약속이 있다. 그런데 메시지 하나가 온다.",
-      "textEn": "You had a Tuesday lunch with Channa next week. A message just popped up."
-    },
-    {
-      "id": "s1-d6-n2",
-      "textKo": "차분히 사정을 듣고 다른 날을 제안하면 된다.",
-      "textEn": "Hear her out and suggest another day."
-    }
-  ],
-  "dialogue": [
-    {
-      "id": "s1-d6-d1",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "미안한데, 화요일 약속 미룰 수 있을까?",
-      "textEn": "Sorry, can we reschedule Tuesday?"
-    },
-    {
-      "id": "s1-d6-d2",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "괜찮아. 무슨 일 있어?",
-      "textEn": "No problem. Is everything okay?",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "친구가 약속을 미루자고 했습니다. 이해하고 상황을 묻는 대답을 고르세요.",
-        "promptEn": "Channa asked to reschedule. Choose the best supportive reply.",
-        "options": [
-          {
-            "id": "a",
-            "text": "No problem. Is everything okay?"
-          },
-          {
-            "id": "b",
-            "text": "Forget our plan forever."
-          },
-          {
-            "id": "c",
-            "text": "I will hide from you."
-          },
-          {
-            "id": "d",
-            "text": "Lunch is canceled by law."
-          }
-        ],
-        "correctOptionId": "a",
-        "explanationKo": "상대가 일정을 바꾸자고 할 때는 먼저 괜찮다고 받아 주고 상황을 물으면 자연스럽습니다."
-      }
-    },
-    {
-      "id": "s1-d6-d3",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "회사에서 갑자기 일이 생겼어.",
-      "textEn": "Something came up at work, unfortunately."
-    },
-    {
-      "id": "s1-d6-d4",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "이해해. 목요일은 어때?",
-      "textEn": "I get it. Would Thursday work for you?",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "친구가 회사 일 때문에 일정이 생겼다고 했습니다. 이해하고 다른 날을 제안하세요.",
-        "promptEn": "Something came up at work for Channa. Choose the best reply.",
-        "options": [
-          {
-            "id": "a",
-            "text": "I get it. Would Thursday work for you?"
-          },
-          {
-            "id": "b",
-            "text": "Pick a day or else."
-          },
-          {
-            "id": "c",
-            "text": "Lunch is canceled by law."
-          },
-          {
-            "id": "d",
-            "text": "Bring me a calendar now."
-          }
-        ],
-        "correctOptionId": "a",
-        "explanationKo": "다른 날짜를 제안할 때는 `Would Thursday work for you?`처럼 물으면 자연스럽습니다."
-      }
-    },
-    {
-      "id": "s1-d6-d5",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "목요일 좋아. 정말 고마워.",
-      "textEn": "Thursday works. Thanks so much!"
-    },
-    {
-      "id": "s1-d6-d6",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "그럼 목요일에 보자. 일정 바꿔둘게.",
-      "textEn": "Then see you Thursday. I'll update the plan."
-    }
-  ],
-  "keyExpressions": [
-    {
-      "id": "s1-d6-k1",
-      "expressionEn": "Can we reschedule?",
-      "expressionKo": "약속을 미룰 수 있을까?",
-      "tipKo": "약속 변경을 부드럽게 부탁할 때 씁니다."
-    },
-    {
-      "id": "s1-d6-k2",
-      "expressionEn": "Something came up.",
-      "expressionKo": "갑자기 일이 생겼어.",
-      "tipKo": "구체적인 사유를 길게 말하기 어려울 때 자주 쓰입니다."
-    },
-    {
-      "id": "s1-d6-k3",
-      "expressionEn": "Would Thursday work for you?",
-      "expressionKo": "목요일은 괜찮아?",
-      "tipKo": "대체 날짜를 정중하게 제안하는 표현입니다."
-    }
-  ],
-  "quiz": [
-    {
-      "type": "next-line-choice",
-      "id": "s1-d6-q1",
-      "expressionId": "s1-d6-k1",
-      "partnerSpeakerLabelKo": "나",
-      "partnerLineKo": "약속을 다른 날로 미뤄야 하는 상황입니다.",
-      "partnerLineEn": "You need to move a plan to another day.",
-      "promptKo": "친구에게 약속을 부드럽게 미루자고 말할 때 가장 자연스러운 문장을 고르세요.",
-      "promptEn": "Choose the best line to politely ask to reschedule a plan.",
-      "explanationKo": "`Can we reschedule?`은 약속이나 미팅 일정을 부드럽게 바꾸자고 할 때 쓰는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Forget our plan forever."
-        },
-        {
-          "id": "b",
-          "text": "Lunch is canceled by law."
-        },
-        {
-          "id": "c",
-          "text": "I will hide from you."
-        },
-        {
-          "id": "d",
-          "text": "Can we reschedule?"
-        }
-      ],
-      "correctOptionId": "d"
-    },
-    {
-      "type": "next-line-choice",
-      "id": "s1-d6-q2",
-      "expressionId": "s1-d6-k3",
-      "partnerSpeakerLabelKo": "챈나",
-      "partnerLineKo": "회사에서 갑자기 일이 생겼어.",
-      "partnerLineEn": "Something came up at work, unfortunately.",
-      "promptKo": "상대의 사정을 이해하고 다른 날을 제안하는 대답을 고르세요.",
-      "promptEn": "Choose the best reply to suggest another day.",
-      "explanationKo": "다른 날짜를 제안할 때는 `Would Thursday work for you?`처럼 물으면 자연스럽습니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "I get it. Would Thursday work for you?"
-        },
-        {
-          "id": "b",
-          "text": "Pick a day or else."
-        },
-        {
-          "id": "c",
-          "text": "Lunch is canceled by law."
-        },
-        {
-          "id": "d",
-          "text": "Bring me a calendar now."
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "pattern-fill-blank",
-      "id": "s1-d6-q3-next-line",
-      "expressionId": "s1-d6-k3",
-      "templateEn": "Would Thursday {{blank}} for you?",
-      "promptKo": "대체 날짜를 제안하는 표현의 빈칸을 고르세요.",
-      "promptEn": "Complete the alternative day suggestion.",
-      "explanationKo": "`Would ~ work for you?`는 상대에게 가능한지 정중하게 묻는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "work"
-        },
-        {
-          "id": "b",
-          "text": "hide"
-        },
-        {
-          "id": "c",
-          "text": "sleep"
-        },
-        {
-          "id": "d",
-          "text": "cancel"
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "multiple-choice",
-      "id": "s1-d6-q4-pattern",
-      "promptKo": "`Something came up.`의 가장 자연스러운 의미는 무엇인가요?",
-      "promptEn": "What does `Something came up.` mean?",
-      "explanationKo": "갑자기 일이 생겼다는 뜻으로, 자세한 설명 없이 사정을 말할 때 쓰입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "갑자기 일이 생겼어."
-        },
-        {
-          "id": "b",
-          "text": "시간은 거짓말이야."
-        },
-        {
-          "id": "c",
-          "text": "달력을 가져와."
-        },
-        {
-          "id": "d",
-          "text": "점심은 법으로 취소됐어."
-        }
-      ],
-      "correctOptionId": "a"
-    }
-  ]
+﻿{
+    "dayId":  6,
+    "titleKo":  "?? ?? ????",
+    "descriptionKo":  "???? ? ?? ?? ??",
+    "sceneDescriptionKo":  "?? ?? ?? ? ? ??. ??? ???? ?? ??? ????.",
+    "cutsceneImagePath":  "/content/conversations/stage-1/assets/stage-1-day-06-cutscene.jpg",
+    "sceneImages":  {
+                        "intro":  {
+                                      "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-06-scene-01.jpg",
+                                      "altKo":  "?? ?? ???? - ?? ??"
+                                  },
+                        "dialogue":  {
+                                         "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-06-scene-02.jpg",
+                                         "altKo":  "?? ?? ???? - ?? ??"
+                                     },
+                        "review":  {
+                                       "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-06-scene-03.jpg",
+                                       "altKo":  "?? ?? ???? - ?? ??"
+                                   }
+                    },
+    "narrations":  [
+                       {
+                           "id":  "s1-d6-n1",
+                           "textKo":  "?? ??? ???? ? ? ??. ??? ???? ?? ??? ? ???? ??? ??.",
+                           "textEn":  "The evening air is calm near the station plaza. Before saying goodbye to Kima, you want to suggest meeting again."
+                       },
+                       {
+                           "id":  "s1-d6-n2",
+                           "textKo":  "??? ?? ??? ????, ??? ?? ????.",
+                           "textEn":  "Suggest meeting again casually, then ask what day might work."
+                       }
+                   ],
+    "dialogue":  [
+                     {
+                         "id":  "s1-d6-d1",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "?? ????. ??? ? ???.",
+                         "textEn":  "I had a great time today. Let us meet again soon.",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "???? ? ?? ??? ????? ???. ?? ????? ?? ????.",
+                                              "promptEn":  "You want to suggest meeting again before saying goodbye. Choose the best line.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "I had a great time today. Let us meet again soon."
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "I need a medium latte."
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Turn left at the corner."
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "The seats are near the front."
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "Let us meet again soon? ?? ??? ????? ???? ?????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d6-d2",
+                         "speakerId":  "kima",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "??. ?? ?? ???.",
+                         "textEn":  "Sounds good. I had a nice time too."
+                     },
+                     {
+                         "id":  "s1-d6-d3",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "?? ??? ???",
+                         "textEn":  "How about next weekend?",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "??? ????? ?????. ?? ??? ?? ??? ???.",
+                                              "promptEn":  "Kima answered positively. Choose the best reply to suggest a day.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "How about next weekend?"
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "Could I get it to go?"
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Where are our seats?"
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "Is there a blue sign?"
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "How about ~? ? ??? ??? ??? ??? ? ???????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d6-d4",
+                         "speakerId":  "kima",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "???. ?? ???? ?? ?.",
+                         "textEn":  "That works. Let me know when you pick a time."
+                     },
+                     {
+                         "id":  "s1-d6-d5",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "??. ? ????.",
+                         "textEn":  "Great. Talk to you soon."
+                     },
+                     {
+                         "id":  "s1-d6-d6",
+                         "speakerId":  "kima",
+                         "speakerLabelKo":  "??",
+                         "textKo":  "?, ??? ???.",
+                         "textEn":  "Sure. Get home safely."
+                     }
+                 ],
+    "keyExpressions":  [
+                           {
+                               "id":  "s1-d6-k1",
+                               "expressionEn":  "Let us meet again soon.",
+                               "expressionKo":  "??? ? ???.",
+                               "tipKo":  "?? ??? ??? ???? ?????."
+                           },
+                           {
+                               "id":  "s1-d6-k2",
+                               "expressionEn":  "How about next weekend?",
+                               "expressionKo":  "?? ??? ???",
+                               "tipKo":  "How about ~? ? ??? ??? ????? ??? ? ????."
+                           },
+                           {
+                               "id":  "s1-d6-k3",
+                               "expressionEn":  "Talk to you soon.",
+                               "expressionKo":  "? ????.",
+                               "tipKo":  "??? ???? ???? ? ?? ?????."
+                           }
+                       ],
+    "quiz":  [
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d6-q1",
+                     "expressionId":  "s1-d6-k1",
+                     "partnerSpeakerLabelKo":  "?",
+                     "partnerLineKo":  "?",
+                     "partnerLineEn":  "You want to suggest meeting Kima again.",
+                     "promptKo":  "?? ??? ???? ??? ????.",
+                     "promptEn":  "Choose the best line to suggest meeting again.",
+                     "explanationKo":  "Let us meet again soon? ??? ? ??? ?? ? ???????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "Let us meet again soon."
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "Medium, please."
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "Turn left at the second corner."
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "Where are our seats?"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d6-q2",
+                     "expressionId":  "s1-d6-k2",
+                     "partnerSpeakerLabelKo":  "??",
+                     "partnerLineKo":  "??",
+                     "partnerLineEn":  "I had a nice time too.",
+                     "promptKo":  "?? ??? ?? ???? ?? ????.",
+                     "promptEn":  "Choose the best reply to suggest another day.",
+                     "explanationKo":  "How about next weekend? ? ?? ?? ??? ??? ? ???????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "How about next weekend?"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "Can I get it to go?"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "Is the sign nearby?"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "What size would you like?"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "pattern-fill-blank",
+                     "id":  "s1-d6-q3-next-line",
+                     "expressionId":  "s1-d6-k3",
+                     "templateEn":  "Talk to you {{blank}}.",
+                     "promptKo":  "??? ??? ??? ??? ?? ????.",
+                     "promptEn":  "Complete the closing phrase.",
+                     "explanationKo":  "Talk to you soon? ? ?????? ??? ??? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "soon"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "left"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "medium"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "latte"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "multiple-choice",
+                     "id":  "s1-d6-q4-pattern",
+                     "promptKo":  "`How about next weekend?`? ?? ????? ??? ??????",
+                     "promptEn":  "What does `How about next weekend?` mean?",
+                     "explanationKo":  "How about ~? ? ??? ??? ? ?? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "?? ??? ???"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "??? ?? ? ????"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "?? ??? ????"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "?????."
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 }
+             ]
 }

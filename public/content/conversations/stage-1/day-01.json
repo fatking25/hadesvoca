@@ -139,7 +139,7 @@
     },
     {
       "id": "s1-d1-k3",
-      "expressionEn": "How about the Italian place near the station?",
+      "expressionEn": "How about that Italian place near the station?",
       "expressionKo": "역 근처 이탈리안 레스토랑은 어때?",
       "tipKo": "How about ~? 로 장소나 시간을 제안할 수 있습니다."
     }
@@ -206,7 +206,7 @@
       "correctOptionId": "a"
     },
     {
-      "type": "pattern-fill-blank",
+      "type": "blank-bubble-fill",
       "id": "s1-d1-q3-next-line",
       "expressionId": "s1-d1-k1",
       "templateEn": "Are you {{blank}} for dinner this Friday?",

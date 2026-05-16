@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 실전 회화 Day 상세: JSON 로드 후 컷씬 → 나레이션 → 대화 → 퀴즈 → 표현 스텝 진행, 마지막에 결과 화면으로 이동합니다.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
@@ -149,6 +149,15 @@ function sentenceBuilderAnswerText(q: ConversationQuiz): string {
     return extractBacktickExpression(q.promptEn) ?? extractBacktickExpression(q.promptKo) ?? correct
   }
   return correct
+}
+
+function blankBubbleSelectedText(
+  q: ConversationQuiz & { readonly type: 'blank-bubble-fill' },
+  selectedOptionIds: readonly string[],
+): string {
+  const selectedOptionId = selectedOptionIds[0]
+  if (selectedOptionId === undefined) return ''
+  return q.options.find((opt) => opt.id === selectedOptionId)?.text ?? ''
 }
 
 function sentenceBuilderShuffleValue(seed: string, index: number): number {
@@ -427,13 +436,21 @@ export default function ConversationDayDetailPage() {
     if (day === null || activeQuiz === undefined || dayIdParam === undefined || dayIdParam === '')
       return
 
-    const sentenceTokens = sentenceBuilderTokensForQuiz(activeQuiz)
-    const tokenById = new Map(sentenceTokens.map((token) => [token.id, token]))
-    const builtAnswer = quizSelectedTokenIds
-      .map((id) => tokenById.get(id)?.text ?? '')
-      .filter((text) => text.length > 0)
-      .join(' ')
-    const targetAnswer = sentenceBuilderAnswerText(activeQuiz)
+    const builtAnswer =
+      activeQuiz.type === 'blank-bubble-fill'
+        ? blankBubbleSelectedText(activeQuiz, quizSelectedTokenIds)
+        : (() => {
+            const sentenceTokens = sentenceBuilderTokensForQuiz(activeQuiz)
+            const tokenById = new Map(sentenceTokens.map((token) => [token.id, token]))
+            return quizSelectedTokenIds
+              .map((id) => tokenById.get(id)?.text ?? '')
+              .filter((text) => text.length > 0)
+              .join(' ')
+          })()
+    const targetAnswer =
+      activeQuiz.type === 'blank-bubble-fill'
+        ? getCorrectQuizOptionText(activeQuiz)
+        : sentenceBuilderAnswerText(activeQuiz)
 
     if (!quizRevealed) {
       if (quizSelectedTokenIds.length === 0) return
@@ -583,9 +600,6 @@ export default function ConversationDayDetailPage() {
             </h2>
 
             {renderSceneImage(d)}
-            <span className="conv-vn__tap-hint" aria-hidden="true">
-              touch
-            </span>
 
             <div className="ui-card ui-card--dashboard conv-vn__narr-card">
               <div className="conv-vn__narr-head">
@@ -829,7 +843,152 @@ export default function ConversationDayDetailPage() {
         return renderQuizMultipleChoice(d, q)
       case 'pattern-fill-blank':
         return renderQuizMultipleChoice(d, q)
+      case 'blank-bubble-fill':
+        return renderQuizBlankBubbleFill(d, q)
     }
+  }
+
+  function renderBlankBubbleSentence(
+    q: ConversationQuiz & { readonly type: 'blank-bubble-fill' },
+    selectedOptionText: string,
+    correctAnswerText: string,
+  ): ReactNode {
+    const [head, ...tailParts] = q.templateEn.split('{{blank}}')
+    const tail = tailParts.join('{{blank}}')
+    const filledText =
+      selectedOptionText !== '' ? selectedOptionText : quizRevealed ? correctAnswerText : ''
+    return (
+      <p className="conv-blank-bubble__sentence" lang="en">
+        {head}
+        <button
+          type="button"
+          className={`conv-blank-bubble__blank${
+            filledText !== '' ? ' conv-blank-bubble__blank--filled' : ''
+          }`}
+          disabled={quizRevealed || selectedOptionText === ''}
+          aria-label={filledText !== '' ? `${filledText} 제거` : '빈칸'}
+          onClick={() => {
+            if (!quizRevealed && selectedOptionText !== '') {
+              setQuizSelectedTokenIds([])
+            }
+          }}
+        >
+          {filledText !== '' ? filledText : '____'}
+        </button>
+        {tail}
+      </p>
+    )
+  }
+
+  function renderQuizBlankBubbleFill(
+    d: ConversationDay,
+    q: ConversationQuiz & { readonly type: 'blank-bubble-fill' },
+  ): ReactNode {
+    const selectedOptionId = quizSelectedTokenIds[0] ?? null
+    const selectedOptionText = blankBubbleSelectedText(q, quizSelectedTokenIds)
+    const correctAnswerText = getCorrectQuizOptionText(q)
+    const correct = selectedOptionId === q.correctOptionId
+    const explainKoRaw = q.explanationKo?.trim()
+    const explainEnRaw = q.explanationEn?.trim()
+    const explainKo =
+      explainKoRaw !== undefined && explainKoRaw.length > 0
+        ? explainKoRaw
+        : undefined
+    const explainEn =
+      explainEnRaw !== undefined && explainEnRaw.length > 0
+        ? explainEnRaw
+        : undefined
+    const showExplanation =
+      quizRevealed && (explainKo !== undefined || explainEn !== undefined)
+
+    return (
+      <section
+        className="conv-detail__panel conv-detail__quiz conv-quiz-vn ui-card ui-card--dashboard"
+        aria-labelledby="conv-quiz-label"
+      >
+        {renderSceneImage(d)}
+        <div className="conv-quiz-vn__overlay">
+          <div className="conv-detail__panel-head">
+            <h2 id="conv-quiz-label" className="ui-card__section-heading">
+              빈칸 말풍선
+            </h2>
+            <span className="conv-detail__panel-badge conv-detail__panel-badge--muted">
+              {quizIndex + 1} / {d.quiz.length}
+            </span>
+          </div>
+          <p className="conv-detail__quiz-meta">빈칸 말풍선 채우기</p>
+          <p className="conv-detail__quiz-prompt" lang="ko">
+            {q.promptKo}
+          </p>
+          {q.promptEn !== undefined && q.promptEn.trim() !== '' ? (
+            <p className="conv-detail__quiz-prompt-en" lang="en">
+              {q.promptEn}
+            </p>
+          ) : null}
+          <div className="conv-blank-bubble" aria-label="빈칸 말풍선">
+            {renderBlankBubbleSentence(q, selectedOptionText, correctAnswerText)}
+          </div>
+          <div className="conv-blank-bubble__options" role="group" aria-label="빈칸 선택지">
+            {q.options.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                className={`conv-blank-bubble__option${
+                  selectedOptionId === opt.id ? ' conv-blank-bubble__option--selected' : ''
+                }`}
+                disabled={quizRevealed}
+                onClick={() => {
+                  setQuizSelectedTokenIds((ids) => (ids[0] === opt.id ? [] : [opt.id]))
+                }}
+              >
+                {opt.text}
+              </button>
+            ))}
+          </div>
+          {quizRevealed ? (
+            <>
+              <p
+                className={`conv-detail__quiz-feedback${
+                  correct ? ' conv-detail__quiz-feedback--ok' : ' conv-detail__quiz-feedback--ng'
+                }`}
+              >
+                {correct
+                  ? '좋아요. 자연스럽게 채웠어요.'
+                  : '조금 어색해요. 빈칸에는 아래 단어가 자연스러워요.'}
+              </p>
+              {!correct ? (
+                <p className="conv-sentence-builder__correct-answer" lang="en">
+                  {q.templateEn.replaceAll('{{blank}}', correctAnswerText)}
+                </p>
+              ) : null}
+              {showExplanation ? (
+                <div className="conv-detail__quiz-explanation">
+                  <p className="conv-detail__quiz-explanation-label">해설</p>
+                  {explainKo !== undefined ? (
+                    <p className="conv-detail__quiz-explanation-ko" lang="ko">
+                      {explainKo}
+                    </p>
+                  ) : null}
+                  {explainEn !== undefined ? (
+                    <p className="conv-detail__quiz-explanation-en" lang="en">
+                      {explainEn}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="ui-btn ui-btn--primary ui-btn--block conv-quiz-vn__next"
+            disabled={!quizRevealed && selectedOptionId === null}
+            onClick={handleQuizPrimary}
+          >
+            {quizPrimaryLabel}
+          </button>
+        </div>
+      </section>
+    )
   }
 
   function renderQuizMultipleChoice(
@@ -870,22 +1029,6 @@ export default function ConversationDayDetailPage() {
     const removeSelectedToken = (tokenId: string): void => {
       if (quizRevealed) return
       setQuizSelectedTokenIds((ids) => ids.filter((id) => id !== tokenId))
-    }
-
-    const moveSelectedToken = (tokenId: string, direction: -1 | 1): void => {
-      if (quizRevealed) return
-      setQuizSelectedTokenIds((ids) => {
-        const next = [...ids]
-        const index = next.indexOf(tokenId)
-        const swapIndex = index + direction
-        if (index < 0 || swapIndex < 0 || swapIndex >= next.length) return ids
-        const current = next[index]
-        const swap = next[swapIndex]
-        if (current === undefined || swap === undefined) return ids
-        next[index] = swap
-        next[swapIndex] = current
-        return next
-      })
     }
 
     return (
@@ -929,33 +1072,17 @@ export default function ConversationDayDetailPage() {
           ) : null}
           <div className="conv-sentence-builder__answer" aria-label="내가 만든 문장">
             {selectedTokens.length > 0 ? (
-              selectedTokens.map((token, index) => (
+              selectedTokens.map((token) => (
                 <span key={token.id} className="conv-sentence-builder__selected-token">
-                  <button
-                    type="button"
-                    className="conv-sentence-builder__move"
-                    disabled={quizRevealed || index === 0}
-                    aria-label={`${token.text} 왼쪽으로 이동`}
-                    onClick={() => moveSelectedToken(token.id, -1)}
-                  >
-                    ‹
-                  </button>
                   <button
                     type="button"
                     className="conv-sentence-builder__selected-word"
                     disabled={quizRevealed}
+                    aria-label={`${token.text} 제거`}
+                    title="눌러서 제거"
                     onClick={() => removeSelectedToken(token.id)}
                   >
                     {token.text}
-                  </button>
-                  <button
-                    type="button"
-                    className="conv-sentence-builder__move"
-                    disabled={quizRevealed || index === selectedTokens.length - 1}
-                    aria-label={`${token.text} 오른쪽으로 이동`}
-                    onClick={() => moveSelectedToken(token.id, 1)}
-                  >
-                    ›
                   </button>
                 </span>
               ))
@@ -1160,3 +1287,4 @@ export default function ConversationDayDetailPage() {
     </main>
   )
 }
+

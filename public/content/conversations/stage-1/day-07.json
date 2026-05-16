@@ -26,8 +26,8 @@
     },
     {
       "id": "s1-d7-n2",
-      "textKo": "오늘은 새 표현 대신, 한 주 동안 자주 쓴 마무리 인사 3가지를 정리해 본다.",
-      "textEn": "Tonight, instead of new lines, recap three closing phrases that came up all week."
+      "textKo": "집에 가기 전, 채나가 약속을 자연스럽게 마무리하는 표현 몇 가지를 꺼낸다.",
+      "textEn": "Before you head home, Channa brings up a few ways to end plans naturally."
     }
   ],
   "dialogue": [
@@ -35,30 +35,30 @@
       "id": "s1-d7-d1",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "이번 주에 정말 여러 표현을 썼네.",
-      "textEn": "I used so many different phrases this week."
+      "textKo": "이번 주 정말 빨리 지나갔다.",
+      "textEn": "This week went by fast."
     },
     {
       "id": "s1-d7-d2",
       "speakerId": "channa",
       "speakerLabelKo": "챈나",
-      "textKo": "맞아. 특히 마지막 인사가 자연스러워졌어.",
-      "textEn": "Right. Your closing lines sounded much more natural."
+      "textKo": "그러게. 작은 약속들도 꽤 자연스럽게 잘했어.",
+      "textEn": "It did. And you handled a lot of little plans naturally."
     },
     {
       "id": "s1-d7-d3",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "다음에도 곧 보자고 말하고 싶을 땐 뭐라고 하면 좋을까?",
-      "textEn": "What should I say when I want to meet again soon?",
+      "textKo": "조만간 또 만나자.",
+      "textEn": "Let's catch up again soon.",
       "responseQuiz": {
         "type": "next-line-choice",
-        "promptKo": "다시 만나자는 표현을 알고 싶습니다. 친구에게 물어볼 자연스러운 질문을 고르세요.",
-        "promptEn": "You want to ask how to suggest meeting again. Choose the best question.",
+        "promptKo": "친구에게 조만간 다시 만나자고 자연스럽게 말하려고 합니다. 가장 알맞은 답을 고르세요.",
+        "promptEn": "You want to suggest meeting again soon. Choose the best reply.",
         "options": [
           {
             "id": "a",
-            "text": "What should I say when I want to meet again soon?"
+            "text": "Let's catch up again soon."
           },
           {
             "id": "b",
@@ -74,15 +74,15 @@
           }
         ],
         "correctOptionId": "a",
-        "explanationKo": "표현이 떠오르지 않을 때는 `What should I say when ~?`로 자연스럽게 물어볼 수 있습니다."
+        "explanationKo": "`Let's catch up again soon.`은 친구에게 조만간 다시 보자고 가볍게 말할 때 자연스럽습니다."
       }
     },
     {
       "id": "s1-d7-d4",
       "speakerId": "channa",
       "speakerLabelKo": "챈나",
-      "textKo": "Let's catch up soon. 이라고 하면 좋아.",
-      "textEn": "You can say, `Let's catch up soon.`"
+      "textKo": "좋아. 곧 날짜를 정하자.",
+      "textEn": "I'd like that. Let's pick a day soon."
     },
     {
       "id": "s1-d7-d5",
@@ -92,8 +92,8 @@
       "textEn": "Great. Talk to you soon.",
       "responseQuiz": {
         "type": "next-line-choice",
-        "promptKo": "친구가 쓸 수 있는 표현을 알려줬습니다. 대화를 부드럽게 마무리하는 답장을 고르세요.",
-        "promptEn": "Channa suggested a phrase. Choose the best closing reply.",
+        "promptKo": "채나가 다시 만나자는 말에 긍정적으로 답했습니다. 대화를 부드럽게 마무리할 문장을 고르세요.",
+        "promptEn": "Channa liked the idea. Choose the best closing reply.",
         "options": [
           {
             "id": "a",

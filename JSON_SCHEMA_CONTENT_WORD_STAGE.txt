@@ -54,6 +54,14 @@
   • savedWords       : lemmaId ← words[].id, stageId, dayId(선택)
 
 
+□ Phase 17 UI 반영 사항
+
+  • 단어학습 문제 화면은 현재 문제 중심의 focus panel UI로 정리되었다.
+  • 이 변경은 화면 배치, 터치 영역, 피드백 표시 방식의 변경이며 Word Stage JSON schema 변경은 아니다.
+  • word-to-meaning, meaning-to-word, fill-blank 타입과 필수 필드는 그대로 유지한다.
+  • 저장, 코인, EXP, 정오답 처리 정책은 콘텐츠 schema와 분리되어 있으며 Phase 17에서 변경하지 않았다.
+
+
 □ 짧은 예시 구조
 
 {

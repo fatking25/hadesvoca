@@ -1,263 +1,263 @@
-{
-  "dayId": 4,
-  "titleKo": "길 안내 묻기",
-  "descriptionKo": "메시지로 길 안내받기",
-  "sceneDescriptionKo": "토요일 오후, 식당에서 나와 챈나가 추천한 서점으로 향하려는데 길이 헷갈려 메시지로 물어본다.",
-  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-04-cutscene.jpg",
-  "sceneImages": {
-    "intro": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-01.jpg",
-      "altKo": "길 안내 묻기 - 도입 장면"
-    },
-    "dialogue": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-02.jpg",
-      "altKo": "길 안내 묻기 - 대화 장면"
-    },
-    "review": {
-      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-04-scene-03.jpg",
-      "altKo": "길 안내 묻기 - 복습 장면"
-    }
-  },
-  "narrations": [
-    {
-      "id": "s1-d4-n1",
-      "textKo": "식당에서 나온 뒤 다음 약속 장소로 가려는데 길이 헷갈린다. 챈나에게 메시지를 보내면 된다.",
-      "textEn": "You're heading to your next stop but the route is a bit unclear. A quick message to Channa should do."
-    },
-    {
-      "id": "s1-d4-n2",
-      "textKo": "먼저 목적지까지 어떻게 가는지 묻고, 필요한 출구를 확인하자.",
-      "textEn": "Start by asking whether the subway is the faster option."
-    }
-  ],
-  "dialogue": [
-    {
-      "id": "s1-d4-d1",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "챈나, 그 서점까지 어떻게 가? 지하철이 더 빨라?",
-      "textEn": "Hey Channa, how do I get to the bookstore? Is the subway faster?",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "서점까지 가는 방법을 친구에게 물어보려 합니다. 가장 자연스러운 질문을 고르세요.",
-        "promptEn": "You want to ask how to get to the bookstore. Choose the best question.",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hey Channa, how do I get to the bookstore? Is the subway faster?"
-          },
-          {
-            "id": "b",
-            "text": "Where are you living these days?"
-          },
-          {
-            "id": "c",
-            "text": "Why is the road so long?"
-          },
-          {
-            "id": "d",
-            "text": "Do you speak English well?"
-          }
-        ],
-        "correctOptionId": "a",
-        "explanationKo": "`How do I get to ~?`는 목적지까지 가는 방법을 물을 때 쓰는 기본 표현입니다."
-      }
-    },
-    {
-      "id": "s1-d4-d2",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "응, 2호선 타고 한 정거장이면 돼.",
-      "textEn": "Yeah, just one stop on Line 2."
-    },
-    {
-      "id": "s1-d4-d3",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "어느 출구로 나가야 해?",
-      "textEn": "Which exit should I take?",
-      "responseQuiz": {
-        "type": "next-line-choice",
-        "promptKo": "친구가 지하철 노선을 알려줬습니다. 이어서 물어볼 가장 자연스러운 질문을 고르세요.",
-        "promptEn": "Channa told you the subway line. Choose the best follow-up question.",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the door right now."
-          },
-          {
-            "id": "b",
-            "text": "Take me there yourself."
-          },
-          {
-            "id": "c",
-            "text": "Which exit should I take?"
-          },
-          {
-            "id": "d",
-            "text": "Is the train sleeping today?"
-          }
-        ],
-        "correctOptionId": "c",
-        "explanationKo": "지하철을 탈 때는 어느 출구로 나가야 하는지 확인하는 것이 자연스럽습니다."
-      }
-    },
-    {
-      "id": "s1-d4-d4",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "3번 출구로 나와서 왼쪽으로 5분만 걸으면 돼.",
-      "textEn": "Take exit 3 and walk left for about five minutes."
-    },
-    {
-      "id": "s1-d4-d5",
-      "speakerId": "learner",
-      "speakerLabelKo": "나",
-      "textKo": "알겠어, 고마워. 도착하면 연락할게.",
-      "textEn": "Got it, thanks. I'll text you when I'm there."
-    },
-    {
-      "id": "s1-d4-d6",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "좋아. 근처에서 기다리고 있을게.",
-      "textEn": "Great. I'll wait nearby."
-    }
-  ],
-  "keyExpressions": [
-    {
-      "id": "s1-d4-k1",
-      "expressionEn": "How do I get to the bookstore?",
-      "expressionKo": "서점까지 어떻게 가?",
-      "tipKo": "길 안내를 시작할 때 가장 기본이 되는 표현입니다."
-    },
-    {
-      "id": "s1-d4-k2",
-      "expressionEn": "Which exit should I take?",
-      "expressionKo": "어느 출구로 나가야 해?",
-      "tipKo": "지하철 출구를 물을 때 자연스럽게 쓰입니다."
-    },
-    {
-      "id": "s1-d4-k3",
-      "expressionEn": "I'll text you when I'm there.",
-      "expressionKo": "도착하면 연락할게.",
-      "tipKo": "도착 후 알려 주겠다고 약속할 때 자주 씁니다."
-    }
-  ],
-  "quiz": [
-    {
-      "type": "next-line-choice",
-      "id": "s1-d4-q1",
-      "expressionId": "s1-d4-k1",
-      "partnerSpeakerLabelKo": "나",
-      "partnerLineKo": "서점으로 가는 길이 헷갈립니다.",
-      "partnerLineEn": "You are not sure how to get to the bookstore.",
-      "promptKo": "친구에게 목적지까지 가는 방법을 물을 때 가장 자연스러운 문장을 고르세요.",
-      "promptEn": "Choose the best line to ask a friend how to get somewhere.",
-      "explanationKo": "`How do I get to ~?`는 목적지까지 가는 방법을 물을 때 쓰는 기본 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Where are you living these days?"
-        },
-        {
-          "id": "b",
-          "text": "How do I get to the bookstore?"
-        },
-        {
-          "id": "c",
-          "text": "Why is the road so long?"
-        },
-        {
-          "id": "d",
-          "text": "Do you speak English well?"
-        }
-      ],
-      "correctOptionId": "b"
-    },
-    {
-      "type": "next-line-choice",
-      "id": "s1-d4-q2",
-      "expressionId": "s1-d4-k2",
-      "partnerSpeakerLabelKo": "챈나",
-      "partnerLineKo": "응, 2호선 타고 한 정거장이면 돼.",
-      "partnerLineEn": "Yeah, just one stop on Line 2.",
-      "promptKo": "지하철 노선을 들은 뒤 이어서 물어볼 가장 자연스러운 질문을 고르세요.",
-      "promptEn": "Choose the best follow-up question after hearing the subway line.",
-      "explanationKo": "지하철을 탈 때는 어느 출구로 나가야 하는지 확인하는 것이 자연스럽습니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "Open the door right now."
-        },
-        {
-          "id": "b",
-          "text": "Take me there yourself."
-        },
-        {
-          "id": "c",
-          "text": "Which exit should I take?"
-        },
-        {
-          "id": "d",
-          "text": "Is the train sleeping today?"
-        }
-      ],
-      "correctOptionId": "c"
-    },
-    {
-      "type": "pattern-fill-blank",
-      "id": "s1-d4-q3-next-line",
-      "expressionId": "s1-d4-k3",
-      "templateEn": "I'll {{blank}} you when I'm there.",
-      "promptKo": "도착 후 연락하겠다는 표현의 빈칸을 고르세요.",
-      "promptEn": "Complete the arrival update pattern.",
-      "explanationKo": "`text you`는 메시지를 보내 연락하겠다는 뜻입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "text"
-        },
-        {
-          "id": "b",
-          "text": "book"
-        },
-        {
-          "id": "c",
-          "text": "cancel"
-        },
-        {
-          "id": "d",
-          "text": "lend"
-        }
-      ],
-      "correctOptionId": "a"
-    },
-    {
-      "type": "multiple-choice",
-      "id": "s1-d4-q4-pattern",
-      "promptKo": "`Which exit should I take?`의 가장 자연스러운 의미는 무엇인가요?",
-      "promptEn": "What does `Which exit should I take?` mean?",
-      "explanationKo": "지하철이나 건물에서 어느 출구로 나가야 하는지 물을 때 쓰는 표현입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "어느 출구로 나가야 해?"
-        },
-        {
-          "id": "b",
-          "text": "언제 예약해야 해?"
-        },
-        {
-          "id": "c",
-          "text": "뭘 주문해야 해?"
-        },
-        {
-          "id": "d",
-          "text": "주말에 뭐 해?"
-        }
-      ],
-      "correctOptionId": "a"
-    }
-  ]
+﻿{
+    "dayId":  4,
+    "titleKo":  "?? ????",
+    "descriptionKo":  "??? ?? ?? ?? ???",
+    "sceneDescriptionKo":  "??? ??? ???. ???? ???? ?? ??? ??? ?? ??.",
+    "cutsceneImagePath":  "/content/conversations/stage-1/assets/stage-1-day-04-cutscene.jpg",
+    "sceneImages":  {
+                        "intro":  {
+                                      "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-04-scene-01.jpg",
+                                      "altKo":  "?? ???? - ?? ??"
+                                  },
+                        "dialogue":  {
+                                         "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-04-scene-02.jpg",
+                                         "altKo":  "?? ???? - ?? ??"
+                                     },
+                        "review":  {
+                                       "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-04-scene-03.jpg",
+                                       "altKo":  "?? ???? - ?? ??"
+                                   }
+                    },
+    "narrations":  [
+                       {
+                           "id":  "s1-d4-n1",
+                           "textKo":  "??? ???? ??? ???? ???. ???? ?? ?? ??? ??? ??.",
+                           "textEn":  "You sit at a quiet table in a study lounge. You need to find a good time with Yeonchorok."
+                       },
+                       {
+                           "id":  "s1-d4-n2",
+                           "textKo":  "??? ??? ??, ? ?? ??? ???? ??? ??.",
+                           "textEn":  "Ask what time works, then adjust politely if a time does not work."
+                       }
+                   ],
+    "dialogue":  [
+                     {
+                         "id":  "s1-d4-d1",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "???, ?? ?? ?? ??? ????",
+                         "textEn":  "Yeonchorok, when are you free this week?",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "???? ??? ??? ?? ????. ?? ????? ??? ????.",
+                                              "promptEn":  "You want to ask when the other person is free. Choose the best question.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "Yeonchorok, when are you free this week?"
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "Yeonchorok, where is the blue sign?"
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Yeonchorok, make my coffee cold."
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "Yeonchorok, cancel the weekend."
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "When are you free? ? ??? ??? ?? ? ???????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d4-d2",
+                         "speakerId":  "yeonchorok",
+                         "speakerLabelKo":  "???",
+                         "textKo":  "??? ??? ???.",
+                         "textEn":  "Wednesday afternoon works for me."
+                     },
+                     {
+                         "id":  "s1-d4-d3",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "??. ?? ? ?? ????",
+                         "textEn":  "Great. Shall we meet at three?",
+                         "responseQuiz":  {
+                                              "type":  "next-line-choice",
+                                              "promptKo":  "??? ??? ?? ?????. ???? ??? ???? ?? ????.",
+                                              "promptEn":  "The other person gave a possible day. Choose the best reply to suggest a time.",
+                                              "options":  [
+                                                              {
+                                                                  "id":  "a",
+                                                                  "text":  "Great. Shall we meet at three?"
+                                                              },
+                                                              {
+                                                                  "id":  "b",
+                                                                  "text":  "Can I get it to go?"
+                                                              },
+                                                              {
+                                                                  "id":  "c",
+                                                                  "text":  "Turn left at the second corner."
+                                                              },
+                                                              {
+                                                                  "id":  "d",
+                                                                  "text":  "The concert is too loud."
+                                                              }
+                                                          ],
+                                              "correctOptionId":  "a",
+                                              "explanationKo":  "Shall we meet at ~? ? ?? ??? ??? ? ???????."
+                                          }
+                     },
+                     {
+                         "id":  "s1-d4-d4",
+                         "speakerId":  "yeonchorok",
+                         "speakerLabelKo":  "???",
+                         "textKo":  "? ? ??. ?? ???? ?? ??.",
+                         "textEn":  "Three works. I will write it in my planner."
+                     },
+                     {
+                         "id":  "s1-d4-d5",
+                         "speakerId":  "learner",
+                         "speakerLabelKo":  "?",
+                         "textKo":  "???. ???? ??.",
+                         "textEn":  "Thanks. See you Wednesday."
+                     },
+                     {
+                         "id":  "s1-d4-d6",
+                         "speakerId":  "yeonchorok",
+                         "speakerLabelKo":  "???",
+                         "textKo":  "?, ?? ??.",
+                         "textEn":  "Yes, see you then."
+                     }
+                 ],
+    "keyExpressions":  [
+                           {
+                               "id":  "s1-d4-k1",
+                               "expressionEn":  "When are you free this week?",
+                               "expressionKo":  "?? ?? ?? ??? ????",
+                               "tipKo":  "??? ??? ??? ?? ?? ?????."
+                           },
+                           {
+                               "id":  "s1-d4-k2",
+                               "expressionEn":  "Wednesday afternoon works for me.",
+                               "expressionKo":  "??? ??? ???.",
+                               "tipKo":  "work for me? ??? ???? ??? ?? ??? ?? ???."
+                           },
+                           {
+                               "id":  "s1-d4-k3",
+                               "expressionEn":  "Shall we meet at three?",
+                               "expressionKo":  "? ?? ????",
+                               "tipKo":  "Shall we ~? ? ???? ??? ? ? ? ????."
+                           }
+                       ],
+    "quiz":  [
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d4-q1",
+                     "expressionId":  "s1-d4-k1",
+                     "partnerSpeakerLabelKo":  "?",
+                     "partnerLineKo":  "?",
+                     "partnerLineEn":  "You need to find a time with Yeonchorok.",
+                     "promptKo":  "??? ??? ?? ??? ????.",
+                     "promptEn":  "Choose the best line to ask when someone is free.",
+                     "explanationKo":  "When are you free? ? ?? ???? ?? ???? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "When are you free this week?"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "Where is the museum?"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "Could I get it to go?"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "Looking forward to it."
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "next-line-choice",
+                     "id":  "s1-d4-q2",
+                     "expressionId":  "s1-d4-k3",
+                     "partnerSpeakerLabelKo":  "???",
+                     "partnerLineKo":  "???",
+                     "partnerLineEn":  "Wednesday afternoon works for me.",
+                     "promptKo":  "???? ??? ???? ?? ????.",
+                     "promptEn":  "Choose the best reply to suggest a specific time.",
+                     "explanationKo":  "Shall we meet at three? ? ?? ??? ???? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "Great. Shall we meet at three?"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "Go straight and turn left."
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "I will grab the tickets."
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "Cancel the weather."
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "pattern-fill-blank",
+                     "id":  "s1-d4-q3-next-line",
+                     "expressionId":  "s1-d4-k2",
+                     "templateEn":  "Wednesday afternoon {{blank}} for me.",
+                     "promptKo":  "?? ?? ??? ??? ??? ?? ????.",
+                     "promptEn":  "Complete the scheduling pattern.",
+                     "explanationKo":  "works for me? ??? ???? ????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "works"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "orders"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "turns"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "drinks"
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 },
+                 {
+                     "type":  "multiple-choice",
+                     "id":  "s1-d4-q4-pattern",
+                     "promptKo":  "`Shall we meet at three?`? ?? ????? ??? ??????",
+                     "promptEn":  "What does `Shall we meet at three?` mean?",
+                     "explanationKo":  "Shall we meet at ~? ? ?? ??? ???? ?????.",
+                     "options":  [
+                                     {
+                                         "id":  "a",
+                                         "text":  "? ?? ????"
+                                     },
+                                     {
+                                         "id":  "b",
+                                         "text":  "??? ?? ? ????"
+                                     },
+                                     {
+                                         "id":  "c",
+                                         "text":  "??? ???? ????"
+                                     },
+                                     {
+                                         "id":  "d",
+                                         "text":  "? ?? ??."
+                                     }
+                                 ],
+                     "correctOptionId":  "a"
+                 }
+             ]
 }

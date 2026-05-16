@@ -672,7 +672,7 @@ export default function WordStudyDayDetailPage() {
       ) : null}
 
       <section
-        className="ui-card ui-card--dashboard word-study__q-shell"
+        className="ui-card ui-card--dashboard word-study__focus-panel"
         aria-labelledby="word-study-card-label"
       >
         <div className="word-study__q-head">
@@ -728,67 +728,67 @@ export default function WordStudyDayDetailPage() {
           ) : null}
         </div>
         <div className="ui-card__body word-study__stem">{renderQuestionStem(word, q, revealed, correctAnswerText)}</div>
-      </section>
 
-      <section className="ui-card ui-card--dashboard" aria-labelledby="word-study-choices-label">
-        <h2 id="word-study-choices-label" className="ui-card__section-heading word-study__choices-heading">
-          <span className="word-study__choices-title">선택지</span>
-          <span className="word-study__choice-hint">{choiceInstruction(q)}</span>
-        </h2>
-        <div className="word-study__choices" role="group" aria-label="객관식 선택지">
-          {displayOptions.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              disabled={revealed}
-              className={`ui-btn ui-btn--secondary ui-btn--align-start word-study__choice${choiceModifier(opt.id)}`}
-              onClick={() => {
-                if (!revealed) setSelectedOptionId(opt.id)
-              }}
-            >
-              ({opt.id.toUpperCase()}) {opt.text}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {revealed ? (
-        <div className={`word-study__feedback${feedbackClass}`} role="status">
-          {selectedOptionId === q.correctOptionId ? (
-            <p className="word-study__feedback-title">정답입니다.</p>
-          ) : (
-            <>
-              <p className="word-study__feedback-title">오답입니다.</p>
-              <p className="word-study__feedback-detail">
-                정답: ({q.correctOptionId.toUpperCase()}){' '}
-                {q.options.find((o) => o.id === q.correctOptionId)?.text}
-              </p>
-            </>
-          )}
-          <div className="word-study__explanation-block">
-            <p className="word-study__feedback-label">해설</p>
-            <p className="word-study__explanation">{word.explanation}</p>
+        <div className="word-study__choices-panel" aria-labelledby="word-study-choices-label">
+          <h2 id="word-study-choices-label" className="word-study__choices-heading">
+            <span className="word-study__choices-title">선택지</span>
+            <span className="word-study__choice-hint">{choiceInstruction(q)}</span>
+          </h2>
+          <div className="word-study__choices" role="group" aria-label="객관식 선택지">
+            {displayOptions.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                disabled={revealed}
+                className={`ui-btn ui-btn--secondary ui-btn--align-start word-study__choice${choiceModifier(opt.id)}`}
+                onClick={() => {
+                  if (!revealed) setSelectedOptionId(opt.id)
+                }}
+              >
+                ({opt.id.toUpperCase()}) {opt.text}
+              </button>
+            ))}
           </div>
-          <p className="word-study__word-meta">
-            <strong>{word.word}</strong> — {word.meaning}
-          </p>
-          {q.type === 'fill-blank' ? null : (
-            <>
-              <p className="word-study__example-en">{word.exampleSentence}</p>
-              <p className="word-study__example-ko">{word.exampleMeaning}</p>
-            </>
-          )}
         </div>
-      ) : null}
 
-      <button
-        type="button"
-        disabled={primaryDisabled}
-        className="ui-btn ui-btn--primary ui-btn--block word-study__submit"
-        onClick={handlePrimaryAction}
-      >
-        {!revealed ? '정답 확인' : isLast ? '결과 보기' : '다음 문제'}
-      </button>
+        {revealed ? (
+          <div className={`word-study__feedback${feedbackClass}`} role="status">
+            {selectedOptionId === q.correctOptionId ? (
+              <p className="word-study__feedback-title">정답입니다.</p>
+            ) : (
+              <>
+                <p className="word-study__feedback-title">오답입니다.</p>
+                <p className="word-study__feedback-detail">
+                  정답: ({q.correctOptionId.toUpperCase()}){' '}
+                  {q.options.find((o) => o.id === q.correctOptionId)?.text}
+                </p>
+              </>
+            )}
+            <div className="word-study__explanation-block">
+              <p className="word-study__feedback-label">해설</p>
+              <p className="word-study__explanation">{word.explanation}</p>
+            </div>
+            <p className="word-study__word-meta">
+              <strong>{word.word}</strong> — {word.meaning}
+            </p>
+            {q.type === 'fill-blank' ? null : (
+              <>
+                <p className="word-study__example-en">{word.exampleSentence}</p>
+                <p className="word-study__example-ko">{word.exampleMeaning}</p>
+              </>
+            )}
+          </div>
+        ) : null}
+
+        <button
+          type="button"
+          disabled={primaryDisabled}
+          className="ui-btn ui-btn--primary ui-btn--block word-study__submit"
+          onClick={handlePrimaryAction}
+        >
+          {!revealed ? '정답 확인' : isLast ? '결과 보기' : '다음 문제'}
+        </button>
+      </section>
 
       <p className="word-study__footer-note word-study__score-inline">
         누적 · 정답 {correctCount} · 오답 {wrongCount}

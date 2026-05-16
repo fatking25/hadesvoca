@@ -215,12 +215,14 @@ ConversationKeyExpression
 9. Quiz
 -------
 
-ConversationQuiz는 데이터 타입을 유지하지만, 현재 회화 상세 화면에서는 모든 quiz를 단어 풍선 문장 만들기 UI로 렌더링한다.
-즉, 사용자는 단어 토큰을 눌러 문장을 배열하고, 선택한 단어를 빼거나 순서를 바꿀 수 있다.
+ConversationQuiz는 데이터 타입을 유지한다.
+multiple-choice, next-line-choice, pattern-fill-blank는 현재 회화 상세 화면에서 단어 풍선 문장 만들기(sentence-builder) UI로 렌더링한다.
+blank-bubble-fill은 말풍선 안의 빈칸을 option bubble로 채우는 구현 완료 UI 패턴이며, 기존 sentence-builder를 대체하지 않고 추가 지원한다.
+Phase 17 기준 Stage 1 Day 1의 s1-d1-q3-next-line 1문항에 시범 적용되어 있다.
 
 공통 필드
   id              | string
-  type            | "multiple-choice" | "next-line-choice" | "pattern-fill-blank"
+  type            | "multiple-choice" | "next-line-choice" | "pattern-fill-blank" | "blank-bubble-fill"
   promptKo        | string
   promptEn        | string | 선택
   expressionId    | string | 선택
@@ -246,6 +248,32 @@ type별 의미
   - templateEn의 "{{blank}}"에 correct option text를 채운 문장을 정답 문장으로 사용한다.
   - 추가 필드:
       templateEn
+
+- blank-bubble-fill
+  - 말풍선 안에 templateEn 문장을 보여주고, "{{blank}}" 위치를 빈칸 bubble로 렌더링하는 타입이다.
+  - correctOptionId가 가리키는 option text를 "{{blank}}"에 채우면 정답 문장이 된다.
+  - 사용자는 option bubble 하나를 눌러 빈칸을 채우고, 정답 공개 전에는 채워진 빈칸을 다시 눌러 선택을 해제할 수 있다.
+  - 기존 sentence-builder 문제를 제거하지 않고, 빈칸형 말풍선 UX가 필요한 quiz에만 사용한다.
+  - templateEn은 반드시 "{{blank}}" 토큰을 포함해야 한다.
+  - 추가 필드:
+      templateEn
+  - 예시:
+      {
+        "type": "blank-bubble-fill",
+        "id": "s1-d1-q3-bubble",
+        "expressionId": "s1-d1-k1",
+        "templateEn": "Are you {{blank}} for dinner this Friday?",
+        "promptKo": "초대 표현의 빈칸에 들어갈 자연스러운 단어를 고르세요.",
+        "promptEn": "Complete the invitation bubble.",
+        "options": [
+          { "id": "a", "text": "free" },
+          { "id": "b", "text": "late" },
+          { "id": "c", "text": "closed" },
+          { "id": "d", "text": "borrowed" }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Are you free for ~?`는 약속이나 식사 초대에 자연스럽게 쓰는 표현이다."
+      }
 
 오답 기록
 - 퀴즈 오답은 quiz[].id 기준으로 UserProgress에 기록한다.
@@ -283,5 +311,5 @@ type별 의미
 - 각 Day의 이미지 경로가 /content/conversations/stage-{stageId}/assets/... 형식이다.
 - 각 Day의 narrations, dialogue, responseQuiz, keyExpressions, quiz 수량이 목표 표준과 맞다.
 - responseQuiz는 learner 대사에 붙어 있고 정답 option text가 textEn과 일치한다.
-- quiz는 현재 sentence-builder UI로 자연스럽게 풀 수 있는 문장 중심 데이터다.
+- quiz는 sentence-builder 또는 blank-bubble-fill UI로 자연스럽게 풀 수 있는 문장 중심 데이터다.
 - 사용자 저장/완료/오답 데이터에는 본문 문장을 저장하지 않고 참조 ID만 저장한다.
