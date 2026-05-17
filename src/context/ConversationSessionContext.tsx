@@ -10,33 +10,39 @@ import {
   type ConversationSessionValue,
 } from './conversationSessionCore'
 
+function conversationDayKey(stageId: number, dayId: number): string {
+  return `${stageId}:${dayId}`
+}
+
 export function ConversationSessionProvider(props: Readonly<{ children: ReactNode }>) {
   const { children } = props
-  const [completedDayIds, setCompletedDayIds] = useState<ReadonlySet<number>>(
+  const [completedDayKeys, setCompletedDayKeys] = useState<ReadonlySet<string>>(
     () => new Set(),
   )
 
-  const recordDayCompletion = useCallback((dayId: number) => {
-    setCompletedDayIds((prev) => {
-      if (prev.has(dayId)) return prev
+  const recordDayCompletion = useCallback((stageId: number, dayId: number) => {
+    const key = conversationDayKey(stageId, dayId)
+    setCompletedDayKeys((prev) => {
+      if (prev.has(key)) return prev
       const next = new Set(prev)
-      next.add(dayId)
+      next.add(key)
       return next
     })
   }, [])
 
   const isDayComplete = useCallback(
-    (dayId: number) => completedDayIds.has(dayId),
-    [completedDayIds],
+    (stageId: number, dayId: number) =>
+      completedDayKeys.has(conversationDayKey(stageId, dayId)),
+    [completedDayKeys],
   )
 
   const value = useMemo<ConversationSessionValue>(
     () => ({
-      completedDayIds,
+      completedDayKeys,
       recordDayCompletion,
       isDayComplete,
     }),
-    [completedDayIds, recordDayCompletion, isDayComplete],
+    [completedDayKeys, recordDayCompletion, isDayComplete],
   )
 
   return (
@@ -45,4 +51,3 @@ export function ConversationSessionProvider(props: Readonly<{ children: ReactNod
     </ConversationSessionContext.Provider>
   )
 }
-

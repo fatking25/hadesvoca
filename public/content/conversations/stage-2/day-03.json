@@ -1,0 +1,171 @@
+{
+  "dayId": 3,
+  "difficulty": "medium",
+  "titleKo": "키마와 지원 조건 정리하기",
+  "descriptionKo": "근무 조건 확인하기",
+  "sceneDescriptionKo": "서점 게시판 앞에서 키마와 함께 근무 시간, 시급, 경험 조건을 차례대로 확인한다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d3-n1",
+      "textKo": "서점 공고에는 근무 시간과 필요한 경험이 적혀 있다.",
+      "textEn": "The bookstore posting lists the working hours and required experience."
+    },
+    {
+      "id": "s2-d3-n2",
+      "textKo": "키마는 조건을 하나씩 확인해야 나중에 헷갈리지 않는다고 말한다.",
+      "textEn": "Kima says you should check each condition so you will not get confused later."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d3-d1",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "공고를 그냥 넘기지 말고 조건을 확인하자. 몇 시부터 일할 수 있어?",
+      "textEn": "Don't skip the details. Let's check the conditions. What time can you start?"
+    },
+    {
+      "id": "s2-d3-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "오후 2시부터 일할 수 있어요.",
+      "textEn": "I can start at 2 p.m.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "키마가 시작 가능한 시간을 물었습니다. 알맞은 대답을 고르세요.",
+        "promptEn": "Kima asked what time you can start. Choose the best reply.",
+        "options": [
+          { "id": "a", "text": "I can start at 2 p.m." },
+          { "id": "b", "text": "I can start the bookstore." },
+          { "id": "c", "text": "2 p.m. can work me." },
+          { "id": "d", "text": "The condition starts a resume." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I can start at ~`는 시작 가능한 시간을 말할 때 씁니다."
+      }
+    },
+    {
+      "id": "s2-d3-d3",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "좋아. 경험이 필요한지도 확인해봐.",
+      "textEn": "Good. Check if experience is required, too."
+    },
+    {
+      "id": "s2-d3-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "경험이 꼭 필요한가요?",
+      "textEn": "Is experience required?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "경험이 필요한지 확인해야 합니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to check if experience is required. Choose the best sentence.",
+        "options": [
+          { "id": "a", "text": "Is experience required?" },
+          { "id": "b", "text": "Does experience open the door?" },
+          { "id": "c", "text": "Is required experience coffee?" },
+          { "id": "d", "text": "Can the resume experience me?" }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`required`는 필수인, 필요한이라는 뜻입니다."
+      }
+    },
+    {
+      "id": "s2-d3-d5",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "이 정도면 지원 전에 꼭 봐야 할 조건은 정리됐어.",
+      "textEn": "That covers the main conditions you should check before applying."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d3-k1",
+      "expressionEn": "I can start at 2 p.m.",
+      "expressionKo": "오후 2시부터 일할 수 있어요.",
+      "tipKo": "`start at` 뒤에는 시작 시간을 붙입니다."
+    },
+    {
+      "id": "s2-d3-k2",
+      "expressionEn": "Is experience required?",
+      "expressionKo": "경험이 꼭 필요한가요?",
+      "tipKo": "`required`는 조건이 필수인지 확인할 때 자주 씁니다."
+    },
+    {
+      "id": "s2-d3-k3",
+      "expressionEn": "What are the working hours?",
+      "expressionKo": "근무 시간은 어떻게 되나요?",
+      "tipKo": "`working hours`는 근무 시간을 뜻합니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d3-q1",
+      "expressionId": "s2-d3-k1",
+      "partnerSpeakerLabelKo": "키마",
+      "partnerLineKo": "몇 시부터 일할 수 있어?",
+      "partnerLineEn": "What time can you start?",
+      "promptKo": "시작 가능한 시간을 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says what time you can start.",
+      "explanationKo": "`I can start at 2 p.m.`가 자연스럽습니다.",
+      "options": [
+        { "id": "a", "text": "I can start at 2 p.m." },
+        { "id": "b", "text": "I can start in the poster." },
+        { "id": "c", "text": "The job can start me." },
+        { "id": "d", "text": "2 p.m. is required." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d3-q2",
+      "expressionId": "s2-d3-k2",
+      "partnerSpeakerLabelKo": "키마",
+      "partnerLineKo": "경험이 필요한지도 확인해봐.",
+      "partnerLineEn": "Check if experience is required.",
+      "promptKo": "경험이 필수인지 묻는 문장을 고르세요.",
+      "promptEn": "Choose the line that asks if experience is required.",
+      "explanationKo": "`Is experience required?`는 경험 조건을 확인하는 표현입니다.",
+      "options": [
+        { "id": "a", "text": "Is experience required?" },
+        { "id": "b", "text": "Is experience a station?" },
+        { "id": "c", "text": "Do I require the cafe?" },
+        { "id": "d", "text": "Can experience order?" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d3-q3",
+      "expressionId": "s2-d3-k3",
+      "templateEn": "What are the {{blank}} hours?",
+      "promptKo": "근무 시간을 묻는 문장을 완성하세요.",
+      "promptEn": "Complete the sentence about working hours.",
+      "explanationKo": "`working hours`는 근무 시간입니다.",
+      "options": [
+        { "id": "a", "text": "working" },
+        { "id": "b", "text": "book" },
+        { "id": "c", "text": "apply" },
+        { "id": "d", "text": "near" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d3-q4",
+      "promptKo": "`required`의 뜻으로 가장 알맞은 것은?",
+      "promptEn": "What does `required` mean?",
+      "explanationKo": "`required`는 필수인, 필요한이라는 뜻입니다.",
+      "options": [
+        { "id": "a", "text": "필수인" },
+        { "id": "b", "text": "가까운" },
+        { "id": "c", "text": "늦은" },
+        { "id": "d", "text": "싼" }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

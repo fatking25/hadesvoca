@@ -1,33 +1,34 @@
 {
   "dayId": 7,
-  "titleKo": "Stage 1 회고",
-  "descriptionKo": "한 주의 표현 정리",
-  "sceneDescriptionKo": "일요일 밤, 하루를 마무리하며 이번 주에 익힌 표현을 머릿속으로 정리해 본다.",
+  "difficulty": "high",
+  "titleKo": "Stage 1 전체 회고",
+  "descriptionKo": "멤버 전체와 표현 정리",
+  "sceneDescriptionKo": "일요일 밤, 챈나·솜주먹·키마·연초록·띵귤이 함께 모여 이번 주에 익힌 표현을 돌아본다.",
   "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-07-cutscene.jpg",
   "sceneImages": {
     "intro": {
       "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-01.jpg",
-      "altKo": "Stage 1 회고 - 도입 장면"
+      "altKo": "Stage 1 전체 회고 - 도입 장면"
     },
     "dialogue": {
       "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-02.jpg",
-      "altKo": "Stage 1 회고 - 대화 장면"
+      "altKo": "Stage 1 전체 회고 - 대화 장면"
     },
     "review": {
       "imagePath": "/content/conversations/stage-1/assets/stage-1-day-07-scene-03.jpg",
-      "altKo": "Stage 1 회고 - 복습 장면"
+      "altKo": "Stage 1 전체 회고 - 복습 장면"
     }
   },
   "narrations": [
     {
       "id": "s1-d7-n1",
       "textKo": "약속을 잡고, 예약하고, 메뉴를 주문하고, 길을 묻고, 안부를 나누며 한 주가 빠르게 지나갔다.",
-      "textEn": "You set up a dinner, booked a table, ordered food, asked for directions, and caught up with a friend. Quite a week."
+      "textEn": "You set up a dinner, booked a table, ordered food, asked for directions, and caught up with everyone. Quite a week."
     },
     {
       "id": "s1-d7-n2",
-      "textKo": "집에 가기 전, 채나가 약속을 자연스럽게 마무리하는 표현 몇 가지를 꺼낸다.",
-      "textEn": "Before you head home, Channa brings up a few ways to end plans naturally."
+      "textKo": "집에 가기 전, 멤버들이 각자 맡았던 장면을 떠올리며 마무리 표현 몇 가지를 꺼낸다.",
+      "textEn": "Before you head home, everyone recalls their scenes and brings up a few closing phrases."
     }
   ],
   "dialogue": [
@@ -35,26 +36,33 @@
       "id": "s1-d7-d1",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "이번 주 정말 빨리 지나갔다.",
-      "textEn": "This week went by fast."
+      "textKo": "이번 주 정말 빨리 지나갔다. 다들 도와줘서 고마워.",
+      "textEn": "This week went by fast. Thanks for helping, everyone."
     },
     {
       "id": "s1-d7-d2",
       "speakerId": "channa",
       "speakerLabelKo": "챈나",
-      "textKo": "그러게. 작은 약속들도 꽤 자연스럽게 잘했어.",
+      "textKo": "그러게. 첫 약속도 꽤 자연스럽게 잘했어.",
       "textEn": "It did. And you handled a lot of little plans naturally."
     },
     {
       "id": "s1-d7-d3",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "다음엔 더 맛있는 것도 같이 먹자. 조만간 또 만나자.",
+      "textEn": "Let's eat something even better next time. Let's catch up again soon."
+    },
+    {
+      "id": "s1-d7-d4",
       "speakerId": "learner",
       "speakerLabelKo": "나",
-      "textKo": "조만간 또 만나자.",
+      "textKo": "좋아. 조만간 또 만나자.",
       "textEn": "Let's catch up again soon.",
       "responseQuiz": {
         "type": "next-line-choice",
-        "promptKo": "친구에게 조만간 다시 만나자고 자연스럽게 말하려고 합니다. 가장 알맞은 답을 고르세요.",
-        "promptEn": "You want to suggest meeting again soon. Choose the best reply.",
+        "promptKo": "솜주먹의 말에 맞춰 조만간 다시 만나자고 답하려 합니다. 가장 알맞은 답을 고르세요.",
+        "promptEn": "You want to agree with Somjumeok and suggest meeting again soon. Choose the best reply.",
         "options": [
           {
             "id": "a",
@@ -78,22 +86,29 @@
       }
     },
     {
-      "id": "s1-d7-d4",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "좋아. 곧 날짜를 정하자.",
-      "textEn": "I'd like that. Let's pick a day soon."
+      "id": "s1-d7-d5",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "좋아. 곧 날짜를 차분히 정하자.",
+      "textEn": "I'd like that. Let's pick a day calmly soon."
     },
     {
-      "id": "s1-d7-d5",
+      "id": "s1-d7-d6",
+      "speakerId": "yeonchorok",
+      "speakerLabelKo": "연초록",
+      "textKo": "좋아. 장소 정해지면 길도 다시 알려줄게.",
+      "textEn": "Great. Once we pick a place, I'll help with directions again."
+    },
+    {
+      "id": "s1-d7-d7",
       "speakerId": "learner",
       "speakerLabelKo": "나",
       "textKo": "좋아. 그럼 곧 연락할게.",
       "textEn": "Great. Talk to you soon.",
       "responseQuiz": {
         "type": "next-line-choice",
-        "promptKo": "채나가 다시 만나자는 말에 긍정적으로 답했습니다. 대화를 부드럽게 마무리할 문장을 고르세요.",
-        "promptEn": "Channa liked the idea. Choose the best closing reply.",
+        "promptKo": "연초록이 장소와 길 안내를 도와주겠다고 했습니다. 대화를 부드럽게 마무리할 문장을 고르세요.",
+        "promptEn": "Yeonchorok offered to help with the place and directions. Choose the best closing reply.",
         "options": [
           {
             "id": "a",
@@ -117,11 +132,11 @@
       }
     },
     {
-      "id": "s1-d7-d6",
-      "speakerId": "channa",
-      "speakerLabelKo": "챈나",
-      "textKo": "나도 기대할게. 다음에 또 보자!",
-      "textEn": "Looking forward to it. See you next time!"
+      "id": "s1-d7-d8",
+      "speakerId": "ttinggyul",
+      "speakerLabelKo": "띵귤",
+      "textKo": "나도 기대할게. 다음엔 카페에서 짧게 복습하자!",
+      "textEn": "Looking forward to it. Next time, let's review briefly at a cafe!"
     }
   ],
   "keyExpressions": [
@@ -149,7 +164,7 @@
       "type": "next-line-choice",
       "id": "s1-d7-q1",
       "expressionId": "s1-d7-k1",
-      "partnerSpeakerLabelKo": "챈나",
+      "partnerSpeakerLabelKo": "멤버들",
       "partnerLineKo": "이번 주 즐거웠어. 다음에도 또 보자!",
       "partnerLineEn": "Great week. Let's do it again soon!",
       "promptKo": "다음 만남을 자연스럽게 기약하는 대답을 고르세요.",
@@ -179,9 +194,9 @@
       "type": "next-line-choice",
       "id": "s1-d7-q2",
       "expressionId": "s1-d7-k2",
-      "partnerSpeakerLabelKo": "챈나",
-      "partnerLineKo": "좋아. 시간 정해지면 알려줘.",
-      "partnerLineEn": "Great. Let me know once you pick a time.",
+      "partnerSpeakerLabelKo": "연초록",
+      "partnerLineKo": "장소 정해지면 길도 다시 알려줄게.",
+      "partnerLineEn": "Once we pick a place, I'll help with directions again.",
       "promptKo": "대화를 부드럽게 마무리하는 답장을 고르세요.",
       "promptEn": "Choose the best closing reply.",
       "explanationKo": "`Talk to you soon.`은 곧 다시 연락하겠다는 가벼운 마무리 표현입니다.",

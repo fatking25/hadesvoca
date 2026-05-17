@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "stageId": 1,
-  "stageTitleKo": "Stage 1 · 실전 회화",
-  "stageDescriptionKo": "짧은 장면들로 구성된 텍스트 중심 비주얼노벨 흐름입니다.",
+  "stageTitleKo": "Stage 1 · 음식점 가는 상황",
+  "stageDescriptionKo": "약속 잡기부터 예약, 주문, 길 안내, 안부, 일정 변경까지 음식점 하루 흐름으로 연습합니다.",
   "dayFiles": [
     "day-01.json",
     "day-02.json",

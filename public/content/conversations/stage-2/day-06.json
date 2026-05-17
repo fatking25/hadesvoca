@@ -1,0 +1,178 @@
+{
+  "dayId": 6,
+  "difficulty": "high",
+  "titleKo": "키마와 챈나에게 면접 일정 확인하기",
+  "descriptionKo": "가능한 시간 제안하기",
+  "sceneDescriptionKo": "면접 가능 시간을 묻는 메시지가 도착하고, 키마와 챈나가 함께 답장을 다듬어준다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d6-n1",
+      "textKo": "채용 담당자에게서 면접 가능 시간을 묻는 메시지가 왔다.",
+      "textEn": "A hiring manager sends a message asking about your interview availability."
+    },
+    {
+      "id": "s2-d6-n2",
+      "textKo": "가능한 시간, 구체적인 제안, 감사 인사를 정중하게 연결해야 한다.",
+      "textEn": "You need to connect your availability, a specific suggestion, and a polite thank-you."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d6-d1",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "답장 왔어! 화요일 오후가 가능한지 물어봤대.",
+      "textEn": "They replied! They asked if Tuesday afternoon works for you."
+    },
+    {
+      "id": "s2-d6-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "화요일 오후 가능합니다.",
+      "textEn": "I am available on Tuesday afternoon.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "화요일 오후가 가능하다고 답해야 합니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to say Tuesday afternoon works for you. Choose the best sentence.",
+        "options": [
+          { "id": "a", "text": "I am available on Tuesday afternoon." },
+          { "id": "b", "text": "Tuesday afternoon is not a building." },
+          { "id": "c", "text": "I am available inside the resume." },
+          { "id": "d", "text": "The interview can eat Tuesday." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`available`은 시간이 가능하다고 말할 때 쓰는 표현입니다."
+      }
+    },
+    {
+      "id": "s2-d6-d3",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "좋아. 이제 구체적인 시간도 정중하게 제안해봐.",
+      "textEn": "Good. Now suggest a specific time politely."
+    },
+    {
+      "id": "s2-d6-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "오후 3시에 만날 수 있을까요?",
+      "textEn": "Could we meet at 3 p.m.?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "구체적인 면접 시간을 제안해야 합니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to suggest a specific interview time. Choose the best sentence.",
+        "options": [
+          { "id": "a", "text": "Could we meet at 3 p.m.?" },
+          { "id": "b", "text": "Can 3 p.m. meet itself?" },
+          { "id": "c", "text": "I will interview the clock." },
+          { "id": "d", "text": "Could we erase Tuesday?" }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Could we meet at ~?`는 만날 시간을 정중하게 제안할 때 좋습니다."
+      }
+    },
+    {
+      "id": "s2-d6-d5",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "마지막에 기회를 주셔서 감사하다고 붙이면 더 좋아.",
+      "textEn": "It would be better to add a thank-you for the opportunity at the end."
+    },
+    {
+      "id": "s2-d6-d6",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "기회를 주셔서 감사합니다.",
+      "textEn": "Thank you for the opportunity."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d6-k1",
+      "expressionEn": "I am available on Tuesday afternoon.",
+      "expressionKo": "화요일 오후 가능합니다.",
+      "tipKo": "가능한 시간을 말할 때 `available`을 씁니다."
+    },
+    {
+      "id": "s2-d6-k2",
+      "expressionEn": "Could we meet at 3 p.m.?",
+      "expressionKo": "오후 3시에 만날 수 있을까요?",
+      "tipKo": "`Could we ~?`는 정중한 제안에 잘 맞습니다."
+    },
+    {
+      "id": "s2-d6-k3",
+      "expressionEn": "Thank you for the opportunity.",
+      "expressionKo": "기회를 주셔서 감사합니다.",
+      "tipKo": "면접 일정 확정이나 감사 메시지에 자연스럽게 붙일 수 있습니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d6-q1",
+      "expressionId": "s2-d6-k1",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "화요일 오후가 가능한지 물어봤대.",
+      "partnerLineEn": "They asked if Tuesday afternoon works for you.",
+      "promptKo": "화요일 오후가 가능하다고 답하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says Tuesday afternoon works for you.",
+      "explanationKo": "`available on Tuesday afternoon`는 화요일 오후에 시간이 된다는 뜻입니다.",
+      "options": [
+        { "id": "a", "text": "I am available on Tuesday afternoon." },
+        { "id": "b", "text": "I am available under the cafe." },
+        { "id": "c", "text": "Tuesday is interviewing me." },
+        { "id": "d", "text": "The afternoon is closed." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d6-q2",
+      "expressionId": "s2-d6-k3",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "마지막에 감사하다고 붙이면 더 좋아.",
+      "partnerLineEn": "It would be better to add a thank-you at the end.",
+      "promptKo": "기회에 감사한다고 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that thanks them for the opportunity.",
+      "explanationKo": "`opportunity`는 기회라는 뜻입니다.",
+      "options": [
+        { "id": "a", "text": "Thank you for the opportunity." },
+        { "id": "b", "text": "Thank you for the sidewalk." },
+        { "id": "c", "text": "The opportunity is sleeping." },
+        { "id": "d", "text": "I will cancel the thank-you." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d6-q3",
+      "expressionId": "s2-d6-k2",
+      "templateEn": "Could we meet at {{blank}}?",
+      "promptKo": "면접 시간을 제안하는 문장을 완성하세요.",
+      "promptEn": "Complete the interview time suggestion.",
+      "explanationKo": "`3 p.m.`는 오후 3시를 뜻합니다.",
+      "options": [
+        { "id": "a", "text": "3 p.m." },
+        { "id": "b", "text": "hiring" },
+        { "id": "c", "text": "customer" },
+        { "id": "d", "text": "station" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d6-q4",
+      "promptKo": "`I am available on Tuesday afternoon.`의 뜻으로 가장 자연스러운 것은?",
+      "promptEn": "What does `I am available on Tuesday afternoon.` mean?",
+      "explanationKo": "화요일 오후에 시간이 된다고 말하는 표현입니다.",
+      "options": [
+        { "id": "a", "text": "화요일 오후 가능합니다." },
+        { "id": "b", "text": "화요일 오후는 지루합니다." },
+        { "id": "c", "text": "화요일 오후에 길을 잃었습니다." },
+        { "id": "d", "text": "화요일 오후에 주문했습니다." }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

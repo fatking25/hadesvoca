@@ -1,0 +1,171 @@
+{
+  "dayId": 5,
+  "difficulty": "medium",
+  "titleKo": "띵귤과 자기소개 짧게 준비하기",
+  "descriptionKo": "면접 첫인사 만들기",
+  "sceneDescriptionKo": "띵귤과 조용한 서점 구석에서 짧은 자기소개와 강점을 말하는 연습을 한다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d5-n1",
+      "textKo": "띵귤은 면접에서 너무 길게 말하기보다 핵심을 짧게 말하는 것이 좋다고 조언한다.",
+      "textEn": "Ttinggyul advises you to keep your interview introduction short and focused."
+    },
+    {
+      "id": "s2-d5-n2",
+      "textKo": "이름, 관심 있는 일, 강점을 한 문장씩 연결해 자기소개를 준비한다.",
+      "textEn": "You prepare an introduction by connecting your name, interest, and strength."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d5-d1",
+      "speakerId": "ttinggyul",
+      "speakerLabelKo": "띵귤",
+      "textKo": "면접 첫 문장은 짧게 가자. 먼저 자기소개해봐.",
+      "textEn": "Keep your first interview line short. Try introducing yourself first."
+    },
+    {
+      "id": "s2-d5-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "안녕하세요, 저는 지원자입니다.",
+      "textEn": "Hello, I'm an applicant.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "띵귤이 짧게 자기소개를 해보라고 했습니다. 알맞은 첫 문장을 고르세요.",
+        "promptEn": "Ttinggyul asked you to introduce yourself briefly. Choose the best first line.",
+        "options": [
+          { "id": "a", "text": "Hello, I'm an applicant." },
+          { "id": "b", "text": "Hello, I'm a shelf." },
+          { "id": "c", "text": "The applicant is closed." },
+          { "id": "d", "text": "Hello, the interview drinks." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`applicant`는 지원자라는 뜻입니다."
+      }
+    },
+    {
+      "id": "s2-d5-d3",
+      "speakerId": "ttinggyul",
+      "speakerLabelKo": "띵귤",
+      "textKo": "좋아. 이번엔 네 강점을 한 문장으로 말해봐.",
+      "textEn": "Good. Now say your strength in one sentence."
+    },
+    {
+      "id": "s2-d5-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "저는 사람들과 이야기하는 것을 좋아합니다.",
+      "textEn": "I enjoy talking with people.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "강점을 한 문장으로 말해야 합니다. 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to say your strength in one sentence. Choose the natural line.",
+        "options": [
+          { "id": "a", "text": "I enjoy talking with people." },
+          { "id": "b", "text": "I enjoy people with talking." },
+          { "id": "c", "text": "Talking enjoys my resume." },
+          { "id": "d", "text": "People are required at 2 p.m." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I enjoy ~ing`는 좋아하는 활동을 말할 때 쓰기 좋습니다."
+      }
+    },
+    {
+      "id": "s2-d5-d5",
+      "speakerId": "ttinggyul",
+      "speakerLabelKo": "띵귤",
+      "textKo": "좋다. 그 문장에 차분한 목소리만 더하면 훨씬 자연스러워.",
+      "textEn": "Nice. Add a calm voice to that sentence and it will sound much more natural."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d5-k1",
+      "expressionEn": "Hello, I'm an applicant.",
+      "expressionKo": "안녕하세요, 저는 지원자입니다.",
+      "tipKo": "`applicant`는 어떤 일에 지원한 사람을 뜻합니다."
+    },
+    {
+      "id": "s2-d5-k2",
+      "expressionEn": "I enjoy talking with people.",
+      "expressionKo": "저는 사람들과 이야기하는 것을 좋아합니다.",
+      "tipKo": "`I enjoy ~ing`는 좋아하는 활동이나 강점을 말할 때 씁니다."
+    },
+    {
+      "id": "s2-d5-k3",
+      "expressionEn": "I'm interested in customer service.",
+      "expressionKo": "저는 고객 응대에 관심이 있습니다.",
+      "tipKo": "`be interested in` 뒤에는 관심 있는 분야를 붙입니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d5-q1",
+      "expressionId": "s2-d5-k1",
+      "partnerSpeakerLabelKo": "띵귤",
+      "partnerLineKo": "먼저 자기소개해봐.",
+      "partnerLineEn": "Try introducing yourself first.",
+      "promptKo": "면접 첫 자기소개 문장으로 알맞은 것을 고르세요.",
+      "promptEn": "Choose the suitable first line for an interview introduction.",
+      "explanationKo": "`Hello, I'm an applicant.`는 간단한 시작 문장입니다.",
+      "options": [
+        { "id": "a", "text": "Hello, I'm an applicant." },
+        { "id": "b", "text": "Hello, I'm a working hour." },
+        { "id": "c", "text": "I am interested the door." },
+        { "id": "d", "text": "The applicant can bookstore." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d5-q2",
+      "expressionId": "s2-d5-k2",
+      "partnerSpeakerLabelKo": "띵귤",
+      "partnerLineKo": "네 강점을 한 문장으로 말해봐.",
+      "partnerLineEn": "Say your strength in one sentence.",
+      "promptKo": "사람들과 이야기하는 것을 좋아한다고 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says you enjoy talking with people.",
+      "explanationKo": "`I enjoy talking with people.`이 자연스러운 표현입니다.",
+      "options": [
+        { "id": "a", "text": "I enjoy talking with people." },
+        { "id": "b", "text": "I enjoy talk people." },
+        { "id": "c", "text": "People enjoy my interview." },
+        { "id": "d", "text": "Talking can apply me." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d5-q3",
+      "expressionId": "s2-d5-k3",
+      "templateEn": "I'm interested in {{blank}} service.",
+      "promptKo": "고객 응대에 관심이 있다고 말하려면 빈칸에 무엇이 들어갈까요?",
+      "promptEn": "Choose the word that completes the sentence.",
+      "explanationKo": "`customer service`는 고객 응대, 고객 서비스를 뜻합니다.",
+      "options": [
+        { "id": "a", "text": "customer" },
+        { "id": "b", "text": "resume" },
+        { "id": "c", "text": "floor" },
+        { "id": "d", "text": "notice" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d5-q4",
+      "promptKo": "`applicant`의 뜻으로 가장 알맞은 것은?",
+      "promptEn": "What does `applicant` mean?",
+      "explanationKo": "`applicant`는 지원자입니다.",
+      "options": [
+        { "id": "a", "text": "지원자" },
+        { "id": "b", "text": "면접관" },
+        { "id": "c", "text": "손님" },
+        { "id": "d", "text": "동료" }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

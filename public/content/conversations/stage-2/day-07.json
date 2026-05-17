@@ -1,0 +1,192 @@
+{
+  "dayId": 7,
+  "difficulty": "high",
+  "titleKo": "멤버 전체와 첫 면접 전날 점검하기",
+  "descriptionKo": "준비 상태와 긴장감 말하기",
+  "sceneDescriptionKo": "첫 면접 전날, 챈나와 키마, 솜주먹, 띵귤, 연초록이 모여 마지막으로 준비물을 점검해준다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d7-n1",
+      "textKo": "면접 전날 밤, 모두가 작은 테이블에 모여 이력서와 일정, 이동 경로를 확인한다.",
+      "textEn": "The night before the interview, everyone gathers around a small table to check your resume, schedule, and route."
+    },
+    {
+      "id": "s2-d7-n2",
+      "textKo": "긴장되는 마음도 숨기지 않고 말하며, 마지막 한 문장으로 자신감을 정리한다.",
+      "textEn": "You say honestly that you feel nervous and finish with one confident sentence."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d7-d1",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "내일 드디어 면접이지? 지금 기분 어때?",
+      "textEn": "Your interview is finally tomorrow, right? How do you feel now?"
+    },
+    {
+      "id": "s2-d7-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "내일 면접이 있어.",
+      "textEn": "I have an interview tomorrow.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "내일 면접이 있다고 말해야 합니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to say you have an interview tomorrow. Choose the best line.",
+        "options": [
+          { "id": "a", "text": "I have an interview tomorrow." },
+          { "id": "b", "text": "I have tomorrow inside interview." },
+          { "id": "c", "text": "The interview has my Tuesday." },
+          { "id": "d", "text": "Tomorrow is hiring a resume." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I have an interview tomorrow.`는 내일 면접이 있다는 뜻입니다."
+      }
+    },
+    {
+      "id": "s2-d7-d3",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "긴장되는 건 당연해. 그래도 준비 많이 했잖아.",
+      "textEn": "It's normal to feel nervous. But you prepared a lot."
+    },
+    {
+      "id": "s2-d7-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "조금 긴장돼.",
+      "textEn": "I feel a little nervous.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "조금 긴장된다고 말해야 합니다. 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to say you feel a little nervous. Choose the natural line.",
+        "options": [
+          { "id": "a", "text": "I feel a little nervous." },
+          { "id": "b", "text": "I nervous a little feel." },
+          { "id": "c", "text": "The resume feels tomorrow." },
+          { "id": "d", "text": "I feel a little building." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I feel a little nervous.`는 긴장감을 부드럽게 말하는 표현입니다."
+      }
+    },
+    {
+      "id": "s2-d7-d5",
+      "speakerId": "kima",
+      "speakerLabelKo": "키마",
+      "textKo": "이력서, 시간, 장소 확인 완료. 이제 마지막 문장만 말해봐.",
+      "textEn": "Resume, time, and place checked. Now say your final sentence."
+    },
+    {
+      "id": "s2-d7-d6",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "준비된 것 같아.",
+      "textEn": "I think I'm ready."
+    },
+    {
+      "id": "s2-d7-d7",
+      "speakerId": "yeonchorok",
+      "speakerLabelKo": "연초록",
+      "textKo": "그 말이면 충분해. 내일은 차분하게 들어가면 돼.",
+      "textEn": "That's enough. Tomorrow, just walk in calmly."
+    },
+    {
+      "id": "s2-d7-d8",
+      "speakerId": "ttinggyul",
+      "speakerLabelKo": "띵귤",
+      "textKo": "그리고 웃는 얼굴 잊지 마. 첫인상은 꽤 강하니까.",
+      "textEn": "And don't forget to smile. First impressions are powerful."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d7-k1",
+      "expressionEn": "I have an interview tomorrow.",
+      "expressionKo": "내일 면접이 있어.",
+      "tipKo": "면접 일정이 가까워졌음을 말할 때 쓰는 기본 문장입니다."
+    },
+    {
+      "id": "s2-d7-k2",
+      "expressionEn": "I feel a little nervous.",
+      "expressionKo": "조금 긴장돼.",
+      "tipKo": "`a little`을 넣으면 감정을 부드럽게 표현할 수 있습니다."
+    },
+    {
+      "id": "s2-d7-k3",
+      "expressionEn": "I think I'm ready.",
+      "expressionKo": "준비된 것 같아.",
+      "tipKo": "완전히 확신하지 않아도 준비 상태를 자연스럽게 말할 수 있습니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d7-q1",
+      "expressionId": "s2-d7-k1",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "내일 드디어 면접이지?",
+      "partnerLineEn": "Your interview is finally tomorrow, right?",
+      "promptKo": "내일 면접이 있다고 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says you have an interview tomorrow.",
+      "explanationKo": "`I have an interview tomorrow.`가 자연스럽습니다.",
+      "options": [
+        { "id": "a", "text": "I have an interview tomorrow." },
+        { "id": "b", "text": "I have tomorrow a bookstore." },
+        { "id": "c", "text": "Interview has my resume." },
+        { "id": "d", "text": "Tomorrow can apply." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d7-q2",
+      "expressionId": "s2-d7-k3",
+      "partnerSpeakerLabelKo": "키마",
+      "partnerLineKo": "이제 마지막 문장만 말해봐.",
+      "partnerLineEn": "Now say your final sentence.",
+      "promptKo": "준비된 것 같다고 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says you think you are ready.",
+      "explanationKo": "`I think I'm ready.`는 준비 상태를 자연스럽게 말합니다.",
+      "options": [
+        { "id": "a", "text": "I think I'm ready." },
+        { "id": "b", "text": "I ready think the interview." },
+        { "id": "c", "text": "Ready is a building." },
+        { "id": "d", "text": "I think tomorrow is a resume." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d7-q3",
+      "expressionId": "s2-d7-k1",
+      "templateEn": "I have an {{blank}} tomorrow.",
+      "promptKo": "내일 면접이 있다고 말하려면 빈칸에 무엇이 들어갈까요?",
+      "promptEn": "Choose the word that completes the sentence.",
+      "explanationKo": "`interview`는 면접입니다.",
+      "options": [
+        { "id": "a", "text": "interview" },
+        { "id": "b", "text": "applicant" },
+        { "id": "c", "text": "floor" },
+        { "id": "d", "text": "posting" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d7-q4",
+      "promptKo": "`I feel a little nervous.`의 뜻으로 가장 알맞은 것은?",
+      "promptEn": "What does `I feel a little nervous.` mean?",
+      "explanationKo": "조금 긴장된다는 감정을 말하는 표현입니다.",
+      "options": [
+        { "id": "a", "text": "조금 긴장돼." },
+        { "id": "b", "text": "준비가 전혀 안 됐어." },
+        { "id": "c", "text": "오늘 채용 중이야." },
+        { "id": "d", "text": "면접 장소가 바뀌었어." }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

@@ -512,6 +512,18 @@ export default function WordStudyDayDetailPage() {
     resetQuestionLocalState()
   }
 
+  const handleOptionSelect = (optionId: string) => {
+    if (current === undefined || revealed) return
+    setSelectedOptionId(optionId)
+    const ok = optionId === current.question.correctOptionId
+    setRevealed(true)
+    if (ok) setCorrectCount((c) => c + 1)
+    else {
+      setWrongCount((w) => w + 1)
+      wrongItemsRef.current = [...wrongItemsRef.current, toWrongSummary(current)]
+    }
+  }
+
   if (!isReviewMode && dayNum === null) {
     return (
       <main className="word-study">
@@ -635,12 +647,12 @@ export default function WordStudyDayDetailPage() {
   const q = current!.question
   const word = current!.word
   const correctAnswerText = q.options.find((o) => o.id === q.correctOptionId)?.text ?? ''
-  const primaryDisabled = !revealed && selectedOptionId === null
 
   const progressLabel = `문항 ${questionIndex + 1} / ${total}`
+  const answeredCorrectly = selectedOptionId === q.correctOptionId
 
   const feedbackClass =
-    revealed && selectedOptionId !== null && selectedOptionId === q.correctOptionId
+    revealed && selectedOptionId !== null && answeredCorrectly
       ? ' word-study__feedback--correct'
       : revealed
         ? ' word-study__feedback--incorrect'
@@ -742,7 +754,7 @@ export default function WordStudyDayDetailPage() {
                 disabled={revealed}
                 className={`ui-btn ui-btn--secondary ui-btn--align-start word-study__choice${choiceModifier(opt.id)}`}
                 onClick={() => {
-                  if (!revealed) setSelectedOptionId(opt.id)
+                  handleOptionSelect(opt.id)
                 }}
               >
                 ({opt.id.toUpperCase()}) {opt.text}
@@ -750,17 +762,22 @@ export default function WordStudyDayDetailPage() {
             ))}
           </div>
         </div>
+      </section>
 
-        {revealed ? (
+      <p className="word-study__footer-note word-study__score-inline">
+        누적 · 정답 {correctCount} · 오답 {wrongCount}
+      </p>
+
+      {revealed ? (
+        <div className="word-study__answer-overlay" role="dialog" aria-modal="true">
           <div className={`word-study__feedback${feedbackClass}`} role="status">
-            {selectedOptionId === q.correctOptionId ? (
+            {answeredCorrectly ? (
               <p className="word-study__feedback-title">정답입니다.</p>
             ) : (
               <>
                 <p className="word-study__feedback-title">오답입니다.</p>
                 <p className="word-study__feedback-detail">
-                  정답: ({q.correctOptionId.toUpperCase()}){' '}
-                  {q.options.find((o) => o.id === q.correctOptionId)?.text}
+                  정답: ({q.correctOptionId.toUpperCase()}) {correctAnswerText}
                 </p>
               </>
             )}
@@ -777,22 +794,16 @@ export default function WordStudyDayDetailPage() {
                 <p className="word-study__example-ko">{word.exampleMeaning}</p>
               </>
             )}
+            <button
+              type="button"
+              className="ui-btn ui-btn--primary ui-btn--block word-study__submit"
+              onClick={handlePrimaryAction}
+            >
+              {isLast ? '결과 보기' : '다음 문제'}
+            </button>
           </div>
-        ) : null}
-
-        <button
-          type="button"
-          disabled={primaryDisabled}
-          className="ui-btn ui-btn--primary ui-btn--block word-study__submit"
-          onClick={handlePrimaryAction}
-        >
-          {!revealed ? '정답 확인' : isLast ? '결과 보기' : '다음 문제'}
-        </button>
-      </section>
-
-      <p className="word-study__footer-note word-study__score-inline">
-        누적 · 정답 {correctCount} · 오답 {wrongCount}
-      </p>
+        </div>
+      ) : null}
     </main>
   )
 }

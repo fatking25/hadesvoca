@@ -22,10 +22,20 @@ function parseDayId(raw: string | undefined): number | null {
   return Number.isFinite(n) ? n : null
 }
 
+function parseStageId(raw: string | undefined): number {
+  if (raw === undefined || raw === '') return MVP_CONVERSATION_STAGE_ID
+  const n = Number.parseInt(raw, 10)
+  return Number.isFinite(n) ? n : MVP_CONVERSATION_STAGE_ID
+}
+
 export default function ConversationDayResultPage() {
-  const { dayId: dayIdParam } = useParams<{ dayId: string }>()
+  const { stageId: stageIdParam, dayId: dayIdParam } = useParams<{
+    stageId?: string
+    dayId: string
+  }>()
   const location = useLocation()
   const { recordDayCompletion } = useConversationSession()
+  const stageId = parseStageId(stageIdParam)
   const dayIdNum = parseDayId(dayIdParam)
 
   const flowState = location.state as ConversationDayResultLocationState | null
@@ -33,8 +43,8 @@ export default function ConversationDayResultPage() {
   useEffect(() => {
     if (dayIdNum === null) return
     if (flowState?.fromFlow !== true) return
-    recordDayCompletion(dayIdNum)
-  }, [dayIdNum, flowState, recordDayCompletion])
+    recordDayCompletion(stageId, dayIdNum)
+  }, [dayIdNum, flowState, recordDayCompletion, stageId])
 
   /** `persistNonce` 가 있을 때만 1회 `UserProgress` 갱신(직접 URL·구 state 제외) */
   useEffect(() => {
@@ -52,13 +62,13 @@ export default function ConversationDayResultPage() {
 
     const prev = loadUserProgress()
     const next = mergeUserProgressAfterConversationDay(prev, {
-      stageId: MVP_CONVERSATION_STAGE_ID,
+      stageId,
       dayId: dayIdNum,
       expressionWrongQuizIds: quizIds,
       now,
     })
     saveUserProgress(next)
-  }, [dayIdNum, flowState])
+  }, [dayIdNum, flowState, stageId])
 
   const hasFlowScores = flowState?.fromFlow === true
   const skippedQuiz = flowState?.skippedQuiz === true
@@ -72,8 +82,8 @@ export default function ConversationDayResultPage() {
   const nextDayId = hasFlowScores ? flowState.nextDayId : null
   const continueHref =
     hasFlowScores && nextDayId !== null
-      ? `/conversation/${nextDayId}`
-      : '/conversation'
+      ? `/conversation/stage/${stageId}/day/${nextDayId}`
+      : `/conversation/stage/${stageId}`
   const continueLabel =
     hasFlowScores && nextDayId !== null ? '다음 학습 계속하기' : '회화 목록에서 계속하기'
 
@@ -83,7 +93,7 @@ export default function ConversationDayResultPage() {
         <p className="conv-detail__session-note" role="alert">
           Day 번호가 올바르지 않습니다.
         </p>
-        <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/conversation">
+        <Link className="ui-btn ui-btn--secondary ui-btn--block" to={`/conversation/stage/${stageId}`}>
           회화 목록
         </Link>
       </main>
@@ -93,7 +103,7 @@ export default function ConversationDayResultPage() {
   return (
     <main className="conv-detail">
       <div className="conv-detail__title-block">
-        <p className="conv-detail__eyebrow">실전 회화 · Stage {MVP_CONVERSATION_STAGE_ID}</p>
+        <p className="conv-detail__eyebrow">실전 회화 · Stage {stageId}</p>
         {hasFlowScores ? (
           <p className="conv-detail__result-kicker">학습 완료</p>
         ) : null}
@@ -124,8 +134,11 @@ export default function ConversationDayResultPage() {
           <Link className="ui-btn ui-btn--primary ui-btn--block" to={continueHref}>
             {continueLabel}
           </Link>
-          <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/conversation">
+          <Link className="ui-btn ui-btn--secondary ui-btn--block" to={`/conversation/stage/${stageId}`}>
             회화 목록
+          </Link>
+          <Link className="ui-btn ui-btn--ghost ui-btn--block" to="/conversation">
+            스테이지 선택
           </Link>
           <Link className="ui-btn ui-btn--ghost ui-btn--block" to="/home">
             홈으로

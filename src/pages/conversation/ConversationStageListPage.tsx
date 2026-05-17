@@ -2,7 +2,7 @@
  * Stage 1 실전 회화 Day 목록: `stage-1.json` 로드 후 카드 형태로 표시합니다.
  */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   FALLBACK_CONVERSATION_CUTSCENE_PATH,
   MVP_CONVERSATION_STAGE_ID,
@@ -15,6 +15,7 @@ import {
   type RemoteContentState,
 } from '../../api/contentApi'
 import { countCompletedConversationDaysForStage } from '../../utils/learnStats'
+import { getConversationDifficultyView } from '../../utils/conversationDifficulty'
 import { isSequentialDayUnlocked } from '../../utils/learningUnlock'
 import {
   HADES_USER_PROGRESS_EVENT,
@@ -25,13 +26,14 @@ import type { ConversationDay, ConversationStage } from '../../types/conversatio
 import './ConversationStageListPage.css'
 
 function DayEntryCard(
-  props: Readonly<{ day: ConversationDay; complete: boolean; locked: boolean }>,
+  props: Readonly<{ stageId: number; day: ConversationDay; complete: boolean; locked: boolean }>,
 ) {
-  const { day, complete, locked } = props
+  const { stageId, day, complete, locked } = props
   const thumbSrc = day.cutsceneImagePath?.trim()
     ? resolvePublicUrl(day.cutsceneImagePath)
     : resolvePublicUrl(FALLBACK_CONVERSATION_CUTSCENE_PATH)
-  const href = `/conversation/${day.dayId}`
+  const href = `/conversation/stage/${stageId}/day/${day.dayId}`
+  const difficulty = getConversationDifficultyView(day.difficulty)
 
   return (
     <li>
@@ -52,6 +54,12 @@ function DayEntryCard(
           <div>
             <div className="conv-stage-list__day-row">
               <p className="conv-stage-list__day-num">Day {day.dayId}</p>
+              <span
+                className={`conv-stage-list__difficulty conv-stage-list__difficulty--${difficulty.tone}`}
+                title={difficulty.labelKo}
+              >
+                {difficulty.labelKo}
+              </span>
               {complete ? (
                 <span className="conv-stage-list__done-pill" aria-label="학습 완료">
                   완료
@@ -85,6 +93,12 @@ function DayEntryCard(
 }
 
 export default function ConversationStageListPage() {
+  const { stageId: stageIdParam } = useParams<{ stageId: string }>()
+  const stageIdRaw =
+    stageIdParam === undefined || stageIdParam === ''
+      ? MVP_CONVERSATION_STAGE_ID
+      : Number.parseInt(stageIdParam, 10)
+  const stageId = Number.isFinite(stageIdRaw) ? stageIdRaw : MVP_CONVERSATION_STAGE_ID
   const { isDayComplete } = useConversationSession()
   // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
   // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 로딩 UI 라
@@ -118,7 +132,7 @@ export default function ConversationStageListPage() {
 
   useEffect(() => {
     let cancelled = false
-    getConversationStage(MVP_CONVERSATION_STAGE_ID)
+    getConversationStage(stageId)
       .then((data) => {
         if (!cancelled) setState({ status: 'success', data })
       })
@@ -129,7 +143,7 @@ export default function ConversationStageListPage() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [stageId])
 
   let body: ReactNode
   if (state.status === 'idle' || state.status === 'loading') {
@@ -157,7 +171,7 @@ export default function ConversationStageListPage() {
     const sortedIds = days.map((d) => d.dayId)
     const completedPersisted = new Set<number>()
     for (const r of persistedProgress.completedConversationDays) {
-      if (r.stageId === MVP_CONVERSATION_STAGE_ID) {
+      if (r.stageId === stageId) {
         completedPersisted.add(r.dayId)
       }
     }
@@ -169,26 +183,32 @@ export default function ConversationStageListPage() {
           {days.map((d) => {
             const persistedDone = isConversationDayCompletedPersisted(
               persistedProgress,
-              MVP_CONVERSATION_STAGE_ID,
+              stageId,
               d.dayId,
             )
-            const sessionDone = isDayComplete(d.dayId)
+            const sessionDone = isDayComplete(stageId, d.dayId)
             const complete = sessionDone || persistedDone
             const seqOpen = isSequentialDayUnlocked(sortedIds, completedPersisted, d.dayId)
             const locked = !complete && !seqOpen
             return (
-              <DayEntryCard key={d.dayId} day={d} complete={complete} locked={locked} />
+              <DayEntryCard
+                key={d.dayId}
+                stageId={stageId}
+                day={d}
+                complete={complete}
+                locked={locked}
+              />
             )
           })}
         </ul>
       )
   }
 
-  const stageEyebrow = `Stage ${MVP_CONVERSATION_STAGE_ID} · 실전 회화`
+  const stageEyebrow = `Stage ${stageId} · 실전 회화`
   const stageTitle =
     state.status === 'success' && state.data.stageTitleKo !== undefined && state.data.stageTitleKo.trim() !== ''
       ? state.data.stageTitleKo
-      : `Stage ${MVP_CONVERSATION_STAGE_ID}`
+      : `Stage ${stageId}`
   const stageDesc =
     state.status === 'success' && state.data.stageDescriptionKo !== undefined
       ? state.data.stageDescriptionKo
@@ -200,9 +220,9 @@ export default function ConversationStageListPage() {
         const total = Math.max(0, state.data.days.length)
         const done = countCompletedConversationDaysForStage(
           persistedProgress,
-          MVP_CONVERSATION_STAGE_ID,
+          stageId,
         )
-        return `Stage ${MVP_CONVERSATION_STAGE_ID} 진행률 ${done}/${total}`
+        return `Stage ${stageId} 진행률 ${done}/${total}`
       })()
     : null
 
@@ -211,6 +231,9 @@ export default function ConversationStageListPage() {
       <header className="conv-stage-list__hero">
         <p className="conv-stage-list__eyebrow">{stageEyebrow}</p>
         <h1 className="conv-stage-list__title">{stageTitle}</h1>
+        <Link className="conv-stage-list__back-link" to="/conversation">
+          스테이지 선택
+        </Link>
         {stageProgressLine !== null ? (
           <p className="conv-stage-list__progress-line">{stageProgressLine}</p>
         ) : null}

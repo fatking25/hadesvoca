@@ -1,0 +1,171 @@
+{
+  "dayId": 4,
+  "difficulty": "medium",
+  "titleKo": "연초록과 면접 장소 찾아가기",
+  "descriptionKo": "길 묻고 위치 확인하기",
+  "sceneDescriptionKo": "연초록과 함께 면접 장소가 있는 건물을 찾으며 길을 묻는다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d4-n1",
+      "textKo": "면접 장소 근처에 도착했지만 입구가 잘 보이지 않는다.",
+      "textEn": "You arrive near the interview location, but the entrance is not easy to find."
+    },
+    {
+      "id": "s2-d4-n2",
+      "textKo": "연초록은 침착하게 건물 이름과 층수를 확인하자고 한다.",
+      "textEn": "Yeonchorok suggests calmly checking the building name and floor."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d4-d1",
+      "speakerId": "yeonchorok",
+      "speakerLabelKo": "연초록",
+      "textKo": "주소는 맞는데 입구가 안 보이네. 길을 물어볼까?",
+      "textEn": "The address is right, but I don't see the entrance. Should we ask for directions?"
+    },
+    {
+      "id": "s2-d4-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "실례합니다, 이 건물이 어디인가요?",
+      "textEn": "Excuse me, where is this building?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "길을 물어야 합니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "You need to ask for directions. Choose the best sentence.",
+        "options": [
+          { "id": "a", "text": "Excuse me, where is this building?" },
+          { "id": "b", "text": "Excuse me, why is this building?" },
+          { "id": "c", "text": "Where can I interview the street?" },
+          { "id": "d", "text": "The entrance is applying." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Excuse me`로 시작하면 모르는 사람에게 정중하게 물을 수 있습니다."
+      }
+    },
+    {
+      "id": "s2-d4-d3",
+      "speakerId": "yeonchorok",
+      "speakerLabelKo": "연초록",
+      "textKo": "좋아. 이제 몇 층인지도 확인해보자.",
+      "textEn": "Good. Now let's check which floor it is on."
+    },
+    {
+      "id": "s2-d4-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "면접은 몇 층에서 하나요?",
+      "textEn": "Which floor is the interview on?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "면접이 몇 층에서 열리는지 물어야 합니다. 알맞은 문장을 고르세요.",
+        "promptEn": "You need to ask which floor the interview is on. Choose the right line.",
+        "options": [
+          { "id": "a", "text": "Which floor is the interview on?" },
+          { "id": "b", "text": "Which floor can eat the interview?" },
+          { "id": "c", "text": "Is the interview under my resume?" },
+          { "id": "d", "text": "The floor is still hiring." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Which floor is ~ on?`은 위치한 층을 물을 때 씁니다."
+      }
+    },
+    {
+      "id": "s2-d4-d5",
+      "speakerId": "yeonchorok",
+      "speakerLabelKo": "연초록",
+      "textKo": "이제 도착했어. 들어가기 전에 숨 한번 고르자.",
+      "textEn": "We made it. Take a breath before going in."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d4-k1",
+      "expressionEn": "Excuse me, where is this building?",
+      "expressionKo": "실례합니다, 이 건물이 어디인가요?",
+      "tipKo": "모르는 사람에게 말을 걸 때 `Excuse me`를 붙이면 정중합니다."
+    },
+    {
+      "id": "s2-d4-k2",
+      "expressionEn": "Which floor is the interview on?",
+      "expressionKo": "면접은 몇 층에서 하나요?",
+      "tipKo": "층수를 물을 때 `Which floor`를 사용합니다."
+    },
+    {
+      "id": "s2-d4-k3",
+      "expressionEn": "I'm here for an interview.",
+      "expressionKo": "면접 보러 왔습니다.",
+      "tipKo": "도착 후 안내 데스크에서 자주 쓸 수 있는 표현입니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d4-q1",
+      "expressionId": "s2-d4-k1",
+      "partnerSpeakerLabelKo": "연초록",
+      "partnerLineKo": "길을 물어볼까?",
+      "partnerLineEn": "Should we ask for directions?",
+      "promptKo": "건물 위치를 정중하게 묻는 문장을 고르세요.",
+      "promptEn": "Choose the polite line to ask where the building is.",
+      "explanationKo": "`Excuse me, where is this building?`이 가장 자연스럽습니다.",
+      "options": [
+        { "id": "a", "text": "Excuse me, where is this building?" },
+        { "id": "b", "text": "Excuse me, this building is hungry." },
+        { "id": "c", "text": "Can I bring the floor today?" },
+        { "id": "d", "text": "Where does my job sleep?" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d4-q2",
+      "expressionId": "s2-d4-k2",
+      "partnerSpeakerLabelKo": "연초록",
+      "partnerLineKo": "몇 층인지도 확인해보자.",
+      "partnerLineEn": "Let's check which floor it is on.",
+      "promptKo": "면접 층수를 묻는 문장을 고르세요.",
+      "promptEn": "Choose the sentence asking which floor the interview is on.",
+      "explanationKo": "`Which floor is the interview on?`은 면접 장소의 층수를 묻는 표현입니다.",
+      "options": [
+        { "id": "a", "text": "Which floor is the interview on?" },
+        { "id": "b", "text": "Which interview is the floor on?" },
+        { "id": "c", "text": "How floor is apply?" },
+        { "id": "d", "text": "The interview opens a map." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d4-q3",
+      "expressionId": "s2-d4-k3",
+      "templateEn": "I'm here for an {{blank}}.",
+      "promptKo": "면접 보러 왔다고 말하려면 빈칸에 무엇이 들어갈까요?",
+      "promptEn": "Choose the word that completes the sentence.",
+      "explanationKo": "`interview`는 면접입니다.",
+      "options": [
+        { "id": "a", "text": "interview" },
+        { "id": "b", "text": "entrance" },
+        { "id": "c", "text": "floor" },
+        { "id": "d", "text": "street" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d4-q4",
+      "promptKo": "`Excuse me`는 어떤 상황에서 가장 자연스러운가요?",
+      "promptEn": "When is `Excuse me` most natural?",
+      "explanationKo": "모르는 사람에게 정중하게 말을 걸 때 씁니다.",
+      "options": [
+        { "id": "a", "text": "모르는 사람에게 정중하게 말을 걸 때" },
+        { "id": "b", "text": "음식을 주문하고 계산할 때만" },
+        { "id": "c", "text": "친구에게 화낼 때" },
+        { "id": "d", "text": "면접을 끝낼 때만" }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

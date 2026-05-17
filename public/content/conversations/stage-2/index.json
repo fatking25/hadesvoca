@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "stageId": 2,
+  "stageTitleKo": "Stage 2 · 구직-1: 취업 정보 얻기",
+  "stageDescriptionKo": "카페, 서점, 동네 공간을 돌아다니며 취업 정보를 묻고 첫 면접 전날까지 준비하는 흐름입니다.",
+  "dayFiles": [
+    "day-01.json",
+    "day-02.json",
+    "day-03.json",
+    "day-04.json",
+    "day-05.json",
+    "day-06.json",
+    "day-07.json"
+  ]
+}

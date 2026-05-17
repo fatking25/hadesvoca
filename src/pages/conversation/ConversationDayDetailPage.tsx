@@ -17,6 +17,7 @@ import type { ConversationDayResultLocationState } from '../../context/conversat
 import type {
   ConversationDay,
   ConversationDialogueLine,
+  ConversationQuizOption,
   ConversationQuiz,
   ConversationSceneImageKey,
   ConversationStage,
@@ -48,6 +49,12 @@ function parseDayId(raw: string | undefined): number | null {
   if (raw === undefined || raw === '') return null
   const n = Number.parseInt(raw, 10)
   return Number.isFinite(n) ? n : null
+}
+
+function parseStageId(raw: string | undefined): number {
+  if (raw === undefined || raw === '') return MVP_CONVERSATION_STAGE_ID
+  const n = Number.parseInt(raw, 10)
+  return Number.isFinite(n) ? n : MVP_CONVERSATION_STAGE_ID
 }
 
 /** 중앙 장면 설명: `sceneDescriptionKo` 우선, 없으면 `descriptionKo` */
@@ -133,6 +140,41 @@ function getCorrectQuizOptionText(q: ConversationQuiz): string {
   return q.options.find((opt) => opt.id === q.correctOptionId)?.text ?? ''
 }
 
+function stableShuffleValue(seed: string): number {
+  let n = 2166136261
+  for (let i = 0; i < seed.length; i += 1) {
+    n ^= seed.charCodeAt(i)
+    n = Math.imul(n, 16777619)
+  }
+  return n >>> 0
+}
+
+function stableShuffleBySeed<T>(
+  items: readonly T[],
+  seed: string,
+  itemSeed: (item: T, index: number) => string,
+): readonly T[] {
+  return items
+    .map((item, index) => ({
+      item,
+      index,
+      order: stableShuffleValue(`${seed}:${index}:${itemSeed(item, index)}`),
+    }))
+    .sort((a, b) => (a.order === b.order ? a.index - b.index : a.order - b.order))
+    .map(({ item }) => item)
+}
+
+function shuffledQuizOptions(
+  options: readonly ConversationQuizOption[],
+  seed: string,
+): readonly ConversationQuizOption[] {
+  const shuffled = stableShuffleBySeed(options, seed, (opt) => `${opt.id}:${opt.text}`)
+  if (shuffled.length <= 1) return shuffled
+  const unchanged = shuffled.every((opt, index) => opt.id === options[index]?.id)
+  if (!unchanged) return shuffled
+  return [...shuffled.slice(1), shuffled[0]!]
+}
+
 function extractBacktickExpression(text: string | undefined): string | null {
   if (text === undefined) return null
   const matched = text.match(/`([^`]+)`/)
@@ -160,23 +202,17 @@ function blankBubbleSelectedText(
   return q.options.find((opt) => opt.id === selectedOptionId)?.text ?? ''
 }
 
-function sentenceBuilderShuffleValue(seed: string, index: number): number {
-  let n = 0
-  for (let i = 0; i < seed.length; i += 1) {
-    n = (n * 31 + seed.charCodeAt(i)) % 9973
-  }
-  return (n + index * 37) % 9973
-}
-
 function sentenceBuilderTokensForQuiz(q: ConversationQuiz): readonly SentenceBuilderToken[] {
-  return splitSentenceBuilderTokens(sentenceBuilderAnswerText(q))
-    .map((text, index) => ({
+  const tokens = splitSentenceBuilderTokens(sentenceBuilderAnswerText(q)).map(
+    (text, index) => ({
       id: `${q.id}-tok-${index}`,
       text,
-      order: sentenceBuilderShuffleValue(q.id, index),
-    }))
-    .sort((a, b) => a.order - b.order)
-    .map(({ id, text }) => ({ id, text }))
+    }),
+  )
+  const shuffled = stableShuffleBySeed(tokens, `sentence:${q.id}`, (token) => token.text)
+  if (shuffled.length <= 1) return shuffled
+  const unchanged = shuffled.every((token, index) => token.id === tokens[index]?.id)
+  return unchanged ? [...shuffled.slice(1), shuffled[0]!] : shuffled
 }
 
 function createPersistNonce(): string {
@@ -197,8 +233,12 @@ function nextDayIdInStage(
 }
 
 export default function ConversationDayDetailPage() {
-  const { dayId: dayIdParam } = useParams<{ dayId: string }>()
+  const { stageId: stageIdParam, dayId: dayIdParam } = useParams<{
+    stageId?: string
+    dayId: string
+  }>()
   const navigate = useNavigate()
+  const stageId = parseStageId(stageIdParam)
   const dayIdNum = parseDayId(dayIdParam)
 
   // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
@@ -258,7 +298,7 @@ export default function ConversationDayDetailPage() {
 
   useEffect(() => {
     let cancelled = false
-    getConversationStage(MVP_CONVERSATION_STAGE_ID)
+    getConversationStage(stageId)
       .then((data) => {
         if (!cancelled) setPackState({ status: 'success', data })
       })
@@ -269,7 +309,7 @@ export default function ConversationDayDetailPage() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [stageId])
 
   const day = useMemo((): ConversationDay | null => {
     if (packState.status !== 'success' || dayIdNum === null) return null
@@ -285,17 +325,17 @@ export default function ConversationDayDetailPage() {
     const p = loadUserProgress()
     const completed = new Set<number>()
     for (const r of p.completedConversationDays) {
-      if (r.stageId === MVP_CONVERSATION_STAGE_ID) {
+      if (r.stageId === stageId) {
         completed.add(r.dayId)
       }
     }
-    const alreadyDone = isConversationDayCompletedPersisted(p, MVP_CONVERSATION_STAGE_ID, dayIdNum)
+    const alreadyDone = isConversationDayCompletedPersisted(p, stageId, dayIdNum)
     const allowed =
       alreadyDone || isSequentialDayUnlocked(sortedIds, completed, dayIdNum)
     if (!allowed) {
-      navigate('/conversation', { replace: true })
+      navigate(`/conversation/stage/${stageId}`, { replace: true })
     }
-  }, [packState, dayIdNum, day, navigate])
+  }, [packState, dayIdNum, day, navigate, stageId])
 
   const nextDayForResult = useMemo((): number | null => {
     if (packState.status !== 'success' || day === null) return null
@@ -380,11 +420,11 @@ export default function ConversationDayDetailPage() {
       persistNonce: createPersistNonce(),
       wrongQuizIds: [...wrongQuizIdsRef.current],
     }
-    navigate(`/conversation/${dayIdParam}/result`, {
+    navigate(`/conversation/stage/${stageId}/day/${dayIdParam}/result`, {
       replace: true,
       state: noQuizPayload,
     })
-  }, [currentStep, day, navigate, dayIdParam, nextDayForResult])
+  }, [currentStep, day, navigate, dayIdParam, nextDayForResult, stageId])
 
   const advanceFromCutscene = () => {
     setCurrentStep('narration')
@@ -426,7 +466,7 @@ export default function ConversationDayDetailPage() {
       persistNonce: createPersistNonce(),
       wrongQuizIds: [...wrongQuizIdsRef.current],
     }
-    navigate(`/conversation/${dayIdParam}/result`, { state: payload })
+    navigate(`/conversation/stage/${stageId}/day/${dayIdParam}/result`, { state: payload })
   }
 
   const activeQuiz: ConversationQuiz | undefined =
@@ -483,7 +523,7 @@ export default function ConversationDayDetailPage() {
         <p className="conv-detail__session-note" role="alert">
           Day 번호가 올바르지 않습니다.
         </p>
-        <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/conversation">
+        <Link className="ui-btn ui-btn--secondary ui-btn--block" to={`/conversation/stage/${stageId}`}>
           목록으로
         </Link>
       </main>
@@ -509,7 +549,7 @@ export default function ConversationDayDetailPage() {
         <p className="conv-detail__session-note" role="alert">
           {msg}
         </p>
-        <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/conversation">
+        <Link className="ui-btn ui-btn--secondary ui-btn--block" to={`/conversation/stage/${stageId}`}>
           목록으로
         </Link>
       </main>
@@ -522,14 +562,14 @@ export default function ConversationDayDetailPage() {
         <p className="conv-detail__session-note" role="alert">
           이 Day 콘텐츠를 찾지 못했습니다.
         </p>
-        <Link className="ui-btn ui-btn--secondary ui-btn--block" to="/conversation">
+        <Link className="ui-btn ui-btn--secondary ui-btn--block" to={`/conversation/stage/${stageId}`}>
           목록으로
         </Link>
       </main>
     )
   }
 
-  const dayLabel = `Stage ${MVP_CONVERSATION_STAGE_ID} · Day ${day.dayId}`
+  const dayLabel = `Stage ${stageId} · Day ${day.dayId}`
 
   const activeDialogueLine =
     currentStep === 'dialogue' ? day.dialogue[dialogueIndex] : undefined
@@ -537,6 +577,13 @@ export default function ConversationDayDetailPage() {
     activeDialogueLine?.speakerId === 'learner'
       ? activeDialogueLine.responseQuiz
       : undefined
+  const activeDialogueResponseOptions =
+    activeDialogueResponseQuiz !== undefined && activeDialogueLine !== undefined
+      ? shuffledQuizOptions(
+          activeDialogueResponseQuiz.options,
+          `dialogue:${day.dayId}:${activeDialogueLine.id}`,
+        )
+      : []
   const dialogueResponseCorrect =
     activeDialogueResponseQuiz !== undefined &&
     selectedDialogueResponseOptionId !== null &&
@@ -696,7 +743,7 @@ export default function ConversationDayDetailPage() {
                       </p>
                     ) : null}
                     <div className="conv-detail__quiz-choices" role="group" aria-label="이어질 말">
-                      {activeDialogueResponseQuiz.options.map((opt) => (
+                      {activeDialogueResponseOptions.map((opt, optionIndex) => (
                         <button
                           key={opt.id}
                           type="button"
@@ -706,7 +753,7 @@ export default function ConversationDayDetailPage() {
                             setIsDialogueResponseAnswered(true)
                           }}
                         >
-                          ({opt.id.toUpperCase()}) {opt.text}
+                          ({String.fromCharCode(65 + optionIndex)}) {opt.text}
                         </button>
                       ))}
                     </div>
@@ -768,7 +815,7 @@ export default function ConversationDayDetailPage() {
               {d.keyExpressions.map((ex) => {
                 const tip = ex.tipKo?.trim()
                 const exprSaved = savedExpressionKeys.has(
-                  `${ex.id}:${MVP_CONVERSATION_STAGE_ID}:${d.dayId}`,
+                  `${ex.id}:${stageId}:${d.dayId}`,
                 )
                 return (
                   <article
@@ -807,13 +854,13 @@ export default function ConversationDayDetailPage() {
                         if (exprSaved) {
                           persistRemoveSavedExpression(
                             ex.id,
-                            MVP_CONVERSATION_STAGE_ID,
+                            stageId,
                             d.dayId,
                           )
                         } else {
                           persistUpsertSavedExpression(
                             ex.id,
-                            MVP_CONVERSATION_STAGE_ID,
+                            stageId,
                             d.dayId,
                           )
                         }
@@ -887,6 +934,7 @@ export default function ConversationDayDetailPage() {
     const selectedOptionId = quizSelectedTokenIds[0] ?? null
     const selectedOptionText = blankBubbleSelectedText(q, quizSelectedTokenIds)
     const correctAnswerText = getCorrectQuizOptionText(q)
+    const displayOptions = shuffledQuizOptions(q.options, `blank:${q.id}`)
     const correct = selectedOptionId === q.correctOptionId
     const explainKoRaw = q.explanationKo?.trim()
     const explainEnRaw = q.explanationEn?.trim()
@@ -929,7 +977,7 @@ export default function ConversationDayDetailPage() {
             {renderBlankBubbleSentence(q, selectedOptionText, correctAnswerText)}
           </div>
           <div className="conv-blank-bubble__options" role="group" aria-label="빈칸 선택지">
-            {q.options.map((opt) => (
+            {displayOptions.map((opt) => (
               <button
                 key={opt.id}
                 type="button"

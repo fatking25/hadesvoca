@@ -81,6 +81,7 @@ function buildHomeNextRecommendation(
   const isWord = recent.type === 'word'
   const kindLabel = isWord ? '단어' : '실전회화'
   const basePath = isWord ? '/word-study' : '/conversation'
+  const stageBasePath = isWord ? basePath : `${basePath}/stage/${recent.stageId}`
   const stageDays = isWord ? wordStageDays : conversationStageDays
   const currentDays = stageDays[recent.stageId]
   const recentLine = `최근 학습: ${kindLabel} Stage ${recent.stageId} Day ${recent.dayId}`
@@ -107,7 +108,7 @@ function buildHomeNextRecommendation(
   if (nextDayId !== null) {
     return {
       recentLine,
-      href: `${basePath}/${nextDayId}`,
+      href: isWord ? `${basePath}/${nextDayId}` : `${stageBasePath}/day/${nextDayId}`,
       label: `${kindLabel} Stage ${recent.stageId} Day ${nextDayId} 추천`,
       hint: null,
     }
@@ -119,7 +120,7 @@ function buildHomeNextRecommendation(
     const firstDayId = sortedDayIds(nextStageDays)[0] ?? 1
     return {
       recentLine,
-      href: `${basePath}/${firstDayId}`,
+      href: isWord ? `${basePath}/${firstDayId}` : `${basePath}/stage/${nextStageId}/day/${firstDayId}`,
       label: `${kindLabel} Stage ${nextStageId} Day ${firstDayId} 추천`,
       hint: `Stage ${recent.stageId}를 마쳤습니다. 다음 Stage로 이어가세요.`,
     }

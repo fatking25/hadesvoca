@@ -1,0 +1,171 @@
+{
+  "dayId": 1,
+  "difficulty": "low",
+  "titleKo": "챈나와 구직 시작하기",
+  "descriptionKo": "찾는 일을 말하기",
+  "sceneDescriptionKo": "카페 창가 자리에서 챈나와 함께 동네 구인 정보를 찾아보기 시작한다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d1-n1",
+      "textKo": "챈나가 노트북을 열고 오늘은 어떤 일을 찾을지 먼저 정해보자고 말한다.",
+      "textEn": "Channa opens a laptop and suggests deciding what kind of work to look for first."
+    },
+    {
+      "id": "s2-d1-n2",
+      "textKo": "원하는 일과 가능한 장소를 짧고 분명하게 말하는 연습을 한다.",
+      "textEn": "You practice saying what job and location you want in a clear, simple way."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d1-d1",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "좋아, 오늘은 구직 시작이야. 어떤 일을 찾고 있어?",
+      "textEn": "Great, today is the start of your job search. What kind of work are you looking for?"
+    },
+    {
+      "id": "s2-d1-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "아르바이트를 찾고 있어.",
+      "textEn": "I'm looking for a part-time job.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "챈나가 어떤 일을 찾는지 물었습니다. 가장 자연스러운 대답을 고르세요.",
+        "promptEn": "Channa asked what kind of work you are looking for. Choose the best reply.",
+        "options": [
+          { "id": "a", "text": "I'm looking for a part-time job." },
+          { "id": "b", "text": "I am closing every job today." },
+          { "id": "c", "text": "The cafe is sleeping outside." },
+          { "id": "d", "text": "I forgot how to read signs." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I'm looking for ~`는 찾고 있는 대상을 말할 때 쓰는 기본 표현입니다."
+      }
+    },
+    {
+      "id": "s2-d1-d3",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "카페나 서점 같은 곳도 괜찮아?",
+      "textEn": "Would a cafe or bookstore be okay?"
+    },
+    {
+      "id": "s2-d1-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "응, 카페나 서점에서 일하고 싶어.",
+      "textEn": "Yes, I want to work at a cafe or bookstore.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "챈나가 가능한 장소를 물었습니다. 자연스럽게 원하는 장소를 말해보세요.",
+        "promptEn": "Channa asked about possible places. Choose the natural reply.",
+        "options": [
+          { "id": "a", "text": "Yes, I want to work at a cafe or bookstore." },
+          { "id": "b", "text": "Yes, the bookstore wants coffee." },
+          { "id": "c", "text": "I want to work inside Monday." },
+          { "id": "d", "text": "The cafe is too many resumes." }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`I want to work at ~`로 일하고 싶은 장소를 말할 수 있습니다."
+      }
+    },
+    {
+      "id": "s2-d1-d5",
+      "speakerId": "channa",
+      "speakerLabelKo": "챈나",
+      "textKo": "좋아. 그럼 근처 구인 공고부터 같이 보자.",
+      "textEn": "Good. Then let's check nearby job postings first."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d1-k1",
+      "expressionEn": "I'm looking for a part-time job.",
+      "expressionKo": "아르바이트를 찾고 있어.",
+      "tipKo": "`look for`는 무언가를 찾고 있을 때 쓰는 표현입니다."
+    },
+    {
+      "id": "s2-d1-k2",
+      "expressionEn": "I want to work at a cafe or bookstore.",
+      "expressionKo": "카페나 서점에서 일하고 싶어.",
+      "tipKo": "`work at` 뒤에는 일하는 장소를 붙입니다."
+    },
+    {
+      "id": "s2-d1-k3",
+      "expressionEn": "Let's check nearby job postings.",
+      "expressionKo": "근처 구인 공고를 보자.",
+      "tipKo": "`job posting`은 구인 공고를 뜻합니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d1-q1",
+      "expressionId": "s2-d1-k1",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "어떤 일을 찾고 있어?",
+      "partnerLineEn": "What kind of work are you looking for?",
+      "promptKo": "찾고 있는 일을 말하는 가장 자연스러운 문장을 고르세요.",
+      "promptEn": "Choose the most natural line to say what work you are looking for.",
+      "explanationKo": "찾고 있는 일을 말할 때는 `I'm looking for ~`가 자연스럽습니다.",
+      "options": [
+        { "id": "a", "text": "I'm looking for a part-time job." },
+        { "id": "b", "text": "I'm looking over a part-time clock." },
+        { "id": "c", "text": "I am job for part-time." },
+        { "id": "d", "text": "I part the job time." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d1-q2",
+      "expressionId": "s2-d1-k2",
+      "partnerSpeakerLabelKo": "챈나",
+      "partnerLineKo": "카페나 서점 같은 곳도 괜찮아?",
+      "partnerLineEn": "Would a cafe or bookstore be okay?",
+      "promptKo": "일하고 싶은 장소를 말하는 문장을 고르세요.",
+      "promptEn": "Choose the line that says where you want to work.",
+      "explanationKo": "`I want to work at ~`는 일하고 싶은 장소를 말할 때 좋습니다.",
+      "options": [
+        { "id": "a", "text": "Yes, I want to work at a cafe or bookstore." },
+        { "id": "b", "text": "Yes, I want to drink at a resume." },
+        { "id": "c", "text": "No, bookstore is my Tuesday." },
+        { "id": "d", "text": "I want the cafe to work me." }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d1-q3",
+      "expressionId": "s2-d1-k1",
+      "templateEn": "I'm looking for a {{blank}} job.",
+      "promptKo": "빈칸에 들어갈 말을 고르세요.",
+      "promptEn": "Choose the word that completes the sentence.",
+      "explanationKo": "`part-time job`은 아르바이트를 뜻합니다.",
+      "options": [
+        { "id": "a", "text": "part-time" },
+        { "id": "b", "text": "window" },
+        { "id": "c", "text": "nearby" },
+        { "id": "d", "text": "quiet" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d1-q4",
+      "promptKo": "`job posting`의 뜻으로 가장 알맞은 것은?",
+      "promptEn": "What does `job posting` mean?",
+      "explanationKo": "`job posting`은 채용 정보나 구인 공고를 말합니다.",
+      "options": [
+        { "id": "a", "text": "구인 공고" },
+        { "id": "b", "text": "손님 주문" },
+        { "id": "c", "text": "영수증" },
+        { "id": "d", "text": "출근길" }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

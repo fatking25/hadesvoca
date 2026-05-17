@@ -1,263 +1,264 @@
-﻿{
-    "dayId":  2,
-    "titleKo":  "???? ?? ????",
-    "descriptionKo":  "?? ????? ???? ????",
-    "sceneDescriptionKo":  "??? ?? ??? ?. ???? ?? ???? ?? ??? ????.",
-    "cutsceneImagePath":  "/content/conversations/stage-1/assets/stage-1-day-02-cutscene.jpg",
-    "sceneImages":  {
-                        "intro":  {
-                                      "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-02-scene-01.jpg",
-                                      "altKo":  "???? ?? ???? - ?? ??"
-                                  },
-                        "dialogue":  {
-                                         "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-02-scene-02.jpg",
-                                         "altKo":  "???? ?? ???? - ?? ??"
-                                     },
-                        "review":  {
-                                       "imagePath":  "/content/conversations/stage-1/assets/stage-1-day-02-scene-03.jpg",
-                                       "altKo":  "???? ?? ???? - ?? ??"
-                                   }
-                    },
-    "narrations":  [
-                       {
-                           "id":  "s1-d2-n1",
-                           "textKo":  "??? ?? ??? ?? ??. ??? ??? ???? ??? ??? ??? ??.",
-                           "textEn":  "You step up to a warm cafe counter. There are a lot of choices, but you just need to order clearly."
-                       },
-                       {
-                           "id":  "s1-d2-n2",
-                           "textKo":  "???? ??? ?? ??? ????. ?? ????, ???? ?? ??? ????? ?? ??.",
-                           "textEn":  "Somjumeok gives you a small encouraging nod. Order first, then answer the size and to-go questions naturally."
-                       }
-                   ],
-    "dialogue":  [
-                     {
-                         "id":  "s1-d2-d1",
-                         "speakerId":  "barista",
-                         "speakerLabelKo":  "??",
-                         "textKo":  "?????. ??? ?????",
-                         "textEn":  "Hi there. What can I get for you?"
-                     },
-                     {
-                         "id":  "s1-d2-d2",
-                         "speakerId":  "learner",
-                         "speakerLabelKo":  "?",
-                         "textKo":  "?? ?? ???.",
-                         "textEn":  "I\u0027d like a latte, please.",
-                         "responseQuiz":  {
-                                              "type":  "next-line-choice",
-                                              "promptKo":  "??? ??? ?????. ?? ????? ??? ???? ?? ????.",
-                                              "promptEn":  "The barista asked for your order. Choose the best reply.",
-                                              "options":  [
-                                                              {
-                                                                  "id":  "a",
-                                                                  "text":  "I\u0027d like a latte, please."
-                                                              },
-                                                              {
-                                                                  "id":  "b",
-                                                                  "text":  "I need a train ticket."
-                                                              },
-                                                              {
-                                                                  "id":  "c",
-                                                                  "text":  "Where is the library?"
-                                                              },
-                                                              {
-                                                                  "id":  "d",
-                                                                  "text":  "Cancel the weather."
-                                                              }
-                                                          ],
-                                              "correctOptionId":  "a",
-                                              "explanationKo":  "I\u0027d like a latte, please.? ???? ??? ??? ???? ??? ? ???????."
-                                          }
-                     },
-                     {
-                         "id":  "s1-d2-d3",
-                         "speakerId":  "barista",
-                         "speakerLabelKo":  "??",
-                         "textKo":  "?? ???? ?????",
-                         "textEn":  "What size would you like?"
-                     },
-                     {
-                         "id":  "s1-d2-d4",
-                         "speakerId":  "learner",
-                         "speakerLabelKo":  "?",
-                         "textKo":  "????? ???. ??? ?? ? ????",
-                         "textEn":  "Medium, please. Could I get it to go?",
-                         "responseQuiz":  {
-                                              "type":  "next-line-choice",
-                                              "promptKo":  "??? ???? ?????. ???? ?? ??? ????? ?? ???.",
-                                              "promptEn":  "The barista asked for the size. Choose the best reply.",
-                                              "options":  [
-                                                              {
-                                                                  "id":  "a",
-                                                                  "text":  "Medium, please. Could I get it to go?"
-                                                              },
-                                                              {
-                                                                  "id":  "b",
-                                                                  "text":  "Make the cup invisible."
-                                                              },
-                                                              {
-                                                                  "id":  "c",
-                                                                  "text":  "I will sit in the fridge."
-                                                              },
-                                                              {
-                                                                  "id":  "d",
-                                                                  "text":  "Do you sell train maps?"
-                                                              }
-                                                          ],
-                                              "correctOptionId":  "a",
-                                              "explanationKo":  "Medium, please.? Could I get it to go?? ?? ?? ???? ?? ??? ????? ?????."
-                                          }
-                     },
-                     {
-                         "id":  "s1-d2-d5",
-                         "speakerId":  "barista",
-                         "speakerLabelKo":  "??",
-                         "textKo":  "????. ??? ?? ????. ?? ??? ????.",
-                         "textEn":  "Of course. A medium latte to go. I will have that ready soon."
-                     },
-                     {
-                         "id":  "s1-d2-d6",
-                         "speakerId":  "learner",
-                         "speakerLabelKo":  "?",
-                         "textKo":  "?????.",
-                         "textEn":  "Thank you."
-                     }
-                 ],
-    "keyExpressions":  [
-                           {
-                               "id":  "s1-d2-k1",
-                               "expressionEn":  "I\u0027d like a latte, please.",
-                               "expressionKo":  "?? ?? ???.",
-                               "tipKo":  "I\u0027d like ~, please.? ??? ???? ??? ? ?? ????? ? ? ????."
-                           },
-                           {
-                               "id":  "s1-d2-k2",
-                               "expressionEn":  "What size would you like?",
-                               "expressionKo":  "?? ???? ?????",
-                               "tipKo":  "??? ???? ?? ? ?? ?? ?????."
-                           },
-                           {
-                               "id":  "s1-d2-k3",
-                               "expressionEn":  "Could I get it to go?",
-                               "expressionKo":  "??? ?? ? ????",
-                               "tipKo":  "\to go? ?? ??? ?? ? ?? ???."
-                           }
-                       ],
-    "quiz":  [
-                 {
-                     "type":  "next-line-choice",
-                     "id":  "s1-d2-q1",
-                     "expressionId":  "s1-d2-k1",
-                     "partnerSpeakerLabelKo":  "??",
-                     "partnerLineKo":  "??",
-                     "partnerLineEn":  "Hi there. What can I get for you?",
-                     "promptKo":  "???? ??? ??? ???? ???? ??? ????.",
-                     "promptEn":  "Choose the best way to order a drink politely.",
-                     "explanationKo":  "I\u0027d like ~, please.? ?? ???? ????? ?????.",
-                     "options":  [
-                                     {
-                                         "id":  "a",
-                                         "text":  "I\u0027d like a latte, please."
-                                     },
-                                     {
-                                         "id":  "b",
-                                         "text":  "I need a train ticket."
-                                     },
-                                     {
-                                         "id":  "c",
-                                         "text":  "Where is the library?"
-                                     },
-                                     {
-                                         "id":  "d",
-                                         "text":  "Cancel the weather."
-                                     }
-                                 ],
-                     "correctOptionId":  "a"
-                 },
-                 {
-                     "type":  "next-line-choice",
-                     "id":  "s1-d2-q2",
-                     "expressionId":  "s1-d2-k3",
-                     "partnerSpeakerLabelKo":  "??",
-                     "partnerLineKo":  "??",
-                     "partnerLineEn":  "What size would you like?",
-                     "promptKo":  "???? ??? ??? ???? ?? ????.",
-                     "promptEn":  "Choose the best reply that gives a size and asks for it to go.",
-                     "explanationKo":  "Could I get it to go?? ??? ??? ??? ??? ? ???????.",
-                     "options":  [
-                                     {
-                                         "id":  "a",
-                                         "text":  "Medium, please. Could I get it to go?"
-                                     },
-                                     {
-                                         "id":  "b",
-                                         "text":  "Make the cup invisible."
-                                     },
-                                     {
-                                         "id":  "c",
-                                         "text":  "I will sit in the fridge."
-                                     },
-                                     {
-                                         "id":  "d",
-                                         "text":  "Do you sell train maps?"
-                                     }
-                                 ],
-                     "correctOptionId":  "a"
-                 },
-                 {
-                     "type":  "pattern-fill-blank",
-                     "id":  "s1-d2-q3-next-line",
-                     "expressionId":  "s1-d2-k1",
-                     "templateEn":  "I\u0027d like a {{blank}}, please.",
-                     "promptKo":  "?? ??? ??? ??? ?? ????.",
-                     "promptEn":  "Complete the cafe order pattern.",
-                     "explanationKo":  "I\u0027d like a latte, please.? ??? ???? ???? ?????.",
-                     "options":  [
-                                     {
-                                         "id":  "a",
-                                         "text":  "latte"
-                                     },
-                                     {
-                                         "id":  "b",
-                                         "text":  "ticket"
-                                     },
-                                     {
-                                         "id":  "c",
-                                         "text":  "window"
-                                     },
-                                     {
-                                         "id":  "d",
-                                         "text":  "calendar"
-                                     }
-                                 ],
-                     "correctOptionId":  "a"
-                 },
-                 {
-                     "type":  "multiple-choice",
-                     "id":  "s1-d2-q4-pattern",
-                     "promptKo":  "`Could I get it to go?`? ?? ????? ??? ??????",
-                     "promptEn":  "What does `Could I get it to go?` mean?",
-                     "explanationKo":  "to go? ?? ?? ??? ?? ??? ????.",
-                     "options":  [
-                                     {
-                                         "id":  "a",
-                                         "text":  "??? ?? ? ????"
-                                     },
-                                     {
-                                         "id":  "b",
-                                         "text":  "??? ??? ????"
-                                     },
-                                     {
-                                         "id":  "c",
-                                         "text":  "?? ??? ?? ????"
-                                     },
-                                     {
-                                         "id":  "d",
-                                         "text":  "??? ?? ? ????"
-                                     }
-                                 ],
-                     "correctOptionId":  "a"
-                 }
-             ]
+{
+  "dayId": 2,
+  "difficulty": "low",
+  "titleKo": "솜주먹과 식당 예약하기",
+  "descriptionKo": "솜주먹과 전화 예약 연습",
+  "sceneDescriptionKo": "금요일 저녁 식사를 앞두고, 솜주먹과 함께 동네 이탈리안 레스토랑에 전화 예약을 해 본다.",
+  "cutsceneImagePath": "/content/conversations/stage-1/assets/stage-1-day-02-cutscene.jpg",
+  "sceneImages": {
+    "intro": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-01.jpg",
+      "altKo": "솜주먹과 식당 예약하기 - 도입 장면"
+    },
+    "dialogue": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-02.jpg",
+      "altKo": "솜주먹과 식당 예약하기 - 대화 장면"
+    },
+    "review": {
+      "imagePath": "/content/conversations/stage-1/assets/stage-1-day-02-scene-03.jpg",
+      "altKo": "솜주먹과 식당 예약하기 - 복습 장면"
+    }
+  },
+  "narrations": [
+    {
+      "id": "s1-d2-n1",
+      "textKo": "솜주먹이 메뉴판 사진을 보며 들뜬 얼굴로 예약 전화를 걸어 보자고 한다.",
+      "textEn": "Somjumeok looks excited over the menu photos and suggests calling the restaurant to book a table."
+    },
+    {
+      "id": "s1-d2-n2",
+      "textKo": "솜주먹이 옆에서 인원, 시간, 자리 요청을 차근차근 말하면 된다고 알려 준다.",
+      "textEn": "Somjumeok reminds you to say the number of people, the time, and any seat request clearly."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s1-d2-d1",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "전화 연결됐어. 먼저 예약하고 싶다고 말하면 돼.",
+      "textEn": "The call is connected. Start by saying you'd like to book a table."
+    },
+    {
+      "id": "s1-d2-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "안녕하세요, 이번 금요일 저녁에 두 명 자리 예약하고 싶어요.",
+      "textEn": "Hi, I'd like to book a table for two this Friday evening.",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "솜주먹이 예약 시작 표현을 알려줬습니다. 가장 자연스러운 대답을 고르세요.",
+        "promptEn": "Somjumeok reminded you how to start a reservation. Choose the best opening reply.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hi, I'd like to book a table for two this Friday evening."
+          },
+          {
+            "id": "b",
+            "text": "I hate Italian food."
+          },
+          {
+            "id": "c",
+            "text": "What's your wifi password?"
+          },
+          {
+            "id": "d",
+            "text": "Cancel everything forever."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "예약을 시작할 때 `I'd like to book a table for two`처럼 목적과 인원을 바로 말하면 자연스럽습니다."
+      }
+    },
+    {
+      "id": "s1-d2-d3",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "좋아. 이제 시간하고 창가 자리도 부탁해 보자.",
+      "textEn": "Nice. Now say the time and ask for a window seat."
+    },
+    {
+      "id": "s1-d2-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "7시쯤이면 좋겠어요. 가능하면 창가 자리로 부탁드려도 될까요?",
+      "textEn": "Around seven, please. Could we have a window seat if possible?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "솜주먹이 시간과 좌석 요청을 말해 보자고 했습니다. 자연스러운 대답을 고르세요.",
+        "promptEn": "Somjumeok suggested giving the time and seat request. Choose the best reply.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Around seven, please. Could we have a window seat if possible?"
+          },
+          {
+            "id": "b",
+            "text": "Give me the boss table now."
+          },
+          {
+            "id": "c",
+            "text": "Windows are ugly."
+          },
+          {
+            "id": "d",
+            "text": "I'll sit in the kitchen."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Could we have ~, please?`는 좌석이나 추가 요청을 공손하게 말할 때 좋습니다."
+      }
+    },
+    {
+      "id": "s1-d2-d5",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "완벽해. 이제 이름만 말하면 예약 끝이야.",
+      "textEn": "Perfect. Just give your name and the reservation is done."
+    },
+    {
+      "id": "s1-d2-d6",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "제 이름은 하데스입니다. 감사합니다. 솜주먹, 이제 맛있는 거 먹으러 가자.",
+      "textEn": "It's Hades. Thank you."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s1-d2-k1",
+      "expressionEn": "I'd like to book a table for two.",
+      "expressionKo": "두 명 자리 예약하고 싶습니다.",
+      "tipKo": "전화 예약에서 가장 기본이 되는 표현입니다."
+    },
+    {
+      "id": "s1-d2-k2",
+      "expressionEn": "What time would you like?",
+      "expressionKo": "몇 시로 원하시나요?",
+      "tipKo": "예약 시간을 확인하거나 정할 때 자주 쓰는 표현입니다."
+    },
+    {
+      "id": "s1-d2-k3",
+      "expressionEn": "Could we have a window seat, please?",
+      "expressionKo": "창가 자리로 부탁드려도 될까요?",
+      "tipKo": "`Could we ~?`로 정중하게 요청할 수 있습니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s1-d2-q1",
+      "expressionId": "s1-d2-k1",
+      "partnerSpeakerLabelKo": "솜주먹",
+      "partnerLineKo": "전화 연결됐어. 먼저 예약하고 싶다고 말하면 돼.",
+      "partnerLineEn": "The call is connected. Start by saying you'd like to book a table.",
+      "promptKo": "솜주먹과 식당 예약을 시작할 때 가장 자연스러운 대답을 고르세요.",
+      "promptEn": "Choose the best reply to start a phone reservation.",
+      "explanationKo": "`I'd like to book a table for two`처럼 목적과 인원을 바로 말하면 예약 의도가 분명해집니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Hi, I'd like to book a table for two this Friday evening."
+        },
+        {
+          "id": "b",
+          "text": "I hate Italian food."
+        },
+        {
+          "id": "c",
+          "text": "What's your wifi password?"
+        },
+        {
+          "id": "d",
+          "text": "Cancel everything forever."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s1-d2-q2",
+      "expressionId": "s1-d2-k3",
+      "partnerSpeakerLabelKo": "솜주먹",
+      "partnerLineKo": "좋아. 이제 시간하고 창가 자리도 부탁해 보자.",
+      "partnerLineEn": "Nice. Now say the time and ask for a window seat.",
+      "promptKo": "시간을 말하면서 창가 자리를 정중하게 부탁하는 대답을 고르세요.",
+      "promptEn": "Choose the best reply that gives a time and politely requests a window seat.",
+      "explanationKo": "`Could we have ~, please?`는 좌석이나 추가 요청을 공손하게 말할 때 좋습니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Around seven, please. Could we have a window seat if possible?"
+        },
+        {
+          "id": "b",
+          "text": "Give me the boss table now."
+        },
+        {
+          "id": "c",
+          "text": "Windows are ugly."
+        },
+        {
+          "id": "d",
+          "text": "I'll sit in the kitchen."
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s1-d2-q3-next-line",
+      "expressionId": "s1-d2-k1",
+      "templateEn": "I'd like to {{blank}} a table for two.",
+      "promptKo": "예약 표현의 빈칸에 들어갈 알맞은 단어를 고르세요.",
+      "promptEn": "Complete the reservation pattern.",
+      "explanationKo": "`book a table`은 식당 자리를 예약한다는 뜻입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "book"
+        },
+        {
+          "id": "b",
+          "text": "borrow"
+        },
+        {
+          "id": "c",
+          "text": "cancel"
+        },
+        {
+          "id": "d",
+          "text": "carry"
+        }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s1-d2-q4-pattern",
+      "promptKo": "`Could we have a window seat, please?`의 가장 자연스러운 의미는 무엇인가요?",
+      "promptEn": "What does `Could we have a window seat, please?` mean?",
+      "explanationKo": "창가 자리를 정중하게 요청할 때 쓰는 표현입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "창가 자리로 부탁드려도 될까요?"
+        },
+        {
+          "id": "b",
+          "text": "예약을 모두 취소해 주세요."
+        },
+        {
+          "id": "c",
+          "text": "주방에 앉고 싶어요."
+        },
+        {
+          "id": "d",
+          "text": "와이파이 비밀번호가 뭐예요?"
+        }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
 }

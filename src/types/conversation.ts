@@ -4,6 +4,8 @@
 
 export type ConversationContentSchemaVersion = '1'
 
+export type ConversationDayDifficulty = 'low' | 'medium' | 'high'
+
 /** `/content/conversations/stage-{n}/index.json` 루트 */
 export interface ConversationStageIndex {
   readonly schemaVersion: ConversationContentSchemaVersion
@@ -110,6 +112,7 @@ export interface ConversationSceneImage {
 /** 하루치 회화 콘텐츠 */
 export interface ConversationDay {
   readonly dayId: number
+  readonly difficulty?: ConversationDayDifficulty
   readonly titleKo: string
   readonly descriptionKo?: string
   /** 장면 한눈에 요약(컷씬·나레이션 중앙 문구). 없으면 `descriptionKo`로 대체 */

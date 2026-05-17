@@ -7,6 +7,7 @@ import type { ConversationStage, ConversationStageIndex } from '../types/convers
 const STAGE_METADATA_REL = 'content/stage-metadata.json'
 const CONTENT_SCHEMA_VERSION = '1'
 const WORD_QUESTION_TYPES = new Set(['word-to-meaning', 'meaning-to-word', 'fill-blank'])
+const CONVERSATION_DAY_DIFFICULTIES = new Set(['low', 'medium', 'high'])
 const CONVERSATION_SCENE_IMAGE_KEYS = ['intro', 'dialogue', 'review'] as const
 const CONTENT_OFFLINE_MESSAGE =
   '콘텐츠를 불러오지 못했습니다. 오프라인 상태라면 한 번 온라인으로 접속해 콘텐츠를 캐시한 뒤 다시 시도해 주세요.'
@@ -256,6 +257,13 @@ function assertConversationStage(data: unknown, url: string): ConversationStage 
     const d = day as Record<string, unknown>
     if (typeof d.dayId !== 'number' || typeof d.titleKo !== 'string') {
       throw new ContentFetchError('실전 회화 스테이지: Day 항목이 올바르지 않습니다.', url)
+    }
+    if (
+      d.difficulty !== undefined &&
+      (typeof d.difficulty !== 'string' ||
+        !CONVERSATION_DAY_DIFFICULTIES.has(d.difficulty))
+    ) {
+      throw new ContentFetchError('실전 회화 스테이지: Day difficulty 형식 오류입니다.', url)
     }
     assertConversationSceneImages(d.sceneImages, url)
     if (

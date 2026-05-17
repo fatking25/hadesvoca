@@ -89,6 +89,7 @@ ConversationStage
 
 필드
   dayId              | number | 회화 일차. UserProgress 참조키
+  difficulty         | string | 선택. "low" | "medium" | "high"
   titleKo            | string
   descriptionKo      | string | 선택
   sceneDescriptionKo | string | 장면 요약. 선택
@@ -107,6 +108,20 @@ Stage 1 현재 표준 수량
 - responseQuiz 2개
 - keyExpressions 3개
 - quiz 4개
+
+difficulty 원칙
+- Day 단위 난이도 메타데이터다.
+- 허용값은 "low", "medium", "high"만 쓴다.
+- 앱 표시 라벨은 코드에서 매핑한다.
+  - low: 하 · 초급
+  - medium: 중 · 기본
+  - high: 상 · 심화
+- 난이도는 안내 정보이며, 잠금/해금 조건으로 사용하지 않는다.
+- 기존 콘텐츠 호환을 위해 누락 시 앱에서는 low로 표시한다.
+- 새 Stage의 기본 난이도 배치는 Day 1~2 low, Day 3~5 medium, Day 6~7 high를 권장한다.
+- low는 정보를 묻거나 간단히 도움을 요청하는 Day에 쓴다.
+- medium은 지원 의사, 경험 설명, 일정 조율처럼 문장이 조금 길어지는 Day에 쓴다.
+- high는 면접 답변, 조건 확인, 결과 회고처럼 상황 판단과 정중한 표현이 필요한 Day에 쓴다.
 
 
 5. 이미지 경로 규칙
@@ -306,6 +321,7 @@ type별 의미
 - stage-{stageId}/index.json이 있다.
 - index.json의 dayFiles가 실제 파일명과 일치한다.
 - 각 day-xx.json이 ConversationDay 객체 하나만 담는다.
+- 각 Day에 difficulty를 넣는다. 값은 low, medium, high 중 하나다.
 - 각 Day에 cutsceneImagePath가 있다.
 - 각 Day에 sceneImages.intro/dialogue/review가 있다.
 - 각 Day의 이미지 경로가 /content/conversations/stage-{stageId}/assets/... 형식이다.

@@ -17,9 +17,9 @@ export type ConversationDayResultLocationState = {
 }
 
 export type ConversationSessionValue = {
-  readonly completedDayIds: ReadonlySet<number>
-  readonly recordDayCompletion: (dayId: number) => void
-  readonly isDayComplete: (dayId: number) => boolean
+  readonly completedDayKeys: ReadonlySet<string>
+  readonly recordDayCompletion: (stageId: number, dayId: number) => void
+  readonly isDayComplete: (stageId: number, dayId: number) => boolean
 }
 
 export const ConversationSessionContext =

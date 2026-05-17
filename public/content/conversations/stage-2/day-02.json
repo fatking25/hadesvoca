@@ -1,0 +1,171 @@
+{
+  "dayId": 2,
+  "difficulty": "low",
+  "titleKo": "솜주먹과 카페 구인 정보 묻기",
+  "descriptionKo": "아직 채용 중인지 묻기",
+  "sceneDescriptionKo": "솜주먹과 함께 작은 카페에 들어가 직원에게 구인 공고가 아직 유효한지 묻는다.",
+  "cutsceneImagePath": "/content/conversations/assets/placeholder-day2-cutscene.svg",
+  "narrations": [
+    {
+      "id": "s2-d2-n1",
+      "textKo": "문 앞에는 아르바이트 모집 안내가 붙어 있다. 솜주먹이 먼저 물어보라고 눈짓한다.",
+      "textEn": "A part-time job notice is posted by the door. Somjumeok nods for you to ask first."
+    },
+    {
+      "id": "s2-d2-n2",
+      "textKo": "정중하게 아직 사람을 뽑는지 확인하고, 지원 방법을 묻는 상황이다.",
+      "textEn": "You need to politely check if they are still hiring and ask how to apply."
+    }
+  ],
+  "dialogue": [
+    {
+      "id": "s2-d2-d1",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "저기 공고 보이지? 먼저 아직 뽑는지 물어보자.",
+      "textEn": "See that notice? Let's ask if they are still hiring first."
+    },
+    {
+      "id": "s2-d2-d2",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "아직 채용 중인가요?",
+      "textEn": "Are you still hiring?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "솜주먹이 아직 뽑는지 물어보자고 했습니다. 가장 자연스러운 문장을 고르세요.",
+        "promptEn": "Somjumeok suggested asking if they are still hiring. Choose the best line.",
+        "options": [
+          { "id": "a", "text": "Are you still hiring?" },
+          { "id": "b", "text": "Are you still coffee?" },
+          { "id": "c", "text": "Do you hire yesterday?" },
+          { "id": "d", "text": "Is the notice eating?" }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`Are you still hiring?`은 아직 채용 중인지 묻는 간단하고 자연스러운 표현입니다."
+      }
+    },
+    {
+      "id": "s2-d2-d3",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "좋아. 이제 어떻게 지원하는지도 물어봐.",
+      "textEn": "Good. Now ask how to apply."
+    },
+    {
+      "id": "s2-d2-d4",
+      "speakerId": "learner",
+      "speakerLabelKo": "나",
+      "textKo": "어떻게 지원하면 되나요?",
+      "textEn": "How can I apply?",
+      "responseQuiz": {
+        "type": "next-line-choice",
+        "promptKo": "지원 방법을 물어야 합니다. 알맞은 문장을 고르세요.",
+        "promptEn": "You need to ask how to apply. Choose the right sentence.",
+        "options": [
+          { "id": "a", "text": "How can I apply?" },
+          { "id": "b", "text": "How can I order apply?" },
+          { "id": "c", "text": "Where is the job drinking?" },
+          { "id": "d", "text": "Can I close your hiring?" }
+        ],
+        "correctOptionId": "a",
+        "explanationKo": "`apply`는 지원하다라는 뜻입니다."
+      }
+    },
+    {
+      "id": "s2-d2-d5",
+      "speakerId": "somjumeok",
+      "speakerLabelKo": "솜주먹",
+      "textKo": "좋았어. 이제 이력서를 준비하면 되겠다.",
+      "textEn": "Nice. Now you can prepare your resume."
+    }
+  ],
+  "keyExpressions": [
+    {
+      "id": "s2-d2-k1",
+      "expressionEn": "Are you still hiring?",
+      "expressionKo": "아직 채용 중인가요?",
+      "tipKo": "가게나 회사가 아직 사람을 뽑는지 확인할 때 씁니다."
+    },
+    {
+      "id": "s2-d2-k2",
+      "expressionEn": "How can I apply?",
+      "expressionKo": "어떻게 지원하면 되나요?",
+      "tipKo": "`How can I ~?`는 방법을 정중하게 물을 때 좋습니다."
+    },
+    {
+      "id": "s2-d2-k3",
+      "expressionEn": "I can bring my resume today.",
+      "expressionKo": "오늘 이력서를 가져올 수 있어요.",
+      "tipKo": "`bring my resume`는 이력서를 가져오다라는 뜻입니다."
+    }
+  ],
+  "quiz": [
+    {
+      "type": "next-line-choice",
+      "id": "s2-d2-q1",
+      "expressionId": "s2-d2-k1",
+      "partnerSpeakerLabelKo": "솜주먹",
+      "partnerLineKo": "아직 뽑는지 물어보자.",
+      "partnerLineEn": "Let's ask if they are still hiring.",
+      "promptKo": "아직 채용 중인지 묻는 문장을 고르세요.",
+      "promptEn": "Choose the sentence that asks if they are still hiring.",
+      "explanationKo": "`hiring`은 채용 중이라는 뜻입니다.",
+      "options": [
+        { "id": "a", "text": "Are you still hiring?" },
+        { "id": "b", "text": "Are you still open my resume?" },
+        { "id": "c", "text": "Do you still cafe?" },
+        { "id": "d", "text": "Is this job yesterday?" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "next-line-choice",
+      "id": "s2-d2-q2",
+      "expressionId": "s2-d2-k2",
+      "partnerSpeakerLabelKo": "솜주먹",
+      "partnerLineKo": "지원 방법도 물어봐.",
+      "partnerLineEn": "Ask how to apply, too.",
+      "promptKo": "지원 방법을 물어보는 문장을 고르세요.",
+      "promptEn": "Choose the line that asks how to apply.",
+      "explanationKo": "`How can I apply?`가 가장 직접적이고 자연스럽습니다.",
+      "options": [
+        { "id": "a", "text": "How can I apply?" },
+        { "id": "b", "text": "How can I part-time?" },
+        { "id": "c", "text": "Can apply how me?" },
+        { "id": "d", "text": "Where can hiring sit?" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "pattern-fill-blank",
+      "id": "s2-d2-q3",
+      "expressionId": "s2-d2-k3",
+      "templateEn": "I can bring my {{blank}} today.",
+      "promptKo": "이력서를 가져올 수 있다고 말하려면 빈칸에 무엇이 들어갈까요?",
+      "promptEn": "Choose the word that completes the sentence.",
+      "explanationKo": "`resume`는 이력서입니다.",
+      "options": [
+        { "id": "a", "text": "resume" },
+        { "id": "b", "text": "table" },
+        { "id": "c", "text": "menu" },
+        { "id": "d", "text": "window" }
+      ],
+      "correctOptionId": "a"
+    },
+    {
+      "type": "multiple-choice",
+      "id": "s2-d2-q4",
+      "promptKo": "`apply`의 뜻으로 가장 알맞은 것은?",
+      "promptEn": "What does `apply` mean here?",
+      "explanationKo": "구직 상황에서 `apply`는 지원하다라는 뜻입니다.",
+      "options": [
+        { "id": "a", "text": "지원하다" },
+        { "id": "b", "text": "주문하다" },
+        { "id": "c", "text": "예약하다" },
+        { "id": "d", "text": "계산하다" }
+      ],
+      "correctOptionId": "a"
+    }
+  ]
+}

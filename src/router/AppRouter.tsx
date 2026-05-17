@@ -3,6 +3,7 @@ import { ConversationSessionProvider } from '../context/ConversationSessionConte
 import MobileLayout from '../layouts/MobileLayout'
 import ConversationDayDetailPage from '../pages/conversation/ConversationDayDetailPage'
 import ConversationDayResultPage from '../pages/conversation/ConversationDayResultPage'
+import ConversationStageHubPage from '../pages/conversation/ConversationStageHubPage'
 import ConversationStageListPage from '../pages/conversation/ConversationStageListPage'
 import HomePage from '../pages/HomePage'
 import OnboardingPage from '../pages/OnboardingPage'
@@ -29,7 +30,10 @@ export default function AppRouter() {
             <Route path="/word-study/:dayId/result" element={<WordStudyResultPage />} />
             <Route path="/word-study/:dayId" element={<WordStudyDayDetailPage />} />
             <Route path="/word-study" element={<WordStudyDayListPage />} />
-            <Route path="/conversation" element={<ConversationStageListPage />} />
+            <Route path="/conversation" element={<ConversationStageHubPage />} />
+            <Route path="/conversation/stage/:stageId" element={<ConversationStageListPage />} />
+            <Route path="/conversation/stage/:stageId/day/:dayId/result" element={<ConversationDayResultPage />} />
+            <Route path="/conversation/stage/:stageId/day/:dayId" element={<ConversationDayDetailPage />} />
             <Route path="/conversation/:dayId/result" element={<ConversationDayResultPage />} />
             <Route path="/conversation/:dayId" element={<ConversationDayDetailPage />} />
             <Route path="/vocabulary-book" element={<VocabularyBookPage />} />
