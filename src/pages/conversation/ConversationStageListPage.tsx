@@ -1,6 +1,3 @@
-/**
- * Stage 1 실전 회화 Day 목록: `stage-1.json` 로드 후 카드 형태로 표시합니다.
- */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
@@ -79,7 +76,7 @@ function DayEntryCard(
           </div>
           {locked ? (
             <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
-              앞 순서 Day를 완료하면 열립니다
+              이전 Day를 완료하면 열립니다
             </button>
           ) : (
             <Link className="ui-btn ui-btn--primary ui-btn--block" to={href}>
@@ -100,9 +97,6 @@ export default function ConversationStageListPage() {
       : Number.parseInt(stageIdParam, 10)
   const stageId = Number.isFinite(stageIdRaw) ? stageIdRaw : MVP_CONVERSATION_STAGE_ID
   const { isDayComplete } = useConversationSession()
-  // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
-  // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 로딩 UI 라
-  // 렌더 결과는 동일하다.
   const [state, setState] = useState<RemoteContentState<ConversationStage>>({
     status: 'loading',
   })
@@ -149,7 +143,7 @@ export default function ConversationStageListPage() {
   if (state.status === 'idle' || state.status === 'loading') {
     body = (
       <p className="conv-stage-list__muted" role="status" aria-busy="true">
-        Day 목록 불러오는 중…
+        Day 목록을 불러오는 중…
       </p>
     )
   } else if (state.status === 'error') {

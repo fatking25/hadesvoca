@@ -1,6 +1,3 @@
-/**
- * 회화 Day 완료 화면: 플로우 종료 시 퀴즈 점수 표시 · 세션·`localStorage` 완료 반영
- */
 import { useEffect } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { MVP_CONVERSATION_STAGE_ID } from '../../constants/content'
@@ -46,7 +43,6 @@ export default function ConversationDayResultPage() {
     recordDayCompletion(stageId, dayIdNum)
   }, [dayIdNum, flowState, recordDayCompletion, stageId])
 
-  /** `persistNonce` 가 있을 때만 1회 `UserProgress` 갱신(직접 URL·구 state 제외) */
   useEffect(() => {
     if (dayIdNum === null) return
     if (flowState?.fromFlow !== true) return
@@ -76,8 +72,8 @@ export default function ConversationDayResultPage() {
   const quizCorrect = hasFlowScores ? flowState.quizCorrect : 0
   const showScoreLine = hasFlowScores && quizTotal > 0
   const resultTitle = hasFlowScores
-    ? `Day ${dayIdNum ?? '—'} 완료`
-    : '결과를 불러올 수 없어요'
+    ? `Day ${dayIdNum ?? '?'} 완료`
+    : '결과를 불러올 수 없습니다'
 
   const nextDayId = hasFlowScores ? flowState.nextDayId : null
   const continueHref =
@@ -117,11 +113,11 @@ export default function ConversationDayResultPage() {
           </p>
         ) : hasFlowScores && skippedQuiz ? (
           <p className="conv-detail__session-note conv-detail__result-note">
-            이번 Day에는 표현 퀴즈가 없었습니다. 시나리오를 마쳤어요.
+            이번 Day에는 표현 퀴즈가 없습니다. 시나리오를 마쳤어요.
           </p>
         ) : (
           <p className="conv-detail__session-note conv-detail__result-note">
-            결과 요약은 Day를 처음부터 끝까지 진행했을 때만 표시됩니다. 목록에서 다시 시작해 주세요.
+            결과 요약은 Day를 처음부터 끝까지 진행했을 때 표시됩니다. 목록에서 다시 시작해 주세요.
           </p>
         )}
         <p className="conv-detail__session-note">

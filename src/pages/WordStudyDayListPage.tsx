@@ -1,6 +1,3 @@
-/**
- * 단어 학습 Stage·Day 목록: 콘텐츠 순서대로 순차 해금(Duolingo 스타일) · 완료 표시는 localStorage
- */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -19,15 +16,14 @@ import {
   loadUserProgress,
 } from '../utils/storage'
 
-/** Stage 1 · 기초 TOEIC 단어 (기획 5.2) — 콘텐츠 로드 전 플레이스홀더 */
 const STAGE_TITLE = 'Stage 1 · 기초 TOEIC 단어'
-const UNIT_HEADLINE = '핵심 단어를 한 세트씩 마스터하기'
+const UNIT_HEADLINE = '필수 단어를 하루 단위로 익히기'
 const FALLBACK_DAY_ROWS: readonly Readonly<{ id: number; title: string }>[] = [
-  { id: 1, title: '사무·회사 기본 단어' },
+  { id: 1, title: '업무·회사 기본 단어' },
   { id: 2, title: '일정·회의 단어' },
-  { id: 3, title: '이메일·문서 단어' },
+  { id: 3, title: '이메일·주문 단어' },
   { id: 4, title: '채용·인사 단어' },
-  { id: 5, title: '쇼핑·결제 단어' },
+  { id: 5, title: '결제·정산 단어' },
   { id: 6, title: '여행·숙박 단어' },
   { id: 7, title: 'Stage 1 복습' },
 ]
@@ -35,9 +31,6 @@ const FALLBACK_DAY_ROWS: readonly Readonly<{ id: number; title: string }>[] = [
 export default function WordStudyDayListPage() {
   const [reloadNonce, setReloadNonce] = useState(0)
   const [contentRetryNonce, setContentRetryNonce] = useState(0)
-  // 초기값을 'loading' 으로 두어 effect 내부의 동기 setState 호출을 제거한다.
-  // 기존 분기(`status === 'idle' || status === 'loading'`)는 같은 fallback UI 라
-  // 렌더 결과는 동일하다.
   const [packState, setPackState] = useState<RemoteContentState<StageWordsFile>>({
     status: 'loading',
   })
@@ -153,10 +146,6 @@ export default function WordStudyDayListPage() {
         ? packState.data.days.length
         : FALLBACK_DAY_ROWS.length
 
-    /**
-     * 다음에 풀어야 할 Day = 'open' 이면서 아직 완료되지 않은 첫 번째 항목.
-     * 전부 완료/잠금/준비 중이면 강조할 대상이 없으므로 undefined.
-     */
     const nextDay = orderedRows.find(
       (row) => row.status === 'open' && !visibleComplete.has(row.id),
     )
@@ -176,7 +165,7 @@ export default function WordStudyDayListPage() {
   const progressLine = `Stage ${MVP_WORD_STAGE_ID} 진행률 ${completedStageCount}/${Math.max(0, contentDayTotal)} · 보유 ${coins}코인`
   const screenCaption = coinShort
     ? `보유 코인 ${coins}개로는 새 Day를 시작할 수 없습니다.`
-    : '노드를 탭하면 시작 카드가 열립니다.'
+    : '노드를 누르면 시작 카드가 열립니다.'
 
   if (packState.status === 'error') {
     return (
@@ -186,7 +175,7 @@ export default function WordStudyDayListPage() {
             단어 콘텐츠를 불러오지 못했어요
           </h1>
           <p className="ui-card__body">
-            앱을 새로고침하거나 잠시 후 다시 시도해 주세요.
+            연결을 확인한 뒤 다시 시도해 주세요.
           </p>
           <div className="word-study__coin-gate-actions">
             <button

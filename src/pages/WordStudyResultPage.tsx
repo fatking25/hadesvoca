@@ -1,6 +1,3 @@
-/**
- * 단어 학습 결과 MVP: 세션 종료 후 `navigate(state)` 로 통계 표시 + `localStorage` 진행 저장
- */
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { MVP_WORD_STAGE_ID } from '../constants/content'
@@ -45,9 +42,6 @@ export default function WordStudyResultPage() {
   const { dayId } = useParams<{ dayId: string }>()
   const { state } = useLocation()
   const scored = isWordStudyQuizResultNavigateState(state)
-  /**
-   * Review 모드는 보상/완료/`completedWordDays` 갱신 없이 복습 상태만 갱신한다.
-   */
   const isReviewMode = scored && state.mode === 'word-review'
   const redoHref = isReviewMode
     ? '/word-study/review'
@@ -84,7 +78,6 @@ export default function WordStudyResultPage() {
   const [reviewOutcome, setReviewOutcome] = useState<ReviewOutcome | null>(null)
   const [resultStep, setResultStep] = useState<ResultStep>('wrong')
 
-  /** 퀴즈 완료 후 `persistNonce` 가 있을 때만 1회 저장(Strict Mode·재방문 오염 완화) */
   useEffect(() => {
     if (!isWordStudyQuizResultNavigateState(state)) return
     const nonce = state.persistNonce
@@ -196,14 +189,14 @@ export default function WordStudyResultPage() {
         {isReviewMode ? '복습 결과' : '학습 결과'}
       </h1>
       <p className="word-result__meta">
-        {isReviewMode ? '이번 Day 복습' : `Stage ${MVP_WORD_STAGE_ID} · Day ${dayId ?? '—'}`}
+        {isReviewMode ? '이번 Day 복습' : `Stage ${MVP_WORD_STAGE_ID} · Day ${dayId ?? '?'}`}
       </p>
 
       {scored ? (
         <>
           <div className="word-result__steps" aria-label="결과 흐름">
             <span className={resultStep === 'wrong' ? 'word-result__step word-result__step--on' : 'word-result__step'}>
-              틀린 문제
+              오답 문제
             </span>
             <span className={resultStep === 'summary' ? 'word-result__step word-result__step--on' : 'word-result__step'}>
               한눈에 보기
@@ -214,11 +207,11 @@ export default function WordStudyResultPage() {
           </div>
 
           {resultStep === 'wrong' ? (
-            <section className="ui-card ui-card--dashboard word-result__panel" aria-label="틀린 문제">
-              <h2 className="ui-card__section-heading">틀린 문제</h2>
+            <section className="ui-card ui-card--dashboard word-result__panel" aria-label="오답 문제">
+              <h2 className="ui-card__section-heading">오답 문제</h2>
               {activeWrongItem === null ? (
                 <p className="word-result__muted word-result__empty-wrong ui-card__body">
-                  이번 세트에서 틀린 문제가 없었어요.
+                  이번 세트에서 오답 문제가 없었어요.
                 </p>
               ) : (
                 <div className="word-result__wrong-item word-result__wrong-item--focus">
@@ -292,7 +285,7 @@ export default function WordStudyResultPage() {
                     </p>
                     <p className="word-result__muted ui-card__body">
                       {reviewOutcome.nextReviewDayId === null
-                        ? '다음 복습 대상으로 예약된 단어가 없습니다.'
+                        ? '다음 복습 대상 단어가 없습니다.'
                         : `다음 복습은 Word Day ${reviewOutcome.nextReviewDayId}부터 대상이 됩니다.`}
                     </p>
                   </>

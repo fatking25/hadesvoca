@@ -239,7 +239,8 @@
   }
 }
 
-.shell-settings-sheet__grab {
+.shell-settings-sheet__grab,
+.shell-sheet__grab {
   width: 42px;
   height: 5px;
   margin: var(--space-3) auto var(--space-2);
@@ -251,7 +252,8 @@
   background: var(--color-border-strong);
 }
 
-.shell-settings-sheet__head {
+.shell-settings-sheet__head,
+.shell-sheet__header {
   display: flex;
   flex-shrink: 0;
   align-items: flex-start;
@@ -260,11 +262,21 @@
   padding: 0 var(--space-5) var(--space-3);
 }
 
-.shell-settings-sheet__titles {
+.shell-settings-sheet__titles,
+.shell-sheet__header > div {
   min-width: 0;
 }
 
-.shell-settings-sheet__title {
+.shell-sheet__eyebrow {
+  margin: 0 0 2px;
+  font-size: var(--font-size-2xs, 11px);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+  color: var(--color-text-muted);
+}
+
+.shell-settings-sheet__title,
+.shell-sheet__title {
   margin: 0;
   font-size: var(--font-size-lg);
   font-weight: 800;
@@ -272,14 +284,40 @@
   color: var(--text-h);
 }
 
-.shell-settings-sheet__subtitle {
+.shell-settings-sheet__subtitle,
+.shell-sheet__subtitle {
   margin: var(--space-1) 0 0;
   font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--color-text-muted);
 }
 
-.shell-settings-sheet__body {
+.shell-sheet__close {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  font: inherit;
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-h);
+  background: var(--color-bg-muted);
+  cursor: pointer;
+}
+
+.shell-sheet__close:hover,
+.shell-sheet__close:focus-visible {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
+}
+
+.shell-settings-sheet__body,
+.shell-sheet__body {
   flex: 1;
   overflow-x: clip;
   overflow-y: auto;
@@ -290,7 +328,8 @@
     max(var(--space-4), var(--safe-left));
 }
 
-.shell-settings-sheet__sticky-hint {
+.shell-settings-sheet__sticky-hint,
+.shell-sheet__footer-hint {
   flex-shrink: 0;
   margin: 0;
   padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--space-3)
