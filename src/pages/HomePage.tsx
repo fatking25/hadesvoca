@@ -130,7 +130,7 @@ function buildHomeNextRecommendation(
     recentLine,
     href: basePath,
     label: `${kindLabel} Stage ${nextStageId} 준비 중`,
-    hint: `Stage ${recent.stageId} 마지막 Day를 마쳤습니다. 다음 Stage 콘텐츠가 열리면 이어서 추천합니다.`,
+    hint: `Stage ${recent.stageId} 마지막 Day를 마쳤습니다. 다음 Stage가 열리면 이어서 추천합니다.`,
   }
 }
 
@@ -485,13 +485,13 @@ export default function HomePage() {
         >
           <div className="home-recent__head">
             <h2 id="home-recent-title" className="ui-card__section-heading home-recent__title">
-              최근 틀린 단어·표현
+              최근 오답 단어·표현
             </h2>
             <Link to="/wrong-note" className="home-recent__cta">
               전체 보기 →
             </Link>
           </div>
-          <ul className="home-recent__list" aria-label="최근 틀린 항목">
+          <ul className="home-recent__list" aria-label="최근 오답 항목">
             {recentWrong.map((w) => (
               <li
                 key={`${w.type}:${w.id}:${w.stageId}:${w.dayId}`}
@@ -540,7 +540,7 @@ export default function HomePage() {
           className="ui-card ui-card--menu ui-card--interactive home-menu__link"
         >
           <span className="ui-card__title">오답노트</span>
-          <span className="ui-card__subtitle">최근 틀린 항목 다시 보기</span>
+          <span className="ui-card__subtitle">최근 오답 항목 다시 보기</span>
         </Link>
       </nav>
     </main>
@@ -556,7 +556,7 @@ function HomeRecentWrongBody({
   readonly wordPack: StageWordsFile | null | undefined
   readonly convStage: ConversationStage | null | undefined
 }) {
-  const refLine = `Stage ${note.stageId} · Day ${note.dayId} · 틀린 ${note.wrongCount}회`
+  const refLine = `Stage ${note.stageId} · Day ${note.dayId} · 오답 ${note.wrongCount}회`
 
   if (note.type === 'word') {
     if (wordPack === undefined) {

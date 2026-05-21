@@ -7,13 +7,11 @@ const APP_SHELL_URLS = [
   '/index.html',
   '/manifest.json',
   '/favicon.svg',
+  '/content-precache.json',
 ]
 
-const CONTENT_URLS = [
-  '/content/stage-metadata.json',
-  '/content/words/stage-1.json',
-  '/content/conversations/stage-1.json',
-]
+const CONTENT_PRECACHE_MANIFEST_URL = '/content-precache.json'
+const FALLBACK_CONTENT_URLS = ['/content/stage-metadata.json', '/content/words/stage-1.json', '/audio/ui_click.wav']
 
 const CACHE_NAMES = new Set([APP_SHELL_CACHE, CONTENT_CACHE])
 
@@ -21,10 +19,28 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
       caches.open(APP_SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_URLS)),
-      caches.open(CONTENT_CACHE).then((cache) => cache.addAll(CONTENT_URLS)),
+      precacheContentUrls(),
     ]).then(() => self.skipWaiting()),
   )
 })
+
+async function loadContentPrecacheUrls() {
+  try {
+    const response = await fetch(CONTENT_PRECACHE_MANIFEST_URL, { cache: 'no-store' })
+    if (!response.ok) return FALLBACK_CONTENT_URLS
+    const manifest = await response.json()
+    if (!Array.isArray(manifest.urls)) return FALLBACK_CONTENT_URLS
+    return manifest.urls.filter((url) => typeof url === 'string' && url.startsWith('/'))
+  } catch {
+    return FALLBACK_CONTENT_URLS
+  }
+}
+
+async function precacheContentUrls() {
+  const urls = await loadContentPrecacheUrls()
+  const cache = await caches.open(CONTENT_CACHE)
+  await cache.addAll(urls)
+}
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -46,11 +62,14 @@ function isContentRequest(requestUrl) {
 }
 
 function shouldCacheAsShellAsset(request) {
+  const requestUrl = new URL(request.url)
   return (
     request.destination === 'script' ||
     request.destination === 'style' ||
     request.destination === 'font' ||
-    request.destination === 'image'
+    request.destination === 'image' ||
+    request.destination === 'audio' ||
+    requestUrl.pathname.startsWith('/audio/')
   )
 }
 

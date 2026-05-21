@@ -1,18 +1,7 @@
-/**
- * 게스트 프로필 초기 설정 화면(Phase 12-0).
- *
- * 정책:
- * - 닉네임이 비어 있을 때 보호 라우트(`RequireOnboarding`) 가 이 화면으로 redirect 한다.
- * - 입력 닉네임은 trim 후 1자 이상일 때만 저장한다(빈 닉네임 저장 금지).
- * - 저장은 기존 `persistNickname` 단일 진입점만 사용한다(=`saveUserProgress` 안에서
- *   sanitize / `HADES_USER_PROGRESS_EVENT` dispatch 가 함께 처리됨).
- * - localStorage 키(`hadesvoca:userProgress`) 와 schema version 은 변경하지 않는다.
- * - 서버/로그인/회원가입/JWT 호출은 없다. 게스트 전용.
- * - 라우트 state 의 `from` 이 있으면 그 경로로 돌려보내고, 없으면 `/home` 으로 이동한다.
- */
 import { useEffect, useId, useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { APP_ROUTES } from '../constants/routes'
 import {
   hasNicknameOnboardingCompleted,
   persistNickname,
@@ -28,11 +17,11 @@ function isOnboardingLocationState(x: unknown): x is OnboardingLocationState {
 }
 
 function pickReturnPath(state: unknown): string {
-  if (!isOnboardingLocationState(state)) return '/home'
+  if (!isOnboardingLocationState(state)) return APP_ROUTES.home
   const from = state.from
-  if (typeof from !== 'string' || from.length === 0) return '/home'
-  if (!from.startsWith('/')) return '/home'
-  if (from === '/onboarding') return '/home'
+  if (typeof from !== 'string' || from.length === 0) return APP_ROUTES.home
+  if (!from.startsWith('/')) return APP_ROUTES.home
+  if (from === APP_ROUTES.onboarding) return APP_ROUTES.home
   return from
 }
 
@@ -69,9 +58,9 @@ export default function OnboardingPage() {
   return (
     <main className="onboarding-page">
       <header className="onboarding-page__head">
-        <h1 className="onboarding-page__title">하데스 보카 시작하기</h1>
+        <h1 className="onboarding-page__title">하데스보카 시작하기</h1>
         <p className="onboarding-page__desc">
-          학습 기록을 저장할 닉네임을 설정해주세요.
+          학습 기록에 표시할 닉네임을 설정해 주세요.
         </p>
       </header>
 

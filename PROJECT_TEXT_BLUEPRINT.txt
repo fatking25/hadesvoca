@@ -1,0 +1,521 @@
+HadesVoca 프로젝트 텍스트 설계도
+작성 기준: node_modules, dist, 개발 로그 파일은 제외하고 실제 유지보수 대상 파일 중심으로 정리.
+
+============================================================
+1. 프로젝트 개요
+============================================================
+
+HadesVoca는 Vite + React + TypeScript 기반의 모바일 우선 TOEIC 단어/실전 회화 학습 앱이다.
+정적 콘텐츠는 public/content 아래 JSON과 이미지로 관리하고, 사용자 진행 상황은 브라우저 localStorage에 저장한다.
+앱은 온보딩, 홈 대시보드, 단어 학습, 회화 학습, 단어장, 오답노트, 설정 오버레이로 구성된다.
+
+주요 흐름:
+- src/main.tsx -> src/App.tsx -> src/router/AppRouter.tsx
+- AppRouter가 라우팅과 온보딩 보호를 담당한다.
+- MobileLayout이 로그인 이후 공통 모바일 셸, 상단 상태바, 하단 탭바, 설정 시트를 담당한다.
+- public/content의 JSON은 src/api/contentApi.ts에서 fetch/검증 후 화면으로 전달된다.
+- src/utils/storage.ts가 사용자 진행 데이터의 저장/복원/병합을 담당한다.
+
+============================================================
+2. 루트 파일
+============================================================
+
+.gitignore
+- Git 추적에서 제외할 파일/폴더 규칙.
+
+package.json
+- 프로젝트 이름, npm scripts, React/Vite/TypeScript 의존성 정의.
+
+package-lock.json
+- npm 의존성 잠금 파일. 설치 버전 재현용.
+
+index.html
+- Vite 앱의 HTML 진입점. React root가 주입되는 파일.
+
+vite.config.ts
+- Vite 빌드/개발 서버 설정.
+
+eslint.config.js
+- ESLint 규칙 설정. React Hooks, TypeScript lint 기준 포함.
+
+tsconfig.json
+- TypeScript 공통 프로젝트 참조 설정.
+
+tsconfig.app.json
+- 브라우저 앱용 TypeScript 컴파일 옵션.
+
+tsconfig.node.json
+- Node/Vite 설정 파일용 TypeScript 컴파일 옵션.
+
+vercel.json
+- Vercel 배포 시 SPA fallback 라우팅 설정.
+
+README.md
+- 프로젝트 소개와 실행 방법 문서.
+
+PROJECT_ANALYSIS_REPORT.md
+- 기존 프로젝트 분석 리포트.
+
+FEEDBACK_TEMPLATE.md
+- 피드백 작성/수집용 템플릿 문서.
+
+PAGE_ASSETS.txt
+- 페이지별 필요 에셋/리소스 정리 문서.
+
+learning-question-patterns.txt
+- 학습 문제 패턴 설계 문서.
+
+CONVERSATION_STAGE_DAY_STORIES.txt
+- 실전 회화 Stage/Day 스토리 기획 문서.
+
+JSON_SCHEMA_PROJECT_DATA_OVERVIEW.txt
+- 프로젝트 데이터 구조 전체 개요.
+
+JSON_SCHEMA_CONTENT_WORD_STAGE.txt
+- 단어 학습 콘텐츠 JSON 스키마 설명.
+
+JSON_SCHEMA_CONTENT_CONVERSATION_STAGE.txt
+- 회화 콘텐츠 JSON 스키마 설명.
+
+JSON_SCHEMA_USER_PROGRESS.txt
+- 사용자 진행 데이터 localStorage 스키마 설명.
+
+하데스보카 IP  세계관 설정 v1.txt
+- 하데스보카 IP/세계관/콘셉트 설정 문서.
+
+============================================================
+3. public 정적 파일
+============================================================
+
+public/manifest.json
+- PWA 앱 이름, 아이콘, display mode 등 manifest 설정.
+
+public/sw.js
+- 서비스워커. 앱 shell, 콘텐츠 JSON, 이미지/오디오 정적 리소스 캐시 처리.
+
+public/favicon.svg
+- 브라우저 favicon.
+
+public/icons.svg
+- 앱에서 사용할 수 있는 SVG 아이콘 묶음.
+
+public/icons/icon-192.png
+- PWA 192px 아이콘.
+
+public/icons/icon-512.png
+- PWA 512px 아이콘.
+
+public/audio/ui_click.wav
+- 전역 UI 클릭 효과음 파일.
+
+public/content/stage-metadata.json
+- 단어/회화 stage 메타데이터. stage id, 제목, 콘텐츠 경로 등을 연결.
+
+public/content/words/stage-1.json
+- 단어 학습 Stage 1 콘텐츠. Day, 단어, 예문, 퀴즈 데이터 포함.
+
+public/content/conversations/assets/placeholder-day1-cutscene.svg
+- 회화 컷씬 이미지가 없을 때 사용하는 Day 1 기본 placeholder.
+
+public/content/conversations/assets/placeholder-day2-cutscene.svg
+- 회화 컷씬 이미지가 없을 때 사용하는 Day 2 기본 placeholder.
+
+public/content/conversations/assets/placeholder-day3-cutscene.svg
+- 회화 컷씬 이미지가 없을 때 사용하는 Day 3 기본 placeholder.
+
+public/content/conversations/stage-1/index.json
+- 회화 Stage 1의 Day 파일 목록과 stage 제목/설명 메타데이터.
+
+public/content/conversations/stage-1/day-01.json
+- 회화 Stage 1 Day 1 콘텐츠. 컷씬, 나레이션, 대화, 퀴즈, 핵심 표현 포함.
+
+public/content/conversations/stage-1/day-02.json
+- 회화 Stage 1 Day 2 콘텐츠.
+
+public/content/conversations/stage-1/day-03.json
+- 회화 Stage 1 Day 3 콘텐츠.
+
+public/content/conversations/stage-1/day-04.json
+- 회화 Stage 1 Day 4 콘텐츠.
+
+public/content/conversations/stage-1/day-05.json
+- 회화 Stage 1 Day 5 콘텐츠.
+
+public/content/conversations/stage-1/day-06.json
+- 회화 Stage 1 Day 6 콘텐츠.
+
+public/content/conversations/stage-1/day-07.json
+- 회화 Stage 1 Day 7 콘텐츠.
+
+public/content/conversations/stage-1/assets/stage-1-day-01-cutscene.jpg
+- Stage 1 Day 1 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-01-scene-01.jpg
+- Stage 1 Day 1 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-01-scene-02.jpg
+- Stage 1 Day 1 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-01-scene-03.jpg
+- Stage 1 Day 1 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-02-cutscene.jpg
+- Stage 1 Day 2 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-02-scene-01.jpg
+- Stage 1 Day 2 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-02-scene-02.jpg
+- Stage 1 Day 2 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-02-scene-03.jpg
+- Stage 1 Day 2 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-03-cutscene.jpg
+- Stage 1 Day 3 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-03-scene-01.jpg
+- Stage 1 Day 3 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-03-scene-02.jpg
+- Stage 1 Day 3 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-03-scene-03.jpg
+- Stage 1 Day 3 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-04-cutscene.jpg
+- Stage 1 Day 4 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-04-scene-01.jpg
+- Stage 1 Day 4 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-04-scene-02.jpg
+- Stage 1 Day 4 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-04-scene-03.jpg
+- Stage 1 Day 4 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-05-cutscene.jpg
+- Stage 1 Day 5 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-05-scene-01.jpg
+- Stage 1 Day 5 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-05-scene-02.jpg
+- Stage 1 Day 5 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-05-scene-03.jpg
+- Stage 1 Day 5 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-06-cutscene.jpg
+- Stage 1 Day 6 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-06-scene-01.jpg
+- Stage 1 Day 6 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-06-scene-02.jpg
+- Stage 1 Day 6 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-06-scene-03.jpg
+- Stage 1 Day 6 review/quiz 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-07-cutscene.jpg
+- Stage 1 Day 7 컷씬 대표 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-07-scene-01.jpg
+- Stage 1 Day 7 intro 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-07-scene-02.jpg
+- Stage 1 Day 7 dialogue 장면 이미지.
+
+public/content/conversations/stage-1/assets/stage-1-day-07-scene-03.jpg
+- Stage 1 Day 7 review/quiz 장면 이미지.
+
+public/content/conversations/stage-2/index.json
+- 회화 Stage 2의 Day 파일 목록과 stage 메타데이터.
+
+public/content/conversations/stage-2/day-01.json
+- 회화 Stage 2 Day 1 콘텐츠.
+
+public/content/conversations/stage-2/day-02.json
+- 회화 Stage 2 Day 2 콘텐츠.
+
+public/content/conversations/stage-2/day-03.json
+- 회화 Stage 2 Day 3 콘텐츠.
+
+public/content/conversations/stage-2/day-04.json
+- 회화 Stage 2 Day 4 콘텐츠.
+
+public/content/conversations/stage-2/day-05.json
+- 회화 Stage 2 Day 5 콘텐츠.
+
+public/content/conversations/stage-2/day-06.json
+- 회화 Stage 2 Day 6 콘텐츠.
+
+public/content/conversations/stage-2/day-07.json
+- 회화 Stage 2 Day 7 콘텐츠.
+
+============================================================
+4. src 진입점과 전역 스타일
+============================================================
+
+src/main.tsx
+- React 앱을 DOM에 mount하고 서비스워커 등록 및 전역 CSS를 로드.
+
+src/App.tsx
+- 앱 루트 컴포넌트. 전역 UI 클릭 사운드 훅을 켜고 AppRouter를 렌더링.
+
+src/App.css
+- 앱 단위 기본 스타일.
+
+src/index.css
+- 문서 전역 reset/base 스타일.
+
+src/registerServiceWorker.ts
+- 브라우저에서 public/sw.js 서비스워커 등록 담당.
+
+src/assets/hero.png
+- 시작/브랜드 화면 등에 사용할 수 있는 hero 이미지 에셋.
+
+src/assets/react.svg
+- Vite 기본 React SVG 에셋. 현재 앱 핵심 에셋은 아님.
+
+src/assets/vite.svg
+- Vite 기본 SVG 에셋. 현재 앱 핵심 에셋은 아님.
+
+============================================================
+5. src/api
+============================================================
+
+src/api/contentApi.ts
+- public/content JSON fetch, public URL 해석, 단어/회화 콘텐츠 런타임 검증, stage/day 조립 로더.
+
+============================================================
+6. src/constants
+============================================================
+
+src/constants/content.ts
+- MVP stage id와 회화 fallback 컷씬 경로 같은 콘텐츠 관련 상수.
+
+src/constants/economy.ts
+- 단어 학습 시작 비용, 완료 보상, 일일 코인 기본값 등 경제/보상 정책 상수.
+
+src/constants/routes.ts
+- 앱 주요 라우트 경로 상수와 day/stage 경로 builder 함수.
+
+src/constants/storageKeys.ts
+- localStorage key 상수. userProgress, audioSettings 저장 key 관리.
+
+============================================================
+7. src/router
+============================================================
+
+src/router/AppRouter.tsx
+- 전체 React Router 라우트 구성. 온보딩 전/후 화면과 모바일 레이아웃 라우팅 정의.
+
+src/router/RequireOnboarding.tsx
+- 닉네임 온보딩 완료 여부를 확인하고 미완료 시 온보딩으로 redirect.
+
+============================================================
+8. src/layouts
+============================================================
+
+src/layouts/MobileLayout.tsx
+- 로그인 이후 공통 모바일 앱 셸. 상단 브랜드/상태바/설정 버튼, Outlet, 하단 탭바 구성.
+
+src/layouts/MobileLayout.css
+- 모바일 셸, 헤더, 콘텐츠 영역, 하단 탭 여백 등 레이아웃 스타일.
+
+============================================================
+9. src/components/layout
+============================================================
+
+src/components/layout/AppSettingsSheet.tsx
+- 설정 오버레이 시트. 진행 백업/불러오기/수동저장/도움말/저작권/초기화/설정 탭을 관리.
+
+src/components/layout/AppSheets.css
+- 프로필 시트와 설정 시트 공통 스타일. 오버레이, 메뉴 row, 오디오 슬라이더, 확인 버튼 스타일 포함.
+
+src/components/layout/AudioSettingsPanel.tsx
+- 나레이션/효과음 볼륨 슬라이더 UI. 효과음 설정은 실제 클릭 사운드에 반영.
+
+src/components/layout/MobileStatsBar.tsx
+- 모바일 헤더의 프로필, 레벨, streak, 코인 요약 표시.
+
+src/components/layout/ProfileNickSheet.tsx
+- 프로필/닉네임 변경 시트. 경험치, 학습 통계, 닉네임 수정 폼 표시.
+
+============================================================
+10. src/components/learning
+============================================================
+
+src/components/learning/LearningPathView.tsx
+- 단어/회화 Day 목록을 Duolingo식 경로 UI로 표시하는 재사용 컴포넌트.
+
+src/components/learning/LearningPathView.css
+- LearningPathView 전용 경로, 노드, 카드, 잠금/완료 상태 스타일.
+
+============================================================
+11. src/components/navigation
+============================================================
+
+src/components/navigation/BottomTabBar.tsx
+- 홈, 단어, 회화, 단어장, 오답노트로 이동하는 하단 탭바.
+
+============================================================
+12. src/context
+============================================================
+
+src/context/conversationSessionCore.ts
+- 회화 세션 결과 전달용 타입과 Context 기본값/훅 정의.
+
+src/context/ConversationSessionContext.tsx
+- 회화 세션 결과 state를 앱 전역에서 유지하는 Provider 구현.
+
+============================================================
+13. src/hooks
+============================================================
+
+src/hooks/useUiClickSound.ts
+- 앱 전체의 버튼/링크 클릭을 감지해 public/audio/ui_click.wav 효과음을 재생.
+
+============================================================
+14. src/pages
+============================================================
+
+src/pages/StartPage.tsx
+- 앱 시작 화면. 학습 시작 버튼과 팬메이드 고지 노출.
+
+src/pages/StartPage.css
+- 시작 화면 hero, CTA, 고지 영역 스타일.
+
+src/pages/OnboardingPage.tsx
+- 첫 방문 닉네임 설정 화면. 저장 후 원래 가려던 화면 또는 홈으로 이동.
+
+src/pages/OnboardingPage.css
+- 온보딩 입력 폼과 안내 문구 스타일.
+
+src/pages/HomePage.tsx
+- 메인 대시보드. 최근 학습, 일일 코인, 진행률, 오답/단어장 요약 표시.
+
+src/pages/HomePage.css
+- 홈 대시보드 카드, 통계, 최근 학습, 액션 UI 스타일.
+
+src/pages/WordStudyDayListPage.tsx
+- 단어 학습 Day 목록 화면. 콘텐츠 로드, 해금 상태, 코인 게이트 표시.
+
+src/pages/WordStudyDayDetailPage.tsx
+- 단어 학습/복습 퀴즈 진행 화면. 선택지 셔플, 정답/오답 처리, 결과 이동, 단어장 저장 처리.
+
+src/pages/WordStudyResultPage.tsx
+- 단어 학습 결과 화면. 정답 수, 오답, 보상, 진행 저장 반영.
+
+src/pages/WordStudyPage.css
+- 단어 학습 목록/상세/결과에서 공유하는 스타일.
+
+src/pages/ConversationDayListPage.tsx
+- 구형 또는 호환용 회화 Day 목록 페이지.
+
+src/pages/ConversationDayDetailPage.tsx
+- 새 회화 상세 페이지로 re-export하는 호환 파일.
+
+src/pages/ConversationDayDetailPage.css
+- 회화 상세 화면 전체 스타일. 컷씬, 대화, 퀴즈, 문장 빌더, 표현 카드 포함.
+
+src/pages/VocabularyBookPage.tsx
+- 저장한 단어/표현 목록 화면. 콘텐츠 JSON과 저장 ref를 join해서 표시.
+
+src/pages/VocabularyBookPage.css
+- 단어장 탭, 목록 row, 저장 항목 스타일.
+
+src/pages/WrongNotePage.tsx
+- 오답노트 화면. 단어/표현 오답 목록과 관련 콘텐츠 조회.
+
+src/pages/WrongNotePage.css
+- 오답노트 탭, 리스트, 설명 텍스트 스타일.
+
+============================================================
+15. src/pages/conversation
+============================================================
+
+src/pages/conversation/ConversationStageHubPage.tsx
+- 회화 Stage 허브. 활성/예정 stage 카드, 진행률, stage 진입 링크 표시.
+
+src/pages/conversation/ConversationStageListPage.tsx
+- 특정 회화 Stage의 Day 목록. sequential unlock과 진행률 표시.
+
+src/pages/conversation/ConversationStageListPage.css
+- 회화 stage 허브와 day 목록 카드 스타일.
+
+src/pages/conversation/ConversationDayDetailPage.tsx
+- 회화 Day 상세 진행 화면. 컷씬 -> 나레이션 -> 대화 -> 퀴즈 -> 표현 흐름 관리.
+
+src/pages/conversation/ConversationDayResultPage.tsx
+- 회화 Day 결과 화면. 퀴즈 결과와 진행 저장 반영.
+
+============================================================
+16. src/styles
+============================================================
+
+src/styles/design-tokens.css
+- 색상, spacing, radius, shadow, typography, z-index, motion 등 디자인 토큰.
+
+src/styles/cards.css
+- 공통 카드 UI 클래스.
+
+src/styles/buttons.css
+- 공통 버튼 UI 클래스.
+
+============================================================
+17. src/types
+============================================================
+
+src/types/content.ts
+- 단어 학습 JSON 구조 타입. stage, day, word, question, option 등.
+
+src/types/conversation.ts
+- 회화 JSON 구조 타입. stage index, day, scene image, dialogue, quiz, expression 등.
+
+src/types/user-progress.ts
+- localStorage 사용자 진행 데이터 타입과 기본값 생성 함수.
+
+src/types/wordStudySession.ts
+- 단어 학습 결과 화면으로 전달되는 navigate state 타입.
+
+src/types/index.ts
+- 공통 타입 export 진입점.
+
+============================================================
+18. src/utils
+============================================================
+
+src/utils/audioSettings.ts
+- 오디오 설정 load/save, 기본 볼륨, 효과음 볼륨 조회.
+
+src/utils/browserStorage.ts
+- localStorage/sessionStorage 안전 접근 어댑터. try/catch와 환경 체크를 중앙화.
+
+src/utils/contentJoin.ts
+- 저장된 단어/표현 ref와 정적 콘텐츠 JSON 본문을 화면 표시용으로 join하는 헬퍼.
+
+src/utils/conversationDifficulty.ts
+- 회화 난이도 값과 UI 표시용 라벨/상태 계산.
+
+src/utils/id.ts
+- local id, 세션 nonce, UI revision 생성 유틸.
+
+src/utils/learningUnlock.ts
+- 순차 학습 해금 여부와 lesson availability 계산.
+
+src/utils/learnStats.ts
+- 사용자 진행 데이터 기반 통계 계산. 완료 수, 일일 학습 수, 진행률 등.
+
+src/utils/random.ts
+- 배열 셔플 같은 랜덤 관련 공용 유틸.
+
+src/utils/storage.ts
+- 사용자 진행 데이터의 핵심 저장/복원/정규화/병합 로직. 보상 적용, 오답, 단어장, 완료 처리 포함.
+
+src/utils/userGrade.ts
+- rankTier 기반 사용자 등급 라벨 계산.
+

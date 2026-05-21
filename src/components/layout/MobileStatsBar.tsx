@@ -1,9 +1,3 @@
-/**
- * 헤더 우측 컴팩트 통계: 프로필(닉네임) · 등급(Lv) · 연속 학습일 · 코인.
- * - 좌측의 닉네임 chip 버튼만 클릭 가능하며, 누르면 프로필/닉네임 시트가 열린다.
- * - 나머지 chip 3개(Lv / streak / coin)는 표시 전용(클릭 불가).
- * - `UserProgress` 갱신은 가시성 / `HADES_USER_PROGRESS_EVENT` 로 재구독한다.
- */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { HADES_USER_PROGRESS_EVENT, loadUserProgress } from '../../utils/storage'
@@ -15,12 +9,11 @@ function formatCoins(n: number): string {
   return String(Math.max(0, Math.floor(n)))
 }
 
-/** surrogate-pair 안전 첫 글자. 닉네임이 비어 있으면 한국어 기본값 '나'. */
 function avatarInitial(nick: string): string {
   const trimmed = nick.trim()
-  if (trimmed === '') return '나'
+  if (trimmed === '') return '학'
   const cp = trimmed.codePointAt(0)
-  if (cp === undefined) return '나'
+  if (cp === undefined) return '학'
   return String.fromCodePoint(cp)
 }
 
@@ -66,7 +59,7 @@ export function MobileStatsBar(props: MobileStatsBarProps) {
         type="button"
         className="mobile-stats-bar__profile"
         title="프로필 · 닉네임 바꾸기"
-        aria-label={`프로필, 닉네임 ${nick}`}
+        aria-label={`프로필 닉네임 ${nick}`}
         onClick={() => {
           onProfilePress?.()
         }}
@@ -78,10 +71,10 @@ export function MobileStatsBar(props: MobileStatsBarProps) {
       </button>
       <div
         className="mobile-stats-bar__item mobile-stats-bar__item--lvl"
-        aria-label={`등급 티어 ${tier}`}
+        aria-label={`등급 레벨 ${tier}`}
       >
         <span className="mobile-stats-bar__icon mobile-stats-bar__icon--lvl" aria-hidden>
-          ⚡
+          Lv
         </span>
         <span className="mobile-stats-bar__chip">Lv</span>
         <span className="mobile-stats-bar__num">{tier}</span>
@@ -91,7 +84,7 @@ export function MobileStatsBar(props: MobileStatsBarProps) {
         aria-label={`연속 학습 ${streak}일`}
       >
         <span className="mobile-stats-bar__icon" aria-hidden>
-          🔥
+          S
         </span>
         <span className="mobile-stats-bar__num">{streak}</span>
       </div>

@@ -143,9 +143,9 @@ export function LearningPathView({
           <button
             type="button"
             className="learning-path__guide-slot"
-            aria-label="가이드 준비중"
+            aria-label="가이드 준비 중"
             disabled
-            title="가이드 준비중"
+            title="가이드 준비 중"
           >
             {guideAccessory ?? <span aria-hidden className="learning-path__guide-icon" />}
           </button>
@@ -161,7 +161,7 @@ export function LearningPathView({
         {stageImportBanner !== undefined ? (
           <section
             className="learning-path__stage-import-banner"
-            aria-label="Stage 콘텐츠 가져오기 준비중"
+            aria-label="추가 스테이지 준비 중"
           >
             <div className="learning-path__stage-import-copy">
               <p className="learning-path__stage-import-title">

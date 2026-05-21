@@ -1,5 +1,5 @@
-/**
- * 단어 학습 Day 상세: 정적 JSON 기반 퀴즈 진행 및 결과 화면으로 이동 (상태만 React, 저장 없음)
+﻿/**
+ * ?⑥뼱 ?숈뒿 Day ?곸꽭: ?뺤쟻 JSON 湲곕컲 ?댁쫰 吏꾪뻾 諛?寃곌낵 ?붾㈃?쇰줈 ?대룞 (?곹깭留?React, ????놁쓬)
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -9,6 +9,11 @@ import {
   type RemoteContentState,
 } from '../api/contentApi'
 import { MVP_WORD_STAGE_ID } from '../constants/content'
+import {
+  APP_ROUTES,
+  wordStudyDayResultPath,
+} from '../constants/routes'
+import { WordStudyCoinGate } from './wordStudy/WordStudyCoinGate'
 import {
   WORD_CONTENT_BLANK_TOKEN,
   type StageWordsDaySection,
@@ -22,6 +27,8 @@ import type {
   WordStudyWrongItemSummary,
 } from '../types/wordStudySession'
 import { isSequentialDayUnlocked } from '../utils/learningUnlock'
+import { createSessionNonce, createUiRevision } from '../utils/id'
+import { shuffleReadonly } from '../utils/random'
 import {
   getDueWordReviewStatuses,
   isWordDayCompleted,
@@ -66,13 +73,13 @@ function buildQuizItems(day: StageWordsDaySection): QuizItem[] {
 }
 
 /**
- * 복습 세션용 quizItems 구성기(Phase 11-7).
+ * 蹂듭뒿 ?몄뀡??quizItems 援ъ꽦湲?Phase 11-7).
  *
- * 정책:
- * - Stage 전체 콘텐츠 pack 에서 `dueLemmaIds` 에 해당하는 단어만 찾는다.
- * - 단어 1개당 등록된 questions 를 모두 출제한다(`buildQuizItems` 구조 재사용).
- * - 콘텐츠에서 찾지 못한 lemmaId 는 조용히 제외한다(앱이 죽지 않게).
- * - 옵션 셔플은 일반 학습과 동일하게 렌더 시점에 적용된다.
+ * ?뺤콉:
+ * - Stage ?꾩껜 肄섑뀗痢?pack ?먯꽌 `dueLemmaIds` ???대떦?섎뒗 ?⑥뼱留?李얜뒗??
+ * - ?⑥뼱 1媛쒕떦 ?깅줉??questions 瑜?紐⑤몢 異쒖젣?쒕떎(`buildQuizItems` 援ъ“ ?ъ궗??.
+ * - 肄섑뀗痢좎뿉??李얠? 紐삵븳 lemmaId ??議곗슜???쒖쇅?쒕떎(?깆씠 二쎌? ?딄쾶).
+ * - ?듭뀡 ?뷀뵆? ?쇰컲 ?숈뒿怨??숈씪?섍쾶 ?뚮뜑 ?쒖젏???곸슜?쒕떎.
  */
 function buildReviewQuizItems(
   pack: StageWordsFile,
@@ -98,14 +105,7 @@ function buildReviewQuizItems(
 }
 
 function shuffleOptionsOnce(options: readonly WordContentOption[]): readonly WordContentOption[] {
-  const shuffled = [...options]
-  for (let i = shuffled.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const tmp = shuffled[i]!
-    shuffled[i] = shuffled[j]!
-    shuffled[j] = tmp
-  }
-  return shuffled
+  return shuffleReadonly(options)
 }
 
 function questionTypeLabel(q: WordContentQuestion): string {
@@ -133,9 +133,9 @@ function toWrongSummary(item: QuizItem): WordStudyWrongItemSummary {
 }
 
 function choiceInstruction(q: WordContentQuestion): string {
-  if (q.type === 'word-to-meaning') return '한국어 뜻을 고르세요'
-  if (q.type === 'meaning-to-word') return '영어 단어를 고르세요'
-  return '빈칸에 알맞은 영어 단어를 고르세요'
+  if (q.type === 'word-to-meaning') return '?쒓뎅???살쓣 怨좊Ⅴ?몄슂'
+  if (q.type === 'meaning-to-word') return '?곸뼱 ?⑥뼱瑜?怨좊Ⅴ?몄슂'
+  return '鍮덉뭏???뚮쭪? ?곸뼱 ?⑥뼱瑜?怨좊Ⅴ?몄슂'
 }
 
 function fillBlankSentenceSource(q: WordContentQuestion & { type: 'fill-blank' }): string {
@@ -156,7 +156,7 @@ function renderBlankSentence(
   const slot = filled ? (
     <span className="word-study__blank-slot word-study__blank-slot--filled">{answerEn}</span>
   ) : (
-    <span className="word-study__blank-slot" aria-label="빈칸" />
+    <span className="word-study__blank-slot" aria-label="鍮덉뭏" />
   )
   return (
     <p className="word-study__prompt-block word-study__prompt-block--blank">
@@ -177,7 +177,7 @@ function renderQuestionStem(
     case 'word-to-meaning':
       return (
         <>
-          <p className="word-study__instruction">영어 단어의 뜻으로 알맞은 것을 고르세요.</p>
+          <p className="word-study__instruction">?곸뼱 ?⑥뼱???살쑝濡??뚮쭪? 寃껋쓣 怨좊Ⅴ?몄슂.</p>
           <p className="word-study__prompt word-study__prompt--en-headword" lang="en">
             {q.promptEn}
           </p>
@@ -186,7 +186,7 @@ function renderQuestionStem(
     case 'meaning-to-word':
       return (
         <>
-          <p className="word-study__instruction">설명에 맞는 영어 단어를 고르세요.</p>
+          <p className="word-study__instruction">?ㅻ챸??留욌뒗 ?곸뼱 ?⑥뼱瑜?怨좊Ⅴ?몄슂.</p>
           <p className="word-study__prompt word-study__prompt--ko-meaning" lang="ko">
             {q.promptKo}
           </p>
@@ -197,11 +197,11 @@ function renderQuestionStem(
       return (
         <>
           <p className="word-study__instruction">
-            빈칸에 들어갈 단어를 아래 선택지에서 고르세요.
+            鍮덉뭏???ㅼ뼱媛??⑥뼱瑜??꾨옒 ?좏깮吏?먯꽌 怨좊Ⅴ?몄슂.
           </p>
           {renderBlankSentence(sentence, revealed, correctAnswerText)}
           <p className="word-study__example-note" lang="ko">
-            <span className="word-study__example-note-label">교재 예문</span>{' '}
+            <span className="word-study__example-note-label">援먯옱 ?덈Ц</span>{' '}
             <span className="word-study__example-note-en" lang="en">
               {word.exampleSentence}
             </span>
@@ -222,10 +222,7 @@ function parseDayIdParam(raw: string | undefined): number | null {
 }
 
 function generateWordDayAttemptKey(): string {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID()
-  }
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  return createSessionNonce('word-day-attempt')
 }
 
 type ReviewSessionState = Readonly<{
@@ -254,7 +251,7 @@ export default function WordStudyDayDetailPage() {
   const [revealed, setRevealed] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [wrongCount, setWrongCount] = useState(0)
-  /** 결과 화면으로 넘길 오답 목록 (`navigate` 시 최신 목록 확보용) */
+  /** 寃곌낵 ?붾㈃?쇰줈 ?섍만 ?ㅻ떟 紐⑸줉 (`navigate` ??理쒖떊 紐⑸줉 ?뺣낫?? */
   const wrongItemsRef = useRef<WordStudyWrongItemSummary[]>([])
   const wordDayAttemptRef = useRef<WordDayAttemptKeyRef | null>(null)
   const [coinGate, setCoinGate] = useState<WordDayCoinGateState>(() => ({
@@ -304,7 +301,7 @@ export default function WordStudyDayDetailPage() {
       }
       const isCompletedWordDay = isWordDayCompleted(p, MVP_WORD_STAGE_ID, dayNum)
       if (!isCompletedWordDay && !isSequentialDayUnlocked(sortedIds, completed, dayNum)) {
-        navigate('/word-study', { replace: true })
+        navigate(APP_ROUTES.wordStudy, { replace: true })
         return
       }
 
@@ -448,10 +445,10 @@ export default function WordStudyDayDetailPage() {
   )
 
   const resultHref = isReviewMode
-    ? '/word-study/review/result'
+    ? APP_ROUTES.wordStudyReviewResult
     : dayIdParam !== undefined && dayIdParam !== ''
-      ? `/word-study/${dayIdParam}/result`
-      : '/word-study'
+      ? wordStudyDayResultPath(dayIdParam)
+      : APP_ROUTES.wordStudy
 
   const dayLabel = isReviewMode
     ? '단어 학습 · 복습'
@@ -461,7 +458,7 @@ export default function WordStudyDayDetailPage() {
   const headline = isReviewMode
     ? '이번 Day 복습'
     : (daySection?.titleKo ??
-      (dayNum === null ? '알 수 없는 Day' : '이 Day 콘텐츠를 찾지 못했습니다'))
+      (dayNum === null ? '알 수 없는 Day' : '이 Day 콘텐츠를 찾을 수 없습니다.'))
 
   const handlePrimaryAction = () => {
     if (current === undefined) return
@@ -479,10 +476,7 @@ export default function WordStudyDayDetailPage() {
     }
 
     if (isLast) {
-      const persistNonce =
-        typeof crypto !== 'undefined' && 'randomUUID' in crypto
-          ? crypto.randomUUID()
-          : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+      const persistNonce = createSessionNonce('word-study-result')
       const stageDayIds: readonly number[] = isReviewMode
         ? []
         : packState.status === 'success'
@@ -527,9 +521,9 @@ export default function WordStudyDayDetailPage() {
   if (!isReviewMode && dayNum === null) {
     return (
       <main className="word-study">
-        <p className="word-study__muted">Day 번호가 올바르지 않습니다.</p>
-        <Link to="/word-study" className="word-study__result-link">
-          Day 목록으로
+        <p className="word-study__muted">Day 踰덊샇媛 ?щ컮瑜댁? ?딆뒿?덈떎.</p>
+        <Link to={APP_ROUTES.wordStudy} className="word-study__result-link">
+          Day 紐⑸줉?쇰줈
         </Link>
       </main>
     )
@@ -539,7 +533,7 @@ export default function WordStudyDayDetailPage() {
     return (
       <main className="word-study">
         <p className="word-study__eyebrow">{dayLabel}</p>
-        <p className="word-study__muted">단어 세트 불러오는 중…</p>
+        <p className="word-study__muted">단어 콘텐츠를 불러오는 중입니다.</p>
       </main>
     )
   }
@@ -547,12 +541,12 @@ export default function WordStudyDayDetailPage() {
   if (packState.status === 'error') {
     const msg = isContentFetchError(packState.error)
       ? packState.error.message
-      : packState.error.message || '불러오기에 실패했습니다.'
+      : packState.error.message || '遺덈윭?ㅺ린???ㅽ뙣?덉뒿?덈떎.'
     return (
       <main className="word-study">
         <p className="word-study__muted">{msg}</p>
-        <Link to="/word-study" className="word-study__result-link">
-          Day 목록으로
+        <Link to={APP_ROUTES.wordStudy} className="word-study__result-link">
+          Day 紐⑸줉?쇰줈
         </Link>
       </main>
     )
@@ -564,7 +558,7 @@ export default function WordStudyDayDetailPage() {
         <main className="word-study word-study--review">
           <p className="word-study__eyebrow">{dayLabel}</p>
           <h1 className="word-study__title">{headline}</h1>
-          <p className="word-study__muted">복습 대상을 불러오는 중입니다…</p>
+          <p className="word-study__muted">복습 대상을 불러오는 중입니다.</p>
         </main>
       )
     }
@@ -574,11 +568,11 @@ export default function WordStudyDayDetailPage() {
           <p className="word-study__eyebrow">{dayLabel}</p>
           <h1 className="word-study__title">{headline}</h1>
           <p className="word-study__muted">
-            현재 Word Day {reviewSession.currentWordDayId} 기준 복습할 단어가
-            없습니다.
+            ?꾩옱 Word Day {reviewSession.currentWordDayId} 湲곗? 蹂듭뒿???⑥뼱媛
+            ?놁뒿?덈떎.
           </p>
-          <Link to="/word-study" className="word-study__result-link">
-            Day 목록으로
+          <Link to={APP_ROUTES.wordStudy} className="word-study__result-link">
+            Day 紐⑸줉?쇰줈
           </Link>
         </main>
       )
@@ -590,9 +584,9 @@ export default function WordStudyDayDetailPage() {
       <main className="word-study">
         <p className="word-study__eyebrow">{dayLabel}</p>
         <h1 className="word-study__title">{headline}</h1>
-        <p className="word-study__muted">이 Day에 필요한 문제 데이터가 없습니다.</p>
-        <Link to="/word-study" className="word-study__result-link">
-          Day 목록으로
+        <p className="word-study__muted">??Day???꾩슂??臾몄젣 ?곗씠?곌? ?놁뒿?덈떎.</p>
+        <Link to={APP_ROUTES.wordStudy} className="word-study__result-link">
+          Day 紐⑸줉?쇰줈
         </Link>
       </main>
     )
@@ -612,35 +606,19 @@ export default function WordStudyDayDetailPage() {
       <main className="word-study">
         <p className="word-study__eyebrow">{dayLabel}</p>
         <h1 className="word-study__title">{headline}</h1>
-        <p className="word-study__muted">학습 준비 중입니다.</p>
+        <p className="word-study__muted">?숈뒿 以鍮?以묒엯?덈떎.</p>
       </main>
     )
   }
 
   if (!isReviewMode && currentCoinGate.status === 'blocked') {
     return (
-      <main className="word-study">
-        <p className="word-study__eyebrow">{dayLabel}</p>
-        <h1 className="word-study__title">{headline}</h1>
-        <section className="ui-card ui-card--dashboard word-study__coin-gate">
-          <h2 className="ui-card__section-heading">코인이 부족합니다</h2>
-          <p className="ui-card__body word-study__coin-gate-copy">
-            이 Day를 시작하려면 {currentCoinGate.cost}코인이 필요합니다. 현재 보유
-            코인은 {currentCoinGate.coins}코인입니다.
-          </p>
-          <p className="ui-card__body word-study__coin-gate-copy">
-            홈에서 오늘의 코인을 받은 뒤 다시 시작해 주세요.
-          </p>
-          <div className="word-study__coin-gate-actions">
-            <Link to="/home" className="ui-btn ui-btn--primary ui-btn--block">
-              홈에서 코인 받기
-            </Link>
-            <Link to="/word-study" className="ui-btn ui-btn--ghost ui-btn--block">
-              Day 목록으로
-            </Link>
-          </div>
-        </section>
-      </main>
+      <WordStudyCoinGate
+        dayLabel={dayLabel}
+        headline={headline}
+        coins={currentCoinGate.coins}
+        cost={currentCoinGate.cost}
+      />
     )
   }
 
@@ -648,7 +626,7 @@ export default function WordStudyDayDetailPage() {
   const word = current!.word
   const correctAnswerText = q.options.find((o) => o.id === q.correctOptionId)?.text ?? ''
 
-  const progressLabel = `문항 ${questionIndex + 1} / ${total}`
+  const progressLabel = `臾명빆 ${questionIndex + 1} / ${total}`
   const answeredCorrectly = selectedOptionId === q.correctOptionId
 
   const feedbackClass =
@@ -677,7 +655,7 @@ export default function WordStudyDayDetailPage() {
 
       {isReviewMode ? (
         <p className="word-study__muted">
-          현재 Word Day {reviewSession?.currentWordDayId ?? 0} 기준 복습 세션입니다.
+          ?꾩옱 Word Day {reviewSession?.currentWordDayId ?? 0} 湲곗? 蹂듭뒿 ?몄뀡?낅땲??
         </p>
       ) : daySection?.descriptionKo !== undefined ? (
         <p className="word-study__muted">{daySection.descriptionKo}</p>
@@ -689,7 +667,7 @@ export default function WordStudyDayDetailPage() {
       >
         <div className="word-study__q-head">
           <h2 id="word-study-card-label" className="ui-card__section-heading word-study__q-title">
-            문제{' '}
+            臾몄젣{' '}
             <span className="word-study__type-chip">{questionTypeLabel(q)}</span>
           </h2>
           <button
@@ -698,7 +676,7 @@ export default function WordStudyDayDetailPage() {
             aria-pressed={wordInVocab}
             aria-label={
               bookmarkLemmaId === null
-                ? '단어 식별 없음'
+                ? '저장할 단어 없음'
                 : wordInVocab
                   ? '단어장에서 삭제'
                   : '단어장에 저장'
@@ -710,17 +688,17 @@ export default function WordStudyDayDetailPage() {
                 persistRemoveSavedWord(bookmarkLemmaId)
                 setWordInVocab(false)
                 setBookmarkFeedback({
-                  message: '단어장에서 삭제했어요',
+                  message: '단어장에서 삭제했어요.',
                   tone: 'removed',
-                  nonce: Date.now(),
+                  nonce: createUiRevision(),
                 })
               } else {
                 persistUpsertSavedWord(bookmarkLemmaId, MVP_WORD_STAGE_ID, dayNum)
                 setWordInVocab(true)
                 setBookmarkFeedback({
-                  message: '단어장에 추가했어요',
+                  message: '단어장에 추가했어요.',
                   tone: 'saved',
-                  nonce: Date.now(),
+                  nonce: createUiRevision(),
                 })
               }
             }}
@@ -743,10 +721,10 @@ export default function WordStudyDayDetailPage() {
 
         <div className="word-study__choices-panel" aria-labelledby="word-study-choices-label">
           <h2 id="word-study-choices-label" className="word-study__choices-heading">
-            <span className="word-study__choices-title">선택지</span>
+            <span className="word-study__choices-title">?좏깮吏</span>
             <span className="word-study__choice-hint">{choiceInstruction(q)}</span>
           </h2>
-          <div className="word-study__choices" role="group" aria-label="객관식 선택지">
+          <div className="word-study__choices" role="group" aria-label="媛앷????좏깮吏">
             {displayOptions.map((opt) => (
               <button
                 key={opt.id}
@@ -765,28 +743,28 @@ export default function WordStudyDayDetailPage() {
       </section>
 
       <p className="word-study__footer-note word-study__score-inline">
-        누적 · 정답 {correctCount} · 오답 {wrongCount}
+        ?꾩쟻 쨌 ?뺣떟 {correctCount} 쨌 ?ㅻ떟 {wrongCount}
       </p>
 
       {revealed ? (
         <div className="word-study__answer-overlay" role="dialog" aria-modal="true">
           <div className={`word-study__feedback${feedbackClass}`} role="status">
             {answeredCorrectly ? (
-              <p className="word-study__feedback-title">정답입니다.</p>
+              <p className="word-study__feedback-title">?뺣떟?낅땲??</p>
             ) : (
               <>
-                <p className="word-study__feedback-title">오답입니다.</p>
+                <p className="word-study__feedback-title">?ㅻ떟?낅땲??</p>
                 <p className="word-study__feedback-detail">
-                  정답: ({q.correctOptionId.toUpperCase()}) {correctAnswerText}
+                  ?뺣떟: ({q.correctOptionId.toUpperCase()}) {correctAnswerText}
                 </p>
               </>
             )}
             <div className="word-study__explanation-block">
-              <p className="word-study__feedback-label">해설</p>
+              <p className="word-study__feedback-label">?댁꽕</p>
               <p className="word-study__explanation">{word.explanation}</p>
             </div>
             <p className="word-study__word-meta">
-              <strong>{word.word}</strong> — {word.meaning}
+              <strong>{word.word}</strong> ??{word.meaning}
             </p>
             {q.type === 'fill-blank' ? null : (
               <>
@@ -799,7 +777,7 @@ export default function WordStudyDayDetailPage() {
               className="ui-btn ui-btn--primary ui-btn--block word-study__submit"
               onClick={handlePrimaryAction}
             >
-              {isLast ? '결과 보기' : '다음 문제'}
+              {isLast ? '寃곌낵 蹂닿린' : '?ㅼ쓬 臾몄젣'}
             </button>
           </div>
         </div>

@@ -430,6 +430,63 @@
   color: var(--text-h);
 }
 
+.shell-audio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.shell-audio-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+}
+
+.shell-audio-control__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.shell-audio-control__head span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shell-audio-control strong {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  color: var(--text-h);
+}
+
+.shell-audio-control small {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.shell-audio-control output {
+  flex-shrink: 0;
+  min-width: 3rem;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  text-align: right;
+  color: var(--color-accent-primary-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.shell-audio-control input[type='range'] {
+  width: 100%;
+  accent-color: var(--color-accent-primary);
+}
+
 .shell-copyright__subhead {
   margin: var(--space-5) 0 var(--space-2);
   font-size: var(--font-size-sm);

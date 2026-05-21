@@ -9,6 +9,7 @@ import {
 } from '../api/contentApi'
 import { LearningPathView, type LearningPathDay } from '../components/learning/LearningPathView'
 import { MVP_WORD_STAGE_ID } from '../constants/content'
+import { WORD_DAY_START_COIN_COST } from '../constants/economy'
 import type { StageWordsFile } from '../types/content'
 import { countCompletedWordDaysForStage } from '../utils/learnStats'
 import { lessonAvailabilityFromContentAndProgress } from '../utils/learningUnlock'
@@ -16,7 +17,6 @@ import {
   getDueWordReviewStatuses,
   HADES_USER_PROGRESS_EVENT,
   loadUserProgress,
-  WORD_DAY_START_COIN_COST,
 } from '../utils/storage'
 
 /** Stage 1 · 기초 TOEIC 단어 (기획 5.2) — 콘텐츠 로드 전 플레이스홀더 */

@@ -4,7 +4,26 @@
  * — 모든 `localStorage` 접근은 try/catch로 감싼다.
  */
 
+import {
+  DAILY_COIN_AMOUNT_MAX,
+  DEFAULT_DAILY_COIN_AMOUNT,
+  WORD_DAY_CLEAR_FIRST_COIN,
+  WORD_DAY_CLEAR_FIRST_EXP,
+  WORD_DAY_START_COIN_COST,
+  WORD_STAGE_CLEAR_FIRST_COIN,
+  WORD_STAGE_CLEAR_FIRST_EXP,
+} from '../constants/economy'
 import { STORAGE_KEY_USER_PROGRESS } from '../constants/storageKeys'
+import {
+  readLocalStorageItem,
+  removeLocalStorageItem,
+  writeLocalStorageItem,
+} from './browserStorage'
+import { createLocalId } from './id'
+import {
+  markConversationPersistHandled as markConversationPersistHandledCore,
+  markWordStudyPersistHandled as markWordStudyPersistHandledCore,
+} from './sessionPersistGuard'
 import type {
   CompletedConversationDayRef,
   CompletedWordDayRef,
@@ -39,19 +58,19 @@ import {
 export const HADES_USER_PROGRESS_EVENT = 'hadesvoca-user-progress-updated' as const
 
 /** Word Day 1회 시작 비용. 완료/이탈 여부와 무관하게 시작 시 차감한다. */
-export const WORD_DAY_START_COIN_COST = 5
+export { WORD_DAY_START_COIN_COST }
 
 /** Word Day 최초 완료 보상(코인). 같은 (stage, day) 에서는 단 1회만 지급된다(Phase 10-5). */
-export const WORD_DAY_CLEAR_FIRST_COIN = 10
+export { WORD_DAY_CLEAR_FIRST_COIN }
 
 /** Word Day 최초 완료 보상(EXP). 같은 (stage, day) 에서는 단 1회만 지급된다(Phase 10-5). */
-export const WORD_DAY_CLEAR_FIRST_EXP = 50
+export { WORD_DAY_CLEAR_FIRST_EXP }
 
 /** Word Stage 최초 완료 보상(코인). 같은 stageId 에서는 단 1회만 지급된다(Phase 10-6). */
-export const WORD_STAGE_CLEAR_FIRST_COIN = 50
+export { WORD_STAGE_CLEAR_FIRST_COIN }
 
 /** Word Stage 최초 완료 보상(EXP). 같은 stageId 에서는 단 1회만 지급된다(Phase 10-6). */
-export const WORD_STAGE_CLEAR_FIRST_EXP = 200
+export { WORD_STAGE_CLEAR_FIRST_EXP }
 
 /**
  * 로그인/서버 없이 쓰는 익명 로컬 `userId` 1회 발급용 유틸.
@@ -69,12 +88,7 @@ export const WORD_STAGE_CLEAR_FIRST_EXP = 200
  * - 외부 모듈에서 직접 부를 일이 없어 모듈 private 으로 둔다.
  */
 function generateLocalUserId(): string {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID()
-  }
-  const ts = Date.now().toString()
-  const rand = Math.random().toString(36).slice(2, 10)
-  return `local-${ts}-${rand}`
+  return createLocalId('local')
 }
 
 /**
@@ -215,8 +229,6 @@ const REWARD_TRANSACTION_REASONS = new Set<RewardTransactionReason>([
  * - 실제 운영 정책(일일 코인 기본 30, 이력 캡 등)은 후속 Phase 에서 확정된다.
  * - 이 상수들은 "비정상 입력을 저장하지 않기" 위한 안전망이지 정책 선언이 아니다.
  */
-const DEFAULT_DAILY_COIN_AMOUNT = 30 as const
-const DAILY_COIN_AMOUNT_MAX = 1_000 as const
 const USER_ID_MAX_LENGTH = 128 as const
 const REWARD_HISTORY_CAP = 2_000 as const
 /**
@@ -293,12 +305,7 @@ export type ApplyRewardResult = Readonly<
  * `generateLocalUserId` 와 동일 정책. 별도 함수로 둔 이유는 의미(=거래 id)의 명확성.
  */
 function generateRewardTransactionId(): string {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID()
-  }
-  const ts = Date.now().toString()
-  const rand = Math.random().toString(36).slice(2, 10)
-  return `tx-${ts}-${rand}`
+  return createLocalId('tx')
 }
 
 /**
@@ -997,11 +1004,6 @@ export function parseStoredUserProgress(
   }
 }
 
-const WORD_STUDY_PERSIST_SESSION_PREFIX = 'hadesvoca:wordStudyPersist:' as const
-
-const CONVERSATION_PERSIST_SESSION_PREFIX =
-  'hadesvoca:conversationPersist:' as const
-
 function upsertCompletedWordDay(
   list: readonly CompletedWordDayRef[],
   next: CompletedWordDayRef,
@@ -1640,15 +1642,7 @@ export function mergeUserProgressAfterConversationDay(
 
 /** 회화 결과 화면 `localStorage` 저장 1회용 가드 */
 export function markConversationPersistHandled(nonce: string): boolean {
-  try {
-    if (typeof sessionStorage === 'undefined') return true
-    const key = `${CONVERSATION_PERSIST_SESSION_PREFIX}${nonce}`
-    if (sessionStorage.getItem(key) === '1') return false
-    sessionStorage.setItem(key, '1')
-    return true
-  } catch {
-    return true
-  }
+  return markConversationPersistHandledCore(nonce)
 }
 
 /**
@@ -1657,11 +1651,7 @@ export function markConversationPersistHandled(nonce: string): boolean {
  */
 export function markWordStudyPersistHandled(nonce: string): boolean {
   try {
-    if (typeof sessionStorage === 'undefined') return true
-    const key = `${WORD_STUDY_PERSIST_SESSION_PREFIX}${nonce}`
-    if (sessionStorage.getItem(key) === '1') return false
-    sessionStorage.setItem(key, '1')
-    return true
+    return markWordStudyPersistHandledCore(nonce)
   } catch {
     /* sessionStorage 막힌 환경: 중복 허용 vs 미저장 — 저장 시도 쪽 선택 */
     return true
@@ -1673,10 +1663,7 @@ export function markWordStudyPersistHandled(nonce: string): boolean {
  */
 export function loadUserProgress(): UserProgress {
   try {
-    const raw =
-      typeof localStorage !== 'undefined'
-        ? localStorage.getItem(STORAGE_KEY_USER_PROGRESS)
-        : null
+    const raw = readLocalStorageItem(STORAGE_KEY_USER_PROGRESS)
     if (raw === null || raw === '') return createDefaultUserProgressWithLocalId()
     let parsed: unknown
     try {
@@ -1808,11 +1795,9 @@ export function sanitizeUserProgressForStorage(input: UserProgress): UserProgres
  */
 export function saveUserProgress(next: UserProgress): void {
   try {
-    if (typeof localStorage === 'undefined') return
     const normalized = sanitizeUserProgressForStorage(next)
     const payload = JSON.stringify(normalized)
-    localStorage.setItem(STORAGE_KEY_USER_PROGRESS, payload)
-    if (typeof window !== 'undefined') {
+    if (writeLocalStorageItem(STORAGE_KEY_USER_PROGRESS, payload) && typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(HADES_USER_PROGRESS_EVENT))
     }
   } catch {
@@ -1885,8 +1870,7 @@ export function hasNicknameOnboardingCompleted(): boolean {
  */
 export function clearUserProgress(): boolean {
   try {
-    if (typeof localStorage === 'undefined') return false
-    localStorage.removeItem(STORAGE_KEY_USER_PROGRESS)
+    if (!removeLocalStorageItem(STORAGE_KEY_USER_PROGRESS)) return false
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(HADES_USER_PROGRESS_EVENT))
     }

@@ -1,11 +1,10 @@
-/**
- * 단어장: `UserProgress.savedWords` · `savedExpressions` 참조 목록 + 콘텐츠 JSON 본문 join 표시.
- * 본문은 표시 시점에만 fetch 하고 저장 데이터에는 본문을 넣지 않는다.
- */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
+import { vocabularyBookDetailPath } from '../constants/routes'
 import type { StageWordsFile } from '../types/content'
 import type { ConversationStage } from '../types/conversation'
 import {
+  findExpressionQuiz,
   findKeyExpression,
   findWordEntry,
   loadConversationStageCached,
@@ -23,8 +22,8 @@ import './VocabularyBookPage.css'
 type VocabTab = 'words' | 'expressions'
 
 const TABS: ReadonlyArray<{ id: VocabTab; label: string }> = [
-  { id: 'words', label: '저장한 단어' },
-  { id: 'expressions', label: '저장한 표현' },
+  { id: 'words', label: '단어' },
+  { id: 'expressions', label: '표현' },
 ]
 
 type WordPacks = Readonly<Record<number, StageWordsFile | null>>
@@ -58,6 +57,14 @@ export default function VocabularyBookPage() {
       ),
     [progress.savedExpressions],
   )
+
+  const wordWrongCountByKey = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const status of progress.wordReviewStatuses) {
+      map.set(`${status.stageId}:${status.lemmaId}`, status.wrongCount)
+    }
+    return map
+  }, [progress.wordReviewStatuses])
 
   const wordStageKey = useMemo(
     () => stageIdKey(wordsSorted.map((w) => w.stageId)),
@@ -127,9 +134,7 @@ export default function VocabularyBookPage() {
   if (activeTab === 'words') {
     panel =
       wordsSorted.length === 0 ? (
-        <p className="ui-card__body vocab-empty">
-          저장한 단어가 없습니다.
-        </p>
+        <p className="ui-card__body vocab-empty">저장한 단어가 없습니다.</p>
       ) : (
         <ul className="vocab-list" aria-label="저장한 단어 목록">
           {wordsSorted.map((w) => {
@@ -138,41 +143,33 @@ export default function VocabularyBookPage() {
               pack !== null && pack !== undefined
                 ? findWordEntry(pack, w.dayId, w.lemmaId)
                 : null
-            const showLoading = pack === undefined
+            const wrongCount = wordWrongCountByKey.get(`${w.stageId}:${w.lemmaId}`) ?? 0
+            const title = entry?.word ?? '단어를 불러오는 중…'
+            const meaning = entry?.meaning ?? ''
             return (
               <li key={w.lemmaId} className="vocab-list__row vocab-list__row--word">
-                <div className="vocab-list__meta">
-                  <span className="vocab-list__badge">단어</span>
-                  {entry !== null ? (
-                    <div className="vocab-list__body">
-                      <p className="vocab-list__word" lang="en">
-                        {entry.word}
-                      </p>
-                      <p className="vocab-list__meaning" lang="ko">
-                        {entry.meaning}
-                      </p>
-                      {entry.exampleSentence !== '' && (
-                        <p className="vocab-list__example" lang="en">
-                          {entry.exampleSentence}
-                        </p>
-                      )}
-                      {entry.exampleMeaning !== '' && (
-                        <p className="vocab-list__example-ko" lang="ko">
-                          {entry.exampleMeaning}
-                        </p>
-                      )}
-                    </div>
-                  ) : showLoading ? (
-                    <p className="vocab-list__loading">단어를 불러오는 중…</p>
-                  ) : (
-                    <p className="vocab-list__fallback">
-                      해당 콘텐츠를 찾지 못했습니다.
-                    </p>
+                <Link
+                  className="vocab-list__link"
+                  to={vocabularyBookDetailPath(
+                    'word',
+                    w.stageId,
+                    w.dayId ?? 0,
+                    w.lemmaId,
                   )}
-                  <span className="vocab-list__refs">
-                    Stage {w.stageId} · Day {w.dayId ?? '—'} · id <code>{w.lemmaId}</code>
+                >
+                  <span className="vocab-list__badge">단어</span>
+                  <span className="vocab-list__text">
+                    <span className="vocab-list__word" lang="en">
+                      {title}
+                    </span>
+                    {meaning !== '' && (
+                      <span className="vocab-list__meaning" lang="ko">
+                        {meaning}
+                      </span>
+                    )}
                   </span>
-                </div>
+                  <span className="vocab-list__count">오답 {wrongCount}회</span>
+                </Link>
                 <button
                   type="button"
                   className="ui-btn ui-btn--ghost vocab-list__del"
@@ -188,12 +185,10 @@ export default function VocabularyBookPage() {
           })}
         </ul>
       )
-  } else if (activeTab === 'expressions') {
+  } else {
     panel =
       expressionsSorted.length === 0 ? (
-        <p className="ui-card__body vocab-empty">
-          저장한 표현이 없습니다.
-        </p>
+        <p className="ui-card__body vocab-empty">저장한 표현이 없습니다.</p>
       ) : (
         <ul className="vocab-list" aria-label="저장한 표현 목록">
           {expressionsSorted.map((ex) => {
@@ -202,39 +197,49 @@ export default function VocabularyBookPage() {
               stage !== null && stage !== undefined
                 ? findKeyExpression(stage, ex.dayId, ex.expressionId)
                 : null
-            const showLoading = stage === undefined
+            const wrongCount =
+              stage !== null && stage !== undefined
+                ? progress.wrongNotes.reduce((sum, note) => {
+                    if (
+                      note.type !== 'expression' ||
+                      note.stageId !== ex.stageId ||
+                      note.dayId !== ex.dayId
+                    ) {
+                      return sum
+                    }
+                    const quiz = findExpressionQuiz(stage, note.dayId, note.id)
+                    return quiz?.expressionId === ex.expressionId ? sum + note.wrongCount : sum
+                  }, 0)
+                : 0
+            const title = expr?.expressionEn ?? '표현을 불러오는 중…'
+            const meaning = expr?.expressionKo ?? ''
             return (
               <li
                 key={`${ex.expressionId}-${ex.stageId}-${ex.dayId}`}
                 className="vocab-list__row vocab-list__row--expr"
               >
-                <div className="vocab-list__meta">
-                  <span className="vocab-list__badge vocab-list__badge--expr">표현</span>
-                  {expr !== null ? (
-                    <div className="vocab-list__body">
-                      <p className="vocab-list__word" lang="en">
-                        {expr.expressionEn}
-                      </p>
-                      <p className="vocab-list__meaning" lang="ko">
-                        {expr.expressionKo}
-                      </p>
-                      {expr.tipKo !== undefined && expr.tipKo !== '' && (
-                        <p className="vocab-list__example-ko" lang="ko">
-                          {expr.tipKo}
-                        </p>
-                      )}
-                    </div>
-                  ) : showLoading ? (
-                    <p className="vocab-list__loading">표현을 불러오는 중…</p>
-                  ) : (
-                    <p className="vocab-list__fallback">
-                      해당 콘텐츠를 찾지 못했습니다.
-                    </p>
+                <Link
+                  className="vocab-list__link"
+                  to={vocabularyBookDetailPath(
+                    'expression',
+                    ex.stageId,
+                    ex.dayId,
+                    ex.expressionId,
                   )}
-                  <span className="vocab-list__refs">
-                    Stage {ex.stageId} · Day {ex.dayId} · id <code>{ex.expressionId}</code>
+                >
+                  <span className="vocab-list__badge vocab-list__badge--expr">표현</span>
+                  <span className="vocab-list__text">
+                    <span className="vocab-list__word" lang="en">
+                      {title}
+                    </span>
+                    {meaning !== '' && (
+                      <span className="vocab-list__meaning" lang="ko">
+                        {meaning}
+                      </span>
+                    )}
                   </span>
-                </div>
+                  <span className="vocab-list__count">오답 {wrongCount}회</span>
+                </Link>
                 <button
                   type="button"
                   className="ui-btn ui-btn--ghost vocab-list__del"
@@ -260,7 +265,7 @@ export default function VocabularyBookPage() {
     <main className="vocab-page">
       <h1 className="vocab-page__title">단어장</h1>
 
-      <div className="vocab-tabs" role="tablist" aria-label="단어장 보기 방식">
+      <div className="vocab-tabs" role="tablist" aria-label="단어장 보기">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id
           return (
@@ -282,11 +287,7 @@ export default function VocabularyBookPage() {
 
       <section
         className="ui-card ui-card--dashboard vocab-panel"
-        aria-label={
-          activeTab === 'words'
-            ? '저장한 단어'
-            : '저장한 표현'
-        }
+        aria-label={activeTab === 'words' ? '저장한 단어' : '저장한 표현'}
       >
         {panel}
       </section>

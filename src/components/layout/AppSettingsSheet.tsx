@@ -1,25 +1,18 @@
-/**
- * 설정 — 하단 슬라이드 시트 · 메뉴 / 도움말 / 저작권 / 초기화 하위 화면.
- *
- * 초기화(Phase 12-0-C):
- * - 서버 로그아웃이 아니다. localStorage 의 `UserProgress` 단일 키만 삭제하는 게스트 초기화다.
- * - `MobileLayout` 의 외부 진입(`location.state.appSettings`)으로는 `'reset'` 이 들어오지
- *   못하도록 진입 화이트리스트가 `menu / help / copyright` 로 좁혀져 있다.
- */
 import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 
+import { APP_ROUTES } from '../../constants/routes'
 import {
   clearUserProgress,
   downloadUserProgressBackup,
   importUserProgressFromJsonText,
-  persistUserProgressManualTouch,
 } from '../../utils/storage'
+import { AudioSettingsPanel } from './AudioSettingsPanel'
 
 import './AppSheets.css'
 
-export type AppSettingsView = 'menu' | 'help' | 'copyright' | 'reset'
+export type AppSettingsView = 'menu' | 'settings' | 'help' | 'copyright' | 'reset'
 
 export type AppSettingsSheetProps = Readonly<{
   open: boolean
@@ -68,29 +61,29 @@ export function AppSettingsSheet({
     return () => document.removeEventListener('keydown', onDoc)
   }, [open, onClose, view])
 
-  const onPickImport = useCallback((): void => {
+  const clearHints = useCallback((): void => {
     setStickyHint(null)
     setBodyHint(null)
-    fileRef.current?.click()
   }, [])
+
+  const goBackToMenu = useCallback((): void => {
+    setView('menu')
+    setBodyHint(null)
+  }, [])
+
+  const onPickImport = useCallback((): void => {
+    clearHints()
+    fileRef.current?.click()
+  }, [clearHints])
 
   const onExport = useCallback((): void => {
-    setStickyHint(null)
-    setBodyHint(null)
+    clearHints()
     downloadUserProgressBackup()
-    setStickyHint('JSON 파일을 받았는지 확인해 주세요.')
-  }, [])
-
-  const onManualSave = useCallback((): void => {
-    setStickyHint(null)
-    setBodyHint(null)
-    const ok = persistUserProgressManualTouch()
-    setStickyHint(ok ? '기기에 진행도를 반영했습니다.' : '저장에 실패했습니다. 브라우저 설정을 확인해 주세요.')
-  }, [])
+    setStickyHint('백업 파일을 저장했습니다. 다운로드 폴더를 확인해 주세요.')
+  }, [clearHints])
 
   const onConfirmReset = useCallback((): void => {
-    setBodyHint(null)
-    setStickyHint(null)
+    clearHints()
     const ok = clearUserProgress()
     if (!ok) {
       setBodyHint('초기화에 실패했습니다. 브라우저 저장소 설정을 확인해 주세요.')
@@ -98,8 +91,8 @@ export function AppSettingsSheet({
     }
     onClose()
     setView('menu')
-    navigate('/onboarding', { replace: true })
-  }, [navigate, onClose])
+    navigate(APP_ROUTES.onboarding, { replace: true })
+  }, [clearHints, navigate, onClose])
 
   const onFileChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0]
@@ -110,7 +103,7 @@ export function AppSettingsSheet({
       const text = typeof reader.result === 'string' ? reader.result : ''
       const res = importUserProgressFromJsonText(text)
       if (res.ok) {
-        setBodyHint('불러오기를 완료했습니다.')
+        setBodyHint('백업을 불러왔습니다.')
         setStickyHint(null)
       } else {
         setBodyHint(res.message)
@@ -131,48 +124,49 @@ export function AppSettingsSheet({
 
   const menu = (
     <>
-      <p className="shell-sheet-intro">
-        로그인 없이 이 기기 안에만 학습 기록이 저장됩니다. 교체·백업 시 JSON으로 내보내세요.
-      </p>
-      <button
-        type="button"
-        className="shell-settings-menu-row"
-        onClick={() => {
-          setBodyHint(null)
-          onExport()
-        }}
-      >
+      <p className="shell-sheet-intro">학습 설정과 백업을 관리합니다.</p>
+      <button type="button" className="shell-settings-menu-row" onClick={onExport}>
         <span className="shell-settings-menu-row__icon" aria-hidden>
-          ⬇️
+          저장
         </span>
-        진행 데이터 저장하기
-        <span className="shell-settings-menu-row__chevron" aria-hidden />
+        백업하기
+        <span className="shell-settings-menu-row__chevron" aria-hidden>
+          ›
+        </span>
       </button>
       <button type="button" className="shell-settings-menu-row" onClick={onPickImport}>
         <span className="shell-settings-menu-row__icon" aria-hidden>
-          ⬆️
+          열기
         </span>
-        JSON 불러오기
-        <span className="shell-settings-menu-row__chevron" aria-hidden />
-      </button>
-      <button type="button" className="shell-settings-menu-row" onClick={onManualSave}>
-        <span className="shell-settings-menu-row__icon" aria-hidden>
-          💾
+        백업 불러오기
+        <span className="shell-settings-menu-row__chevron" aria-hidden>
+          ›
         </span>
-        진행도 기기에 다시 저장
-        <span className="shell-settings-menu-row__chevron" aria-hidden />
       </button>
       <button
         type="button"
         className="shell-settings-menu-row"
         onClick={() => {
-          setBodyHint(null)
-          setStickyHint(null)
+          clearHints()
+          setView('settings')
+        }}
+      >
+        <span className="shell-settings-menu-row__icon" aria-hidden>
+          소리
+        </span>
+        설정
+        <span className="shell-settings-menu-row__chevron">›</span>
+      </button>
+      <button
+        type="button"
+        className="shell-settings-menu-row"
+        onClick={() => {
+          clearHints()
           setView('help')
         }}
       >
         <span className="shell-settings-menu-row__icon" aria-hidden>
-          ❓
+          도움
         </span>
         도움말
         <span className="shell-settings-menu-row__chevron">›</span>
@@ -181,13 +175,12 @@ export function AppSettingsSheet({
         type="button"
         className="shell-settings-menu-row"
         onClick={() => {
-          setBodyHint(null)
-          setStickyHint(null)
+          clearHints()
           setView('copyright')
         }}
       >
         <span className="shell-settings-menu-row__icon" aria-hidden>
-          ©
+          고지
         </span>
         저작권 · 고지
         <span className="shell-settings-menu-row__chevron">›</span>
@@ -196,8 +189,7 @@ export function AppSettingsSheet({
         type="button"
         className="shell-settings-menu-row shell-settings-menu-row--danger"
         onClick={() => {
-          setBodyHint(null)
-          setStickyHint(null)
+          clearHints()
           setView('reset')
         }}
       >
@@ -205,7 +197,7 @@ export function AppSettingsSheet({
           className="shell-settings-menu-row__icon shell-settings-menu-row__icon--danger"
           aria-hidden
         >
-          ↺
+          초기화
         </span>
         처음부터 다시 시작
         <span className="shell-settings-menu-row__chevron">›</span>
@@ -221,42 +213,42 @@ export function AppSettingsSheet({
     </>
   )
 
+  const settings = (
+    <div className="shell-settings-submenu">
+      <button type="button" className="shell-settings-back" onClick={goBackToMenu}>
+        ← 메뉴
+      </button>
+      <AudioSettingsPanel />
+    </div>
+  )
+
   const help = (
     <div className="shell-settings-submenu">
-      <button
-        type="button"
-        className="shell-settings-back"
-        onClick={() => {
-          setView('menu')
-          setBodyHint(null)
-        }}
-      >
+      <button type="button" className="shell-settings-back" onClick={goBackToMenu}>
         ← 메뉴
       </button>
       <ul className="shell-help-list">
         <li>
-          <strong>최근 학습:</strong> 마지막 학습 위치는 홈에 표시됩니다.
+          <strong>최근 학습:</strong> 마지막으로 학습한 위치를 홈에서 확인할 수 있습니다.
         </li>
         <li>
           <strong>Day 복습:</strong> 완료한 Day는 다시 풀 수 있습니다.
         </li>
         <li>
-          <strong>보상:</strong> 완료한 Day를 다시 풀면 보상은 중복 지급되지 않습니다.
+          <strong>보상:</strong> 완료 보상은 같은 Day에서 한 번만 지급됩니다.
         </li>
         <li>
-          <strong>오답노트:</strong> 오답은 오답노트에 저장됩니다.
+          <strong>오답노트:</strong> 틀린 단어와 표현은 오답노트에 저장됩니다.
         </li>
         <li>
-          <strong>단어장:</strong> 저장한 단어와 표현은 단어장에서 확인할 수 있습니다.
+          <strong>단어장:</strong> 저장한 단어와 표현을 한곳에서 볼 수 있습니다.
         </li>
         <li>
-          <strong>JSON:</strong> 이 기기의 학습 기록 백업·복원용입니다.
+          <strong>백업:</strong> 기기를 바꾸기 전 백업하기로 파일을 저장하고,
+          새 기기에서는 백업 불러오기로 복원할 수 있습니다.
         </li>
         <li>
-          <strong>Stage 가져오기:</strong> 콘텐츠 가져오기는 준비 중입니다.
-        </li>
-        <li>
-          <strong>다시 시작:</strong> 이 기기의 학습 기록이 삭제됩니다.
+          <strong>다시 시작:</strong> 이 기기의 학습 기록만 삭제됩니다.
         </li>
       </ul>
     </div>
@@ -264,43 +256,27 @@ export function AppSettingsSheet({
 
   const copyright = (
     <div className="shell-settings-submenu">
-      <button
-        type="button"
-        className="shell-settings-back"
-        onClick={() => {
-          setView('menu')
-          setBodyHint(null)
-        }}
-      >
+      <button type="button" className="shell-settings-back" onClick={goBackToMenu}>
         ← 메뉴
       </button>
       <h3 className="shell-copyright__subhead">팬메이드 고지</h3>
       <p className="shell-copyright__body">
-        본 앱은 팬메이드 학습용 프로젝트이며,
-        <strong> SOOP 및 하데스 공식 콘텐츠와 무관합니다.</strong>
+        본 앱은 팬메이드 학습용 앱이며,
+        <strong> SOOP 및 하데스 공식 콘텐츠가 아닙니다.</strong>
       </p>
-      <h3 className="shell-copyright__subhead">앱 구현 및 권리</h3>
+      <h3 className="shell-copyright__subhead">문의</h3>
       <p className="shell-copyright__body">
-        구현(소스코드·UI 등)에 대한 권리는 <strong>개인 개발자 데브케이</strong>
-        （연락:{' '}
+        앱 관련 문의:{' '}
         <a className="shell-copyright__mailto" href="mailto:fatking25@kakao.com">
           fatking25@kakao.com
         </a>
-        ）에게 있습니다.
       </p>
     </div>
   )
 
   const reset = (
     <div className="shell-settings-submenu">
-      <button
-        type="button"
-        className="shell-settings-back"
-        onClick={() => {
-          setView('menu')
-          setBodyHint(null)
-        }}
-      >
+      <button type="button" className="shell-settings-back" onClick={goBackToMenu}>
         ← 메뉴
       </button>
       <h3 className="shell-copyright__subhead">처음부터 다시 시작</h3>
@@ -308,19 +284,11 @@ export function AppSettingsSheet({
         현재 학습 기록, 단어장, 오답노트가 이 브라우저에서 삭제됩니다.
       </p>
       <p className="shell-copyright__body">
-        백업이 필요하면 먼저{' '}
-        <strong>“진행 데이터 저장하기”</strong> 를 진행해 주세요.
+        필요한 기록은 먼저 <strong>백업하기</strong>로 저장해 주세요.
       </p>
-      <p className="shell-copyright__body">처음부터 다시 시작할까요?</p>
+      <p className="shell-copyright__body">정말 처음부터 다시 시작할까요?</p>
       <div className="shell-settings-confirm-actions">
-        <button
-          type="button"
-          className="ui-btn ui-btn--ghost"
-          onClick={() => {
-            setView('menu')
-            setBodyHint(null)
-          }}
-        >
+        <button type="button" className="ui-btn ui-btn--ghost" onClick={goBackToMenu}>
           취소
         </button>
         <button
@@ -335,7 +303,11 @@ export function AppSettingsSheet({
   )
 
   let headline = '설정'
-  let subtitle = '메뉴에서 항목을 선택하세요'
+  let subtitle = '메뉴에서 항목을 선택하세요.'
+  if (view === 'settings') {
+    headline = '설정'
+    subtitle = '소리 크기를 조절할 수 있습니다.'
+  }
   if (view === 'help') {
     headline = '도움말'
     subtitle = ''
@@ -346,53 +318,58 @@ export function AppSettingsSheet({
   }
   if (view === 'reset') {
     headline = '처음부터 다시 시작'
-    subtitle = '이 브라우저의 학습 기록을 모두 삭제합니다'
+    subtitle = '이 브라우저의 학습 기록을 모두 삭제합니다.'
   }
 
   return createPortal(
     <div className="shell-overlay-stack" role="presentation">
-      <button type="button" className="shell-overlay-backdrop" aria-label="설정 닫기" onClick={onClose} />
+      <button
+        type="button"
+        className="shell-overlay-backdrop"
+        aria-label="설정 닫기"
+        onClick={onClose}
+      />
       <div
-        id="app-settings-sheet"
-        className="shell-settings-sheet"
+        className="shell-sheet shell-settings-sheet"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        aria-describedby={view === 'menu' ? grabId : undefined}
       >
-        <button id={grabId} type="button" className="shell-settings-sheet__grab" aria-hidden tabIndex={-1} />
-        <div className="shell-settings-sheet__head">
-          <div className="shell-settings-sheet__titles">
-            <h2 id={titleId} className="shell-settings-sheet__title">
+        <span id={grabId} className="shell-sheet__grab" aria-hidden />
+        <header className="shell-sheet__header">
+          <div>
+            <p className="shell-sheet__eyebrow">하데스 보카</p>
+            <h2 id={titleId} className="shell-sheet__title">
               {headline}
             </h2>
-            {subtitle !== '' ? <p className="shell-settings-sheet__subtitle">{subtitle}</p> : null}
+            {subtitle !== '' && <p className="shell-sheet__subtitle">{subtitle}</p>}
           </div>
-          <button type="button" className="ui-btn ui-btn--ghost" onClick={onClose}>
-            닫기
+          <button
+            type="button"
+            className="shell-sheet__close"
+            aria-label="설정 닫기"
+            onClick={onClose}
+          >
+            ×
           </button>
-        </div>
-        <div className="shell-settings-sheet__body">
-          {view === 'menu' ? menu : null}
-          {view === 'help' ? help : null}
-          {view === 'copyright' ? copyright : null}
-          {view === 'reset' ? reset : null}
-          {bodyHint !== null ? (
-            <p
-              role="status"
-              className={`shell-sheet-hint-here ${
-                bodyHint.startsWith('불러오기') ? 'shell-sheet-hint-here--ok' : 'shell-sheet-hint-here--warn'
-              }`}
-            >
+        </header>
+        <div className="shell-sheet__body">
+          {view === 'menu' && menu}
+          {view === 'settings' && settings}
+          {view === 'help' && help}
+          {view === 'copyright' && copyright}
+          {view === 'reset' && reset}
+          {bodyHint !== null && (
+            <p className="shell-settings-body-hint" role="status">
               {bodyHint}
             </p>
-          ) : null}
+          )}
         </div>
-        <p className="shell-settings-sheet__sticky-hint" aria-label="앱 진행 버전">
-          {stickyHint !== null ?
-            stickyHint
-          : '진행 기록은 이 기기에 저장됩니다. 상단 닉네임을 탭하면 프로필을 수정할 수 있습니다.'}
-        </p>
+        {stickyHint !== null && (
+          <p className="shell-sheet__footer-hint" role="status">
+            {stickyHint}
+          </p>
+        )}
       </div>
     </div>,
     document.body,

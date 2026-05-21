@@ -1,6 +1,3 @@
-/**
- * 모바일 앱 형태의 공통 프레임: 상단 헤더, 본문, 하단 탭. 설정은 시트 오버레이.
- */
 import { useCallback, useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import type { AppSettingsView } from '../components/layout/AppSettingsSheet'
@@ -33,9 +30,10 @@ export default function MobileLayout() {
     const raw = location.state as LaunchSettingsState | null | undefined
     const panel = raw?.appSettings
     if (
-      panel !== 'copyright'
-      && panel !== 'help'
-      && panel !== 'menu'
+      panel !== 'copyright' &&
+      panel !== 'help' &&
+      panel !== 'settings' &&
+      panel !== 'menu'
     ) {
       return
     }
@@ -76,11 +74,11 @@ export default function MobileLayout() {
           <span
             className="mobile-header__logo"
             role="img"
-            aria-label="하데스 보카 로고"
+            aria-label="하데스보카 로고"
           >
-            🦉
+            H
           </span>
-          <span className="mobile-header__title">하데스 보카</span>
+          <span className="mobile-header__title">하데스보카</span>
         </div>
         <MobileStatsBar
           onProfilePress={() => {
@@ -97,7 +95,7 @@ export default function MobileLayout() {
           }
           aria-expanded={settingsOpen}
           aria-controls="app-settings-sheet"
-          aria-label="메뉴 · 설정 열기"
+          aria-label="메뉴 및 설정 열기"
           onClick={() => {
             openSettingsMenu()
           }}

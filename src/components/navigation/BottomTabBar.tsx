@@ -1,8 +1,5 @@
-/**
- * 하단 고정 학습 네비게이션 탭바.
- */
-
 import { NavLink, useLocation } from 'react-router-dom'
+import { APP_ROUTES } from '../../constants/routes'
 
 function tabClass(isActive: boolean): string {
   return isActive ? 'ui-btn ui-btn--nav ui-btn--active' : 'ui-btn ui-btn--nav'
@@ -16,12 +13,13 @@ function tabStates(pathname: string): {
   wrong: boolean
 } {
   return {
-    home: pathname === '/home',
-    word: pathname === '/word-study' || pathname.startsWith('/word-study/'),
+    home: pathname === APP_ROUTES.home,
+    word: pathname === APP_ROUTES.wordStudy || pathname.startsWith(`${APP_ROUTES.wordStudy}/`),
     conversation:
-      pathname === '/conversation' || pathname.startsWith('/conversation/'),
-    vocabulary: pathname === '/vocabulary-book',
-    wrong: pathname === '/wrong-note',
+      pathname === APP_ROUTES.conversation || pathname.startsWith(`${APP_ROUTES.conversation}/`),
+    vocabulary:
+      pathname === APP_ROUTES.vocabularyBook || pathname.startsWith(`${APP_ROUTES.vocabularyBook}/`),
+    wrong: pathname === APP_ROUTES.wrongNote || pathname.startsWith(`${APP_ROUTES.wrongNote}/`),
   }
 }
 
@@ -31,7 +29,7 @@ export function BottomTabBar() {
 
   return (
     <nav className="mobile-tabbar" aria-label="주요 메뉴">
-      <NavLink to="/home" className={() => tabClass(tabs.home)} end>
+      <NavLink to={APP_ROUTES.home} className={() => tabClass(tabs.home)} end>
         <span className="mobile-tab__inner">
           <span className="mobile-tab__icon" aria-hidden>
             H
@@ -39,7 +37,7 @@ export function BottomTabBar() {
           <span className="mobile-tab__label">홈</span>
         </span>
       </NavLink>
-      <NavLink to="/word-study" className={() => tabClass(tabs.word)} end={false}>
+      <NavLink to={APP_ROUTES.wordStudy} className={() => tabClass(tabs.word)} end={false}>
         <span className="mobile-tab__inner">
           <span className="mobile-tab__icon" aria-hidden>
             W
@@ -47,7 +45,7 @@ export function BottomTabBar() {
           <span className="mobile-tab__label">단어</span>
         </span>
       </NavLink>
-      <NavLink to="/conversation" className={() => tabClass(tabs.conversation)} end={false}>
+      <NavLink to={APP_ROUTES.conversation} className={() => tabClass(tabs.conversation)} end={false}>
         <span className="mobile-tab__inner">
           <span className="mobile-tab__icon" aria-hidden>
             C
@@ -55,7 +53,7 @@ export function BottomTabBar() {
           <span className="mobile-tab__label">회화</span>
         </span>
       </NavLink>
-      <NavLink to="/vocabulary-book" className={() => tabClass(tabs.vocabulary)} end>
+      <NavLink to={APP_ROUTES.vocabularyBook} className={() => tabClass(tabs.vocabulary)} end>
         <span className="mobile-tab__inner">
           <span className="mobile-tab__icon" aria-hidden>
             B
@@ -63,7 +61,7 @@ export function BottomTabBar() {
           <span className="mobile-tab__label">단어장</span>
         </span>
       </NavLink>
-      <NavLink to="/wrong-note" className={() => tabClass(tabs.wrong)} end>
+      <NavLink to={APP_ROUTES.wrongNote} className={() => tabClass(tabs.wrong)} end>
         <span className="mobile-tab__inner">
           <span className="mobile-tab__icon" aria-hidden>
             N

@@ -6,6 +6,7 @@ import {
   resolvePublicUrl,
   type RemoteContentState,
 } from '../../api/contentApi'
+import { conversationStagePath } from '../../constants/routes'
 import { countCompletedConversationDaysForStage } from '../../utils/learnStats'
 import {
   HADES_USER_PROGRESS_EVENT,
@@ -26,18 +27,17 @@ type StageHubEntry = Readonly<{
 const STAGE_HUB_ENTRIES: readonly StageHubEntry[] = [
   {
     id: 1,
-    titleKo: '음식점 가는 상황',
-    descriptionKo:
-      '약속 잡기, 예약, 주문, 길 안내, 결제, 일정 변경까지 한 흐름으로 연습합니다.',
+    titleKo: '외식과 가게 상황',
+    descriptionKo: '약속, 예약, 주문, 길 안내, 결제, 일정 변경 표현을 연습합니다.',
     tags: ['약속', '예약', '주문', '길 안내', '결제'],
     status: 'active',
     thumbnailPath: '/content/conversations/stage-1/assets/stage-1-day-01-cutscene.jpg',
   },
   {
     id: 2,
-    titleKo: '구직-1: 취업 정보 얻기',
+    titleKo: '구직-1: 취업 정보 묻기',
     descriptionKo:
-      '카페와 서점, 동네 공간을 돌아다니며 취업 정보를 묻고 첫 면접 전날까지 준비합니다.',
+      '카페와 서점, 동네 공간을 돌아다니며 취업 정보를 묻고 면접을 준비합니다.',
     tags: ['구직', '채용 문의', '면접', '자기소개'],
     status: 'active',
     thumbnailPath: '/content/conversations/assets/placeholder-day2-cutscene.svg',
@@ -45,8 +45,7 @@ const STAGE_HUB_ENTRIES: readonly StageHubEntry[] = [
   {
     id: 3,
     titleKo: '구직-2: 면접과 첫 근무',
-    descriptionKo:
-      '면접 당일 대화와 첫 출근 상황은 다음 콘텐츠 작업에서 이어집니다.',
+    descriptionKo: '면접과 첫 출근 표현을 준비 중입니다.',
     tags: ['준비 중'],
     status: 'planned',
   },
@@ -112,9 +111,7 @@ export default function ConversationStageHubPage() {
       <header className="conv-stage-list__hero">
         <p className="conv-stage-list__eyebrow">실전 회화</p>
         <h1 className="conv-stage-list__title">주제별 스테이지</h1>
-        <p className="conv-stage-list__desc">
-          상황을 먼저 고르고, 그 안에서 Day를 순서대로 진행합니다.
-        </p>
+        <p className="conv-stage-list__desc">주제를 고르고 Day를 시작하세요.</p>
       </header>
 
       {state.status === 'error' ? (
@@ -130,6 +127,8 @@ export default function ConversationStageHubPage() {
           const active = entry.status === 'active'
           const stage = state.status === 'success' ? state.data[entry.id] : undefined
           const total = stage?.days.length ?? 0
+          const titleKo = stage?.stageTitleKo ?? entry.titleKo
+          const descriptionKo = stage?.stageDescriptionKo ?? entry.descriptionKo
           const done = active
             ? Math.min(countCompletedConversationDaysForStage(persistedProgress, entry.id), total)
             : 0
@@ -139,8 +138,8 @@ export default function ConversationStageHubPage() {
               ? `진행률 ${done}/${total}`
               : active
                 ? '진행률 확인 중'
-                : '스토리 준비 중'
-          const href = `/conversation/stage/${entry.id}`
+                : '준비 중'
+          const href = conversationStagePath(entry.id)
           return (
             <li key={entry.id}>
               <article
@@ -179,10 +178,10 @@ export default function ConversationStageHubPage() {
                         {active ? (complete ? '완료' : '진행 가능') : '준비 중'}
                       </span>
                     </div>
-                    <h2 className="conv-stage-hub__title">{entry.titleKo}</h2>
+                    <h2 className="conv-stage-hub__title">{titleKo}</h2>
                   </div>
                 </div>
-                <p className="conv-stage-list__card-desc">{entry.descriptionKo}</p>
+                <p className="conv-stage-list__card-desc">{descriptionKo}</p>
                 <div className="conv-stage-hub__tags" aria-label="학습 태그">
                   {entry.tags.map((tag) => (
                     <span key={tag} className="conv-stage-hub__tag">
@@ -197,7 +196,7 @@ export default function ConversationStageHubPage() {
                   </Link>
                 ) : (
                   <button type="button" className="ui-btn ui-btn--ghost ui-btn--block" disabled>
-                    콘텐츠 추가 예정
+                    준비 중
                   </button>
                 )}
               </article>

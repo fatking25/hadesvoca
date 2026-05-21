@@ -8,6 +8,7 @@
  */
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
+import { APP_ROUTES } from '../constants/routes'
 import { hasNicknameOnboardingCompleted } from '../utils/storage'
 
 export default function RequireOnboarding() {
@@ -15,7 +16,7 @@ export default function RequireOnboarding() {
   if (!hasNicknameOnboardingCompleted()) {
     return (
       <Navigate
-        to="/onboarding"
+        to={APP_ROUTES.onboarding}
         replace
         state={{ from: `${location.pathname}${location.search}${location.hash}` }}
       />

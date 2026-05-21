@@ -13,6 +13,10 @@ import {
   FALLBACK_CONVERSATION_CUTSCENE_PATH,
   MVP_CONVERSATION_STAGE_ID,
 } from '../../constants/content'
+import {
+  conversationStageDayResultPath,
+  conversationStagePath,
+} from '../../constants/routes'
 import type { ConversationDayResultLocationState } from '../../context/conversationSessionCore'
 import type {
   ConversationDay,
@@ -23,6 +27,7 @@ import type {
   ConversationStage,
 } from '../../types/conversation'
 import { isSequentialDayUnlocked } from '../../utils/learningUnlock'
+import { createSessionNonce } from '../../utils/id'
 import {
   isConversationDayCompletedPersisted,
   loadUserProgress,
@@ -216,9 +221,7 @@ function sentenceBuilderTokensForQuiz(q: ConversationQuiz): readonly SentenceBui
 }
 
 function createPersistNonce(): string {
-  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  return createSessionNonce('conversation-result')
 }
 
 function nextDayIdInStage(
@@ -333,7 +336,7 @@ export default function ConversationDayDetailPage() {
     const allowed =
       alreadyDone || isSequentialDayUnlocked(sortedIds, completed, dayIdNum)
     if (!allowed) {
-      navigate(`/conversation/stage/${stageId}`, { replace: true })
+      navigate(conversationStagePath(stageId), { replace: true })
     }
   }, [packState, dayIdNum, day, navigate, stageId])
 
@@ -420,7 +423,7 @@ export default function ConversationDayDetailPage() {
       persistNonce: createPersistNonce(),
       wrongQuizIds: [...wrongQuizIdsRef.current],
     }
-    navigate(`/conversation/stage/${stageId}/day/${dayIdParam}/result`, {
+    navigate(conversationStageDayResultPath(stageId, dayIdParam), {
       replace: true,
       state: noQuizPayload,
     })
@@ -466,7 +469,7 @@ export default function ConversationDayDetailPage() {
       persistNonce: createPersistNonce(),
       wrongQuizIds: [...wrongQuizIdsRef.current],
     }
-    navigate(`/conversation/stage/${stageId}/day/${dayIdParam}/result`, { state: payload })
+    navigate(conversationStageDayResultPath(stageId, dayIdParam), { state: payload })
   }
 
   const activeQuiz: ConversationQuiz | undefined =
