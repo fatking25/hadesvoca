@@ -1,0 +1,152 @@
+# 하데스 보카 에셋 작업 정리표
+
+## 1. 에셋 저장 위치 기준
+
+| 구분          | 저장 위치                                            | 설명                                                  |
+| ----------- | ------------------------------------------------ | --------------------------------------------------- |
+| 일반 페이지 에셋   | `public/assets/pages/`                           | 시작, 온보딩, 홈, 단어 학습, 단어장, 오답노트, 결과 화면 등 앱 공통 페이지용 이미지 |
+| 브랜드 에셋      | `public/assets/brand/`                           | 앱 로고, 브랜드 심볼 등 공통 브랜드 이미지                           |
+| 공통 아이콘      | `public/assets/icons/`                           | 코인, 경험치, 북마크, 연속 학습 등 반복 사용 아이콘                     |
+| 실전회화 콘텐츠 에셋 | `public/content/conversations/stage-{n}/assets/` | 실전회화 Stage별 cutscene, scene, thumbnail 이미지          |
+
+---
+
+## 2. 현재 상태 요약
+
+| 영역           | 현재 상태                              | 우선순위 |
+| ------------ | ---------------------------------- | ---- |
+| 실전회화 Stage 1 | `cutscene + scene-01/02/03` 에셋 존재  | 낮음   |
+| 실전회화 Stage 2 | JSON은 있으나 실제 이미지는 placeholder 사용 중 | 최우선  |
+| 시작/온보딩/홈     | 대부분 CSS/텍스트 UI 중심                  | 중간   |
+| 단어 학습        | 대표 이미지, 정답/오답, 결과/보상 이미지 필요        | 중간   |
+| 단어장/오답노트     | 빈 상태 이미지 필요                        | 중간   |
+| 공통 보상/상태 아이콘 | 코인, EXP, 북마크, streak 아이콘 필요        | 중간   |
+
+---
+
+# 3. 일반 페이지 에셋 목록
+
+| 페이지                                  | 파일 경로                                                   | 용도/설명                                                        |
+| ------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
+| 시작 페이지 `/`                           | `public/assets/pages/start-hero.webp`                   | 앱 첫 화면 메인 비주얼. 하데스 보카 + TOEIC 단어 + 실전회화 느낌을 한 번에 보여주는 대표 이미지 |
+| 시작 페이지 `/`                           | `public/assets/brand/hades-voca-logo.svg`               | 앱 로고. 헤더, PWA, 시작 화면에 공통 사용 가능                               |
+| 온보딩 `/onboarding`                    | `public/assets/pages/onboarding-welcome.webp`           | 닉네임 입력 전 환영 이미지. 부담 없는 학습 시작 분위기                             |
+| 홈 `/home`                            | `public/assets/pages/home-dashboard-mascot.webp`        | 오늘의 학습 허브 배너용 마스코트/대표 캐릭터 이미지                                |
+| 홈 `/home`                            | `public/assets/pages/home-daily-coin.webp`              | 오늘의 코인 보상 카드용 이미지                                            |
+| 홈 `/home`                            | `public/assets/pages/home-empty-wrong.webp`             | 최근 오답이 없을 때 쓰는 빈 상태 이미지                                      |
+| 단어 학습 목록 `/word-study`               | `public/assets/pages/word-stage-1-cover.webp`           | TOEIC 단어 Stage 1 대표 썸네일                                      |
+| 단어 학습 목록 `/word-study`               | `public/assets/pages/word-path-node-complete.webp`      | 완료 Day 노드 장식용 소형 에셋                                          |
+| 단어 학습 목록 `/word-study`               | `public/assets/pages/word-path-node-locked.webp`        | 잠긴 Day 노드 장식용 소형 에셋                                          |
+| 단어 학습 상세 `/word-study/:dayId`        | `public/assets/pages/word-quiz-focus.webp`              | 문제 카드 상단/배경에 쓸 단어 퀴즈 집중 이미지                                  |
+| 단어 학습 상세 `/word-study/:dayId`        | `public/assets/pages/word-answer-correct.webp`          | 정답 오버레이 보조 이미지                                               |
+| 단어 학습 상세 `/word-study/:dayId`        | `public/assets/pages/word-answer-wrong.webp`            | 오답 오버레이 보조 이미지                                               |
+| 단어 학습 결과 `/word-study/:dayId/result` | `public/assets/pages/word-result-summary.webp`          | 결과 요약 화면 이미지                                                 |
+| 단어 학습 결과 `/word-study/:dayId/result` | `public/assets/pages/word-result-reward.webp`           | 완료 보상 창 이미지                                                  |
+| 실전회화 결과 `/conversation/.../result`   | `public/assets/pages/conversation-result-complete.webp` | Day 완료 결과 화면 보상 이미지                                          |
+| 단어장 `/vocabulary-book`               | `public/assets/pages/vocab-empty.webp`                  | 저장한 단어/표현이 없을 때 빈 상태 이미지                                     |
+| 단어장 상세 `/vocabulary-book/:kind/...`  | `public/assets/pages/vocab-detail-card.webp`            | 단어/표현 상세 카드 보조 이미지                                           |
+| 오답노트 `/wrong-note`                   | `public/assets/pages/wrong-note-empty.webp`             | 오답이 없을 때 빈 상태 이미지                                            |
+| 오답노트 상세 `/wrong-note/:type/...`      | `public/assets/pages/wrong-note-review.webp`            | 오답 상세/복습 유도 이미지                                              |
+| 설정/프로필 시트                            | `public/assets/pages/profile-badge.webp`                | 프로필/닉네임 시트 상단 장식 이미지                                         |
+
+---
+
+# 4. 공통 아이콘 에셋 목록
+
+| 구분 | 파일 경로                               | 용도/설명      |
+| -- | ----------------------------------- | ---------- |
+| 공통 | `public/assets/icons/coin.webp`     | 코인 보상 아이콘  |
+| 공통 | `public/assets/icons/exp.webp`      | 경험치 보상 아이콘 |
+| 공통 | `public/assets/icons/bookmark.webp` | 단어장 저장 아이콘 |
+| 공통 | `public/assets/icons/streak.webp`   | 연속 학습 아이콘  |
+
+---
+
+# 5. 실전회화 스테이지 허브 에셋
+
+| 페이지                          | 파일 경로                                                                | 용도/설명                                            |
+| ---------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| 실전회화 스테이지 허브 `/conversation` | `public/content/conversations/stage-1/assets/stage-1-thumbnail.webp` | Stage 1 카드 썸네일. 현재 Day 1 컷씬을 대신 쓰고 있어서 별도 썸네일 권장 |
+| 실전회화 스테이지 허브 `/conversation` | `public/content/conversations/stage-2/assets/stage-2-thumbnail.webp` | Stage 2 구직-1 카드 썸네일. 현재 placeholder라 최우선 필요      |
+| 실전회화 스테이지 허브 `/conversation` | `public/content/conversations/stage-3/assets/stage-3-thumbnail.webp` | Stage 3 준비 중 카드 썸네일                              |
+
+---
+
+# 6. 실전회화 Stage 2 에셋 목록
+
+## Stage 2 Day 1
+
+| Day           | 파일명                            | 용도/설명                   |
+| ------------- | ------------------------------ | ----------------------- |
+| Stage 2 Day 1 | `stage-2-day-01-cutscene.webp` | 챈나와 카페에서 구직 시작하는 컷씬     |
+| Stage 2 Day 1 | `stage-2-day-01-scene-01.webp` | intro: 카페 창가, 구직 검색 시작  |
+| Stage 2 Day 1 | `stage-2-day-01-scene-02.webp` | dialogue: 챈나와 원하는 일 이야기 |
+| Stage 2 Day 1 | `stage-2-day-01-scene-03.webp` | review: 구직 표현 복습        |
+
+## Stage 2 Day 2
+
+| Day           | 파일명                            | 용도/설명                      |
+| ------------- | ------------------------------ | -------------------------- |
+| Stage 2 Day 2 | `stage-2-day-02-cutscene.webp` | 솜주먹과 카페 구인 공고 확인           |
+| Stage 2 Day 2 | `stage-2-day-02-scene-01.webp` | intro: 카페 문 앞 구인 안내        |
+| Stage 2 Day 2 | `stage-2-day-02-scene-02.webp` | dialogue: 직원에게 채용 여부 문의    |
+| Stage 2 Day 2 | `stage-2-day-02-scene-03.webp` | review: hiring/apply 표현 복습 |
+
+## Stage 2 Day 3
+
+| Day           | 파일명                            | 용도/설명                             |
+| ------------- | ------------------------------ | --------------------------------- |
+| Stage 2 Day 3 | `stage-2-day-03-cutscene.webp` | 키마와 서점 게시판 앞에서 조건 확인              |
+| Stage 2 Day 3 | `stage-2-day-03-scene-01.webp` | intro: 서점 공고 확인                   |
+| Stage 2 Day 3 | `stage-2-day-03-scene-02.webp` | dialogue: 근무 시간/경험 조건 묻기          |
+| Stage 2 Day 3 | `stage-2-day-03-scene-03.webp` | review: working hours/required 복습 |
+
+## Stage 2 Day 4
+
+| Day           | 파일명                            | 용도/설명                                    |
+| ------------- | ------------------------------ | ---------------------------------------- |
+| Stage 2 Day 4 | `stage-2-day-04-cutscene.webp` | 연초록과 면접 장소 찾아가기                          |
+| Stage 2 Day 4 | `stage-2-day-04-scene-01.webp` | intro: 면접 장소 근처 도착                       |
+| Stage 2 Day 4 | `stage-2-day-04-scene-02.webp` | dialogue: 길 묻기/층수 확인                     |
+| Stage 2 Day 4 | `stage-2-day-04-scene-03.webp` | review: directions/interview location 복습 |
+
+## Stage 2 Day 5
+
+| Day           | 파일명                            | 용도/설명                                 |
+| ------------- | ------------------------------ | ------------------------------------- |
+| Stage 2 Day 5 | `stage-2-day-05-cutscene.webp` | 띵귤과 자기소개 준비                           |
+| Stage 2 Day 5 | `stage-2-day-05-scene-01.webp` | intro: 서점 구석에서 면접 준비                  |
+| Stage 2 Day 5 | `stage-2-day-05-scene-02.webp` | dialogue: 자기소개와 강점 말하기                |
+| Stage 2 Day 5 | `stage-2-day-05-scene-03.webp` | review: applicant/customer service 복습 |
+
+## Stage 2 Day 6
+
+| Day           | 파일명                            | 용도/설명                            |
+| ------------- | ------------------------------ | -------------------------------- |
+| Stage 2 Day 6 | `stage-2-day-06-cutscene.webp` | 키마와 챈나가 면접 일정 답장 도와주는 장면         |
+| Stage 2 Day 6 | `stage-2-day-06-scene-01.webp` | intro: 면접 가능 시간 메시지 도착           |
+| Stage 2 Day 6 | `stage-2-day-06-scene-02.webp` | dialogue: 가능 시간/만남 시간 제안         |
+| Stage 2 Day 6 | `stage-2-day-06-scene-03.webp` | review: available/opportunity 복습 |
+
+## Stage 2 Day 7
+
+| Day           | 파일명                            | 용도/설명                              |
+| ------------- | ------------------------------ | ---------------------------------- |
+| Stage 2 Day 7 | `stage-2-day-07-cutscene.webp` | 멤버 전체와 첫 면접 전날 점검                  |
+| Stage 2 Day 7 | `stage-2-day-07-scene-01.webp` | intro: 면접 전날 준비물 점검                |
+| Stage 2 Day 7 | `stage-2-day-07-scene-02.webp` | dialogue: 긴장감과 자신감 대화              |
+| Stage 2 Day 7 | `stage-2-day-07-scene-03.webp` | review: interview/nervous/ready 복습 |
+
+---
+
+# 7. 우선순위
+
+| 우선순위 | 작업                   | 설명                                            |
+| ---- | -------------------- | --------------------------------------------- |
+| 1    | Stage 2 실전회화 이미지 29개 | `thumbnail 1개 + Day별 cutscene 7개 + scene 21개` |
+| 2    | 시작/홈 대표 이미지          | 앱 첫인상 개선                                      |
+| 3    | 단어 학습 결과/보상 이미지      | 완료감 강화                                        |
+| 4    | 단어장/오답노트 빈 상태 이미지    | 저장 데이터 없을 때 화면 완성도 개선                         |
+| 5    | 공통 아이콘               | 코인, EXP, 북마크, streak 등 반복 사용 이미지              |
+
+
