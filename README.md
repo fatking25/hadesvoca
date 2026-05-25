@@ -1,24 +1,61 @@
 # 하데스 보카 (HadesVoca)
 
-TOEIC·실전 회화 학습용 **모바일 우선 웹 앱**(MVP). 서버 없이 브라우저 **localStorage**에만 진행 상태를 저장하고, 단어·회화 콘텐츠는 `public/content`의 **정적 JSON**을 `fetch`로 불러옵니다.
+하데스 보카는 TOEIC 기초 단어와 상황별 영어 표현을 짧은 퀴즈로 학습하는 모바일 우선 웹앱입니다. 로그인 없이 브라우저에 학습 기록을 저장하며, 단어 학습과 실전회화, 단어장, 오답노트를 한 화면 흐름 안에서 사용할 수 있습니다.
 
-## 기술 스택
+- 배포 주소: https://hadesvoca.vercel.app/
+- 권장 환경: 모바일 브라우저 또는 데스크톱 브라우저의 모바일 폭
+- 저장 방식: 서버 계정 없이 현재 브라우저의 `localStorage`에 진행 상황 저장
 
-| 구분 | 내용 |
-|------|------|
-| 런타임 | React 19, TypeScript |
-| 빌드 | Vite 8 |
-| 라우팅 | React Router 7 (`BrowserRouter`) |
-| 스타일 | CSS (디자인 토큰·카드·모바일 레이아웃) |
+## 바로 사용하기
+
+1. https://hadesvoca.vercel.app/ 에 접속합니다.
+2. 처음 사용하는 경우 닉네임을 입력합니다.
+3. 홈에서 `TOEIC 단어 학습` 또는 `하데스 실전회화`를 선택합니다.
+4. Day 단위 학습을 끝내면 결과와 진행 기록이 자동으로 저장됩니다.
+5. 저장한 항목은 `단어장`, 틀린 항목은 `오답노트`에서 다시 확인할 수 있습니다.
 
 ## 주요 기능
 
-- **단어 학습** — Stage·Day 단위 퀴즈, 완료 시 진행 저장
-- **실전 회화** — 시나리오·표현 퀴즈, 완료 시 진행 저장
-- **단어장** — 단어·표현 **참조(id, stage, day)** 만 저장
-- **오답노트** — 틀린 문항 **참조·오답 통계** 저장
-- **홈 대시보드** — 오늘/누적 학습 요약, 이어하기, Stage 진행률(목록 화면)
-- **콘텐츠 분리** — 사용자 데이터는 `localStorage` 키 `hadesvoca:userProgress` 한 곳; 교재 JSON은 읽기만 하고 **쓰지 않음**
+### TOEIC 단어 학습
+
+- Stage와 Day 단위로 단어를 학습합니다.
+- 영어 단어 보고 뜻 고르기, 뜻 보고 단어 고르기, 빈칸 채우기 유형을 제공합니다.
+- Day 완료 기록, 정답/오답, 복습 상태가 브라우저에 저장됩니다.
+- 일부 학습 진입에는 앱 안의 코인이 사용됩니다.
+
+### 하데스 실전회화
+
+- 상황별 대화 흐름을 따라가며 영어 표현을 익힙니다.
+- 컷신, 대화, 핵심 표현, 표현 퀴즈 순서로 학습합니다.
+- 회화 Stage와 Day 완료 여부가 저장됩니다.
+
+### 홈 대시보드
+
+- 닉네임, 연속 학습일, 오늘 학습 수, 누적 학습 단어, 레벨을 보여줍니다.
+- 최근 학습 위치를 기준으로 다음 학습을 추천합니다.
+- 오늘의 코인을 받을 수 있습니다.
+- 복습할 단어와 최근 오답을 빠르게 확인할 수 있습니다.
+
+### 단어장과 오답노트
+
+- 학습 중 저장한 단어와 표현을 모아 볼 수 있습니다.
+- 오답 단어와 오답 표현을 분리해서 확인할 수 있습니다.
+- 저장 데이터에는 콘텐츠 본문이 아니라 참조 ID를 저장하고, 화면 표시 시 콘텐츠 JSON과 연결합니다.
+
+## 데이터와 개인정보
+
+이 앱은 현재 별도 로그인, 서버 저장, 기기 간 동기화를 제공하지 않습니다.
+
+- 학습 기록은 현재 브라우저의 `localStorage`에 저장됩니다.
+- 브라우저 데이터를 삭제하거나 다른 기기에서 접속하면 기존 기록이 보이지 않을 수 있습니다.
+- 설정 화면에서 진행 데이터 내보내기/가져오기를 지원하는 구조가 포함되어 있습니다.
+- 민감한 개인정보 입력을 요구하지 않습니다.
+
+## 현재 콘텐츠 범위
+
+- 단어 학습: Stage 1, Day 1-7
+- 실전회화: Stage 1-2, 각 Day 콘텐츠
+- 추가 Stage와 콘텐츠는 `public/content` 아래 JSON 파일을 확장하는 방식으로 관리합니다.
 
 ## 로컬 실행
 
@@ -27,54 +64,56 @@ npm install
 npm run dev
 ```
 
-브라우저에서 Vite가 안내하는 주소(기본 `http://localhost:5173`)로 접속합니다.
+Vite 개발 서버가 안내하는 주소로 접속합니다. 기본 주소는 보통 `http://localhost:5173`입니다.
 
-## 빌드
+## 빌드와 확인
 
 ```bash
 npm run build
-npm run preview   # dist 미리보기
+npm run preview
 ```
 
-- 산출물: `dist/`
-- 타입체크: `tsc -b` 후 Vite 빌드
+- `npm run build`는 콘텐츠 프리캐시 목록 생성, TypeScript 빌드, Vite 프로덕션 빌드를 실행합니다.
+- 빌드 결과물은 `dist/`에 생성됩니다.
 
-## Lint
+Lint 확인:
 
 ```bash
 npm run lint
 ```
 
-## 폴더 구조 (요약)
+## 프로젝트 구조
 
-```
-public/content/     # 단어·회화 JSON 및 에셋 (배포 시 그대로 포함)
+```text
+public/
+  content/          정적 학습 콘텐츠 JSON과 회화 이미지
+  icons/            PWA 아이콘
+  sw.js             서비스 워커
 src/
-  api/              # 콘텐츠 fetch (contentApi)
-  components/       # 공통 UI (탭바, 학습 경로 뷰 등)
-  constants/        # storage 키 등
-  layouts/          # 모바일 레이아웃
-  pages/            # 화면별 페이지
-  router/           # 라우트 정의
-  types/            # UserProgress, 콘텐츠 타입
-  utils/            # storage.ts, learnStats.ts
+  api/              콘텐츠 로딩 API
+  components/       공통 UI 컴포넌트
+  context/          회화 세션 상태
+  layouts/          모바일 레이아웃
+  pages/            화면 단위 페이지
+  router/           앱 라우팅
+  types/            콘텐츠와 진행 데이터 타입
+  utils/            저장소, 통계, 잠금 해제, 복습 로직
+scripts/
+  generate-content-precache.mjs
 ```
 
-## 사용자 데이터
+## 기술 스택
 
-- **저장 위치:** 브라우저 `localStorage` (`hadesvoca:userProgress`)
-- **마이그레이션:** `UserProgress.version`(현재 2) 필드로 스키마 호환
-- **내보내기/가져오기:** 별도 파일 백업 UI는 없음(필요 시 DevTools로 JSON 확인)
+- React 19
+- TypeScript
+- Vite
+- React Router
+- CSS Modules가 아닌 일반 CSS 기반 스타일 구성
+- Vercel 배포
 
 ## Vercel 배포
 
-1. GitHub 저장소와 연결 후 **New Project**로 해당 레포를 가져옵니다.
-2. 프레임워크: **Vite** (자동 감지되는 경우가 많음)
-3. 빌드 명령: `npm run build`
-4. 출력 디렉터리: `dist`
-5. 설치 명령: `npm install` 또는 `npm ci`
-
-`BrowserRouter`를 쓰므로 **직접 URL 새로고침·딥링크**에서 404가 나면, 프로젝트 루트에 `vercel.json`으로 SPA 폴백을 추가합니다.
+이 프로젝트는 SPA이므로 직접 URL 새로고침 시에도 `index.html`로 돌아오도록 `vercel.json`에 rewrite 설정이 포함되어 있습니다.
 
 ```json
 {
@@ -82,16 +121,19 @@ src/
 }
 ```
 
-실제 존재하는 파일(`/*.js`, `/assets/*` 등)은 Vercel이 우선 제공하고, 나머지 경로만 `index.html`로 폴백합니다.  
-(동일 설정을 Vercel 대시보드의 Routes/Rewrites에서 줄 수도 있습니다.)
+Vercel 설정 값:
 
-**서브패스 배포**(`/hadesvoca` 등)를 할 경우 `vite.config.ts`에 `base`를 맞추고, 위 rewrite도 경로에 맞게 조정합니다. 루트 도메인만 쓰면 기본 `base: '/'`로 충분합니다.
+- Install Command: `npm install` 또는 `npm ci`
+- Build Command: `npm run build`
+- Output Directory: `dist`
 
-## 라이선스
+## 알려진 제한
 
-`package.json`의 `private` 필드처럼 레포 정책에 맞게 별도 명시가 없으면 **프로젝트 소유자 기준**으로 관리합니다.
+- 서버 계정이 없어 기기 간 자동 동기화는 지원하지 않습니다.
+- 현재 콘텐츠는 MVP 범위이며, Stage와 Day 확장이 필요합니다.
+- PWA와 오프라인 캐시는 포함되어 있지만, 실제 오프라인 사용성은 추가 QA가 필요합니다.
+- 자동화 테스트는 아직 충분하지 않아 주요 학습 흐름은 브라우저에서 직접 확인하는 것이 좋습니다.
 
-## 개발 메모
+## 안내
 
-- 로그인·서버 API 없음(MVP)
-- 콘텐츠 수정은 `public/content` 하위 JSON만 편집(앱 코드와 분리)
+본 프로젝트는 팬메이드 학습 앱입니다. SOOP 및 하데스 공식 콘텐츠가 아니며, 상표와 원 저작권은 각 권리자에게 있습니다.
